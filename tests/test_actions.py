@@ -1,7 +1,7 @@
 """ 
 Tests for the `actions.py` module.
 
-Validates hand values, ensures that hitting and splitting hands adds the correct
+Validates hand values, ensures that hitting and splitting adds the correct
 amount of cards to the hand, and that only two cards are dealt at the beginning
 of the round.
 """
@@ -10,12 +10,12 @@ __author__ = 'Adrien P.'
 
 import pytest
 
-from blackjack.card import Card
-from blackjack import actions
-from blackjack.datatypes import Hand, Player, PlayerHand, Table
+import actions
+from card import Card
+from datatypes import Hand, Player, PlayerHand, Table
 
 def _generate_test_cards() -> list[list[Card]]:
-    """Provide a list of hands in order to test their values."""
+    """Provide a list of testable hands."""
     return [
         [Card('Clubs', 2), Card('Hearts', 3), Card('Spades', 4)],
         [Card('Clubs', 10), Card('Hearts', 'Jack')],
@@ -39,10 +39,7 @@ def _generate_test_cards() -> list[list[Card]]:
     ]
 
 def _generate_expected_values(flag) -> list[int]:
-    """
-    Provide a list of expected values for the `_generate_test_cards()` function 
-    depending on the type of test.
-    """
+    """Provide a list of expected values for the `_generate_test_cards()` function."""
     if flag == 'optimal':
         return [9, 20, 24, 16, 21, 16, 12, 12, 21, 12, 14, 20, 21, 12]
     elif flag == 'hard':
@@ -51,7 +48,7 @@ def _generate_expected_values(flag) -> list[int]:
 
 def _generate_test_ids() -> list[str]:
     """
-    Provide test ID's for the `_generate_test_cards() and 
+    Provide test ID's for the `_generate_test_cards()` and 
     `_generate_expected_values()` functions.
     """
     return [
@@ -91,7 +88,7 @@ def test_hard_hand_values(test_cards, expected_value):
 
 @pytest.fixture
 def table() -> Table:
-    """Provide a `Table` instance preloaded with a deck."""
+    """Provide a `Table` instance preloaded with only a deck."""
     return Table(player=Player(username='Test'), deck=actions.create_and_shuffle())
 
 def test_create_split_hands_created_new_hand(table):

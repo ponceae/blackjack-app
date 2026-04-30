@@ -7,10 +7,10 @@ player bank statuses.
 
 __author__ = 'Adrien P.'
 
-from .actions import get_hand_value, get_hard_value
-from .constants import ACE, DEALER_WIN, MAX_WAGER, MIN_WAGER, PLAYER_WIN, PUSH
-from .datatypes import Hand, Player, PlayerHand, Table
-from.payout_calculator import get_insurance_cost
+from actions import get_hand_value, get_hard_value
+from constants import ACE, DEALER_WIN, MAX_WAGER, MIN_WAGER, PLAYER_WIN, PUSH
+from datatypes import Hand, Player, PlayerHand, Table
+from payout_calculator import get_insurance_cost
 
 def can_split(hand: Hand) -> bool:
     """

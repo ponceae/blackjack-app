@@ -9,7 +9,7 @@ __author__ = 'Adrien P'
 
 from typing import Any
 
-from blackjack.constants import MAX_BANK
+from constants import MAX_BANK
 
 class Bank:
     """

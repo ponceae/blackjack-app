@@ -9,7 +9,7 @@ __author__ = 'Adrien P.'
 
 import math
 
-from .datatypes import Insurance, Player, PlayerHand
+from datatypes import Insurance, Player, PlayerHand
 
 def blackjack_payout(hand: PlayerHand) -> float:
     """

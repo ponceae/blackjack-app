@@ -12,9 +12,9 @@ __author__ = 'Adrien P.'
 
 import pytest
 
-from blackjack.bank import Bank
-from blackjack.datatypes import Insurance, Player, PlayerHand
-from blackjack import payout_calculator
+from bank import Bank
+from datatypes import Insurance, Player, PlayerHand
+import payout_calculator
 
 @pytest.mark.parametrize(
     'test_wager, expected_payout',

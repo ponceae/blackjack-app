@@ -6,7 +6,7 @@ Validates game deck initialization and modification.
 
 __author__ = 'Adrien P.'
 
-from blackjack.deck import create_deck, shuffle_deck
+from deck import create_deck, shuffle_deck
 
 def test_create_deck_success():   
     deck = create_deck()

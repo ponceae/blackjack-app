@@ -13,8 +13,8 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import NamedTuple
 
-from .bank import Bank
-from .card import Card
+from bank import Bank
+from card import Card
 
 # ==============================
 # BLACKJACK ACTIONS AND DISPLAY

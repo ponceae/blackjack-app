@@ -12,10 +12,10 @@ __author__ = 'Adrien P.'
 import pytest
 import time
 
-from blackjack.bank import Bank
-from blackjack.card import Card
-from blackjack import constants
-from blackjack.datatypes import (
+from bank import Bank
+from card import Card
+import constants
+from datatypes import (
     DealerHand,
     Insurance,
     Outcome,
@@ -23,7 +23,7 @@ from blackjack.datatypes import (
     PlayerHand,
     Table,
 )
-from blackjack import interface
+import interface
 
 def _generate_basic_input_arg_params(choice):
     """
@@ -375,7 +375,7 @@ def test_is_new_round_exit_branch(mock_inputs, monkeypatch):
 
     mock_inputs(['n'])
 
-    monkeypatch.setattr(interface, 'save_chips', lambda *args, **kwargs: None)
+    # monkeypatch.setattr(interface, 'save_chips', lambda *args, **kwargs: None)
 
     with pytest.raises(SystemExit) as exe_info:
         interface.is_new_round(table)

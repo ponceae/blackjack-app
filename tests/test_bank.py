@@ -9,8 +9,8 @@ __author__ = 'Adrien P.'
 
 import pytest
 
-from blackjack.bank import Bank
-from blackjack.constants import MAX_BANK
+from bank import Bank
+from constants import MAX_BANK
 from data.constants import (
     BANK_BOUNDS_ERR_MSG, 
     BANK_INVALID_VALUE_ERR_MSG, 

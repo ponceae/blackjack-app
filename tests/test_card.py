@@ -9,8 +9,8 @@ __author__ = 'Adrien P.'
 
 import pytest
 
-from blackjack.card import Card
-from blackjack.constants import CARD_RANKS, CARD_SUITS
+from card import Card
+from constants import CARD_RANKS, CARD_SUITS
 from data.constants import CARD_INVALID_RANK_ERR_MSG, CARD_INVALID_SUIT_ERR_MSG
 
 @pytest.mark.parametrize(

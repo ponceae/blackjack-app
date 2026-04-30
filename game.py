@@ -6,11 +6,11 @@ Insurance offered.
 
 __author__ = 'Adrien P.'
 
-from . import actions
-from .bank import Bank
-from . import conditions
-from . import constants
-from .datatypes import (
+import actions
+from bank import Bank
+import conditions
+import constants
+from datatypes import (
     Insurance,
     Outcome,
     Player,
@@ -19,9 +19,8 @@ from .datatypes import (
     SplitHands,
     Table
 )
-from . import interface
-from . import payout_calculator
-from . import storage
+import interface
+import payout_calculator
 
 # ==================================================
 # INITIAL ROUND ACTIONS
@@ -531,12 +530,12 @@ def main():
 
     interface.clear_terminal()
 
-    chips, username = storage.pull_user_info()
-    player_bank = Bank(chips)
+    # chips, username = storage.pull_user_info()
+    # player_bank = Bank(chips)
 
     interface.clear_terminal()
 
-    blackjack(actions.create_and_shuffle(), player_bank, username)
+    # blackjack(actions.create_and_shuffle(), player_bank, username)
 
 if __name__ == '__main__':
     main()

@@ -13,16 +13,16 @@ import subprocess
 import sys
 import time
 
-from .actions import get_hand_value, get_hard_value
-from .bank import Bank
-from .conditions import (
+from actions import get_hand_value, get_hard_value
+from bank import Bank
+from conditions import (
     is_soft, 
     is_twenty_one, 
     is_valid_player_wager, 
     is_valid_chip_bounds, 
     is_valid_wager,
 )
-from .constants import (
+from constants import (
     BUST,
     DEALER_WIN, 
     HIT, 
@@ -36,15 +36,14 @@ from .constants import (
     TIMER_MESSAGES, 
     YES,
 )
-from .datatypes import (
+from datatypes import (
     Buffers,
     Insurance,
     Outcome,
     PlayerHand,
     Table,
 )
-from .payout_calculator import push_payout, standard_payout
-from .storage import load_user_data, save_chips
+from payout_calculator import push_payout, standard_payout
 
 # ============================
 # DISPLAY
@@ -255,7 +254,7 @@ def _add_chips(table: Table) -> None:
                 print('Invalid value, `chips` must be a number.')
     else:
         print('\nInsufficient funds to continue playing.')
-        save_chips(table.player.username, table.player.bank.chips, load_user_data())
+        # save_chips(table.player.username, table.player.bank.chips, load_user_data())
         sys.exit()
 
 def double_or_not() -> str:
@@ -312,7 +311,7 @@ def is_new_round(table: Table) -> bool:
 
     if input == NO:
         print('\nExiting Blackjack & Saving Data.')
-        save_chips(table.player.username, table.player.bank.chips, load_user_data())
+        # save_chips(table.player.username, table.player.bank.chips, load_user_data())
         sys.exit()
     elif input == YES:
         clear_terminal()

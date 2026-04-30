@@ -9,11 +9,11 @@ __author__ = 'Adrien P.'
 import pytest
 import time
 
-from blackjack.actions import create_and_shuffle
-from blackjack.bank import Bank
-from blackjack.card import Card
-from blackjack import constants
-from blackjack.datatypes import (
+from actions import create_and_shuffle
+from bank import Bank
+from card import Card
+import constants
+from datatypes import (
     DealerHand,
     Insurance,
     Outcome,
@@ -23,7 +23,7 @@ from blackjack.datatypes import (
     SplitHands,
     Table,
 )
-from blackjack import game
+import game
 
 @pytest.fixture(autouse=True)
 def suppress_ui_and_timer(monkeypatch):

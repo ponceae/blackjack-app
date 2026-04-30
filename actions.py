@@ -7,10 +7,10 @@ calculate hand values and payouts.
 
 __author__ = 'Adrien P.'
 
-from .card import Card
-from .constants import ACE_ALT_VALUE, DEFAULT_ACE_VALUE
-from .datatypes import DealerHand, Hand, PlayerHand, Table
-from .deck import create_deck, shuffle_deck
+from card import Card
+from constants import ACE_ALT_VALUE, DEFAULT_ACE_VALUE
+from datatypes import DealerHand, Hand, PlayerHand, Table
+from deck import create_deck, shuffle_deck
 
 def create_split_hands(table: Table) -> None:
     """
@@ -18,7 +18,7 @@ def create_split_hands(table: Table) -> None:
     hitting both hands.
 
     Args:
-        table (Table): The table containing the `PlayerHand` and the deck of cards.
+        table (Table): The table containing the player's hand and the deck of cards.
     """
     table.player.hands.append(PlayerHand(cards=[table.player.hands[0].cards.pop()]))
 
@@ -31,7 +31,7 @@ def hit_hand(table: Table, hand: Hand) -> None:
     new deck if the game deck is empty.
 
     Args:
-        table (Table): The table containing the hand and the deck of cards.
+        table (Table): The table containing the current hand and the deck of cards.
         hand (Hand): The current hand being modified.
     """
     if not table.deck:
@@ -112,10 +112,5 @@ def get_hard_value(hand: Hand) -> int:
     return value
 
 def create_and_shuffle() -> list[Card]:
-    """
-    Create a new 52 card deck and shuffle it.
-
-    Returns:
-        list[Card]: The shuffled deck.
-    """
+    """Create, shuffle, and return a new 52-card deck."""
     return shuffle_deck(create_deck())

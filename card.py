@@ -7,7 +7,7 @@ a deck, and determines its numeric value.
 
 __author__ = 'Adrien P.'
 
-from .constants import (
+from constants import (
     ACE,
     CARD_SUITS, 
     CARD_SUIT_SYMBOLS, 

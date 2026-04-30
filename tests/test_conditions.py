@@ -8,11 +8,11 @@ __author__ = 'Adrien P.'
 
 import pytest
 
-from blackjack.bank import Bank
-from blackjack.card import Card
-from blackjack import conditions
-from blackjack import constants
-from blackjack.datatypes import DealerHand, Hand, Player, PlayerHand, Table
+from bank import Bank
+from card import Card
+import conditions
+import constants
+from datatypes import DealerHand, Hand, Player, PlayerHand, Table
 
 @pytest.mark.parametrize(
     'test_cards, expected_bool',

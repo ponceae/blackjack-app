@@ -1,0 +1,121 @@
+"""
+Blackjack game actions and calculations.
+
+This module contains functions to deal cards, manage hands, and 
+calculate hand values and payouts.
+"""
+
+__author__ = 'Adrien P.'
+
+from .card import Card
+from .constants import ACE_ALT_VALUE, DEFAULT_ACE_VALUE
+from .datatypes import DealerHand, Hand, PlayerHand, Table
+from .deck import create_deck, shuffle_deck
+
+def create_split_hands(table: Table) -> None:
+    """
+    Create a new `PlayerHand` by popping a card from the first initial hand and
+    hitting both hands.
+
+    Args:
+        table (Table): The table containing the `PlayerHand` and the deck of cards.
+    """
+    table.player.hands.append(PlayerHand(cards=[table.player.hands[0].cards.pop()]))
+
+    for hand in table.player.hands:
+        hit_hand(table, hand)
+
+def hit_hand(table: Table, hand: Hand) -> None:
+    """
+    Draw a card from the table's deck and add it to the hand. Create and shuffle a 
+    new deck if the game deck is empty.
+
+    Args:
+        table (Table): The table containing the hand and the deck of cards.
+        hand (Hand): The current hand being modified.
+    """
+    if not table.deck:
+        table.deck = create_and_shuffle()
+
+    hand.cards.append(table.deck.pop())
+
+def initial_round_deal(table: Table) -> None:
+    """
+    Initialize a `PlayerHand` and a `DealerHand` on the table by dealing both 
+    two cards each.
+
+    Args:
+        table (Table): The table containing the `PlayerHand`, the `DealerHand`, and  
+            the deck of cards.
+    """
+    table.player.hands = [PlayerHand()]
+    table.dealer = DealerHand()
+
+    for i in range(4):
+        if not table.deck:
+            table.deck = create_and_shuffle()	
+
+        card = table.deck.pop()
+
+        if i % 2 == 0:
+            table.player.hands[0].cards.append(card)
+        else:
+            table.dealer.cards.append(card)
+
+def get_hand_value(hand: Hand) -> int:
+    """
+    Return the optimal numeric vale of the hand.
+
+    Count the score by initially valuing Aces at 11, then contextually 
+    downgrading Ace values to 1 when needed to avoid exceeding 21.
+
+    Args:
+        hand (Hand): The hand to calculate.
+
+    Returns:
+        int: The highest possible score that is 21 or less.
+    """
+    value, ace_count = 0, 0
+
+    for card in hand.cards:
+        if card.rank == 'Ace':	
+            value += DEFAULT_ACE_VALUE 
+            ace_count += 1 
+        else:
+            value += card.get_rank_value()
+
+    while ace_count > 0 and value > 21: 
+        value -= DEFAULT_ACE_VALUE
+        value += ACE_ALT_VALUE 
+        ace_count -= 1
+
+    return value
+
+def get_hard_value(hand: Hand) -> int:
+    """
+    Return the total numeric value of the hand, counting all Aces as a 1.
+
+    Args:
+        hand (Hand): The hand to calculate.
+
+    Returns:
+        int: The final calculated hand value.
+    """
+    value = 0
+
+    for card in hand.cards:
+        if card.rank == 'Ace':		
+            value += ACE_ALT_VALUE 
+        else:
+            value += card.get_rank_value()
+
+    return value
+
+def create_and_shuffle() -> list[Card]:
+    """
+    Create a new 52 card deck and shuffle it.
+
+    Returns:
+        list[Card]: The shuffled deck.
+    """
+    return shuffle_deck(create_deck())

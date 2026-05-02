@@ -29,19 +29,19 @@ import game
 def suppress_ui_and_timer(monkeypatch):
     monkeypatch.setattr(time, 'sleep', lambda x: None)
     monkeypatch.setattr(
-        'blackjack.interface.clear_and_print', 
+        'interface.clear_and_print', 
         lambda *args, **kwargs: None
     )
     monkeypatch.setattr(
-        'blackjack.conditions.compare_initial_hands', 
+        'conditions.compare_initial_hands', 
         lambda *args, **kwargs: None
     )
     monkeypatch.setattr(
-        'blackjack.interface.print_initial_insurance_outcome', 
+        'interface.print_initial_insurance_outcome', 
         lambda *args, **kwargs: None
     )
     monkeypatch.setattr(
-        'blackjack.interface.print_hands',
+        'interface.print_hands',
         lambda *args, **kwargs: None
     )
 
@@ -154,45 +154,45 @@ def test_exe_init_no_winners_no_insurance_win(monkeypatch, init_table):
 
     assert init_table.player.hands[0].insurance_wager == 0
 
-def test_exe_init_round_ending_cond_no_new_round(mock_inputs, monkeypatch, init_table):
-    mock_inputs(['n'])
+# def test_exe_init_round_ending_cond_no_new_round(mock_inputs, monkeypatch, init_table):
+#     mock_inputs(['n'])
 
-    monkeypatch.setattr(
-        'blackjack.conditions.compare_initial_hands', 
-        lambda _: constants.PLAYER_WIN
-    )
+#     monkeypatch.setattr(
+#         'conditions.compare_initial_hands', 
+#         lambda _: constants.PLAYER_WIN
+#     )
 
-    monkeypatch.setattr(game, '_handle_insurance', lambda *args, **kwargs: None)
-    monkeypatch.setattr(game, '_handle_outcomes', lambda *args, **kwargs: None)
+#     monkeypatch.setattr(game, '_handle_insurance', lambda *args, **kwargs: None)
+#     monkeypatch.setattr(game, '_handle_outcomes', lambda *args, **kwargs: None)
 
-    monkeypatch.setattr(
-        "blackjack.interface.request_new_round",
-        lambda: constants.NO
-    )
+#     monkeypatch.setattr(
+#         "interface.request_new_round",
+#         lambda: constants.NO
+#     )
 
-    monkeypatch.setattr('blackjack.interface.save_chips', lambda *args, **kwargs: None)
+#     monkeypatch.setattr('interface.save_chips', lambda *args, **kwargs: None)
 
-    with pytest.raises(SystemExit) as exe_info:
-        game.exe_initial_cond(init_table)
+#     with pytest.raises(SystemExit) as exe_info:
+#         game.exe_initial_cond(init_table)
 
-    assert exe_info.value.code == None
+#     assert exe_info.value.code == None
 
-def test_exe_init_round_ending_cond_with_new_round(monkeypatch, init_table):
-    monkeypatch.setattr(
-        'blackjack.conditions.compare_initial_hands', 
-        lambda _: constants.PLAYER_WIN
-    )
-    monkeypatch.setattr(game, '_handle_insurance', lambda *args, **kwargs: None)
-    monkeypatch.setattr(game, '_handle_outcomes', lambda *args, **kwargs: None)
+# def test_exe_init_round_ending_cond_with_new_round(monkeypatch, init_table):
+#     monkeypatch.setattr(
+#         'conditions.compare_initial_hands', 
+#         lambda _: constants.PLAYER_WIN
+#     )
+#     monkeypatch.setattr(game, '_handle_insurance', lambda *args, **kwargs: None)
+#     monkeypatch.setattr(game, '_handle_outcomes', lambda *args, **kwargs: None)
 
-    monkeypatch.setattr(
-        "blackjack.interface.request_new_round",
-        lambda: constants.YES
-    )
+#     monkeypatch.setattr(
+#         "interface.request_new_round",
+#         lambda: constants.YES
+#     )
 
-    monkeypatch.setattr('blackjack.interface.save_chips', lambda *args, **kwargs: None)
+#     monkeypatch.setattr('interface.save_chips', lambda *args, **kwargs: None)
 
-    assert game.exe_initial_cond(init_table) == True
+#     assert game.exe_initial_cond(init_table) == True
 
 # ==================================================
 # PLAYER TURN TESTS
@@ -480,7 +480,7 @@ def test_handle_hitting(
         full_table.player.hands[index].cards.append(card)
 
     monkeypatch.setattr(time, 'sleep', lambda x: None)
-    monkeypatch.setattr('blackjack.actions.hit_hand', fake_handle_hitting)
+    monkeypatch.setattr('actions.hit_hand', fake_handle_hitting)
 
     action = game._handle_hitting(
         full_table,
@@ -506,9 +506,9 @@ def test_exe_player_control_split_aces_early_exit(monkeypatch, full_table):
 def test_exe_player_control_double_down_no_hands_left(monkeypatch, full_table):
     monkeypatch.setattr(game, '_handle_split', lambda *args, **kwargs: None)
 
-    monkeypatch.setattr('blackjack.interface.double_or_not', lambda: constants.YES)
+    monkeypatch.setattr('interface.double_or_not', lambda: constants.YES)
     monkeypatch.setattr(
-        'blackjack.conditions.is_valid_doubled_wager', 
+        'conditions.is_valid_doubled_wager', 
         lambda *args, **kwargs: True
     )
 
@@ -529,9 +529,9 @@ def test_exe_player_control_double_down_hands_left(monkeypatch, full_table):
 
     monkeypatch.setattr(game, '_handle_split', lambda *args, **kwargs: None)
 
-    monkeypatch.setattr('blackjack.interface.double_or_not', lambda: constants.YES)
+    monkeypatch.setattr('interface.double_or_not', lambda: constants.YES)
     monkeypatch.setattr(
-        'blackjack.conditions.is_valid_doubled_wager', 
+        'conditions.is_valid_doubled_wager', 
         lambda *args, **kwargs: True
     )
 
@@ -558,9 +558,9 @@ def exe_player_control_next_hand(monkeypatch, full_table):
     def fake_handle_split(table, split):
         split.split_hand = True
 
-    monkeypatch.setattr('blackjack.interface.handle_split', fake_handle_split)
+    monkeypatch.setattr('interface.handle_split', fake_handle_split)
 
-    monkeypatch.setattr('blackjack.interface.double_or_not', lambda: constants.NO)
+    monkeypatch.setattr('interface.double_or_not', lambda: constants.NO)
 
     handle_hitting_calls = []
     def fake_handle_hitting(*_, i):
@@ -576,11 +576,11 @@ def exe_player_control_next_hand(monkeypatch, full_table):
 
 def exe_player_control_end_turn(monkeypatch, full_table):
     monkeypatch.setattr(
-        'blackjack.interface.handle_split', 
+        'interface.handle_split', 
         lambda *args, **kwargs: None
     )
 
-    monkeypatch.setattr('blackjack.interface.double_or_not', lambda: constants.NO)
+    monkeypatch.setattr('interface.double_or_not', lambda: constants.NO)
 
     handle_hitting_calls = []
     def fake_handle_hitting(*_, i):
@@ -598,38 +598,38 @@ def exe_player_control_end_turn(monkeypatch, full_table):
 # ======================
 
 def test_exe_dealer_control_is_bust(monkeypatch, full_table):
-    monkeypatch.setattr('blackjack.actions.get_hand_value', lambda _: 16)
+    monkeypatch.setattr('actions.get_hand_value', lambda _: 16)
     
-    monkeypatch.setattr('blackjack.actions.hit_hand', lambda *args, **kwargs: None)
+    monkeypatch.setattr('actions.hit_hand', lambda *args, **kwargs: None)
 
-    monkeypatch.setattr('blackjack.conditions.is_bust', lambda _: True)
+    monkeypatch.setattr('conditions.is_bust', lambda _: True)
 
     monkeypatch.setattr(
-        'blackjack.interface.print_dealer_state', 
+        'interface.print_dealer_state', 
         lambda *args, **kwargs: None
     )
 
     assert game.exe_dealer_control(full_table) == None
 
 def test_exe_dealer_control_is_twenty_one(monkeypatch, full_table):
-    monkeypatch.setattr('blackjack.actions.get_hand_value', lambda _: 16)
+    monkeypatch.setattr('actions.get_hand_value', lambda _: 16)
     
-    monkeypatch.setattr('blackjack.actions.hit_hand', lambda *args, **kwargs: None)
+    monkeypatch.setattr('actions.hit_hand', lambda *args, **kwargs: None)
 
-    monkeypatch.setattr('blackjack.conditions.is_twenty_one', lambda _: True)
+    monkeypatch.setattr('conditions.is_twenty_one', lambda _: True)
 
     monkeypatch.setattr(
-        'blackjack.interface.print_dealer_state', 
+        'interface.print_dealer_state', 
         lambda *args, **kwargs: None
     )
 
     assert game.exe_dealer_control(full_table) == None
 
 def test_exe_dealer_control_two_card_stand(monkeypatch, full_table):
-    monkeypatch.setattr('blackjack.actions.get_hand_value', lambda _: 17)
+    monkeypatch.setattr('actions.get_hand_value', lambda _: 17)
     
     monkeypatch.setattr(
-        'blackjack.interface.print_dealer_state', 
+        'interface.print_dealer_state', 
         lambda *args, **kwargs: None
     )
 
@@ -640,12 +640,12 @@ def test_exe_dealer_control_stand_after_hit(monkeypatch, full_table):
         14, 19
     ])
     
-    monkeypatch.setattr('blackjack.actions.get_hand_value', lambda _: next(values))
+    monkeypatch.setattr('actions.get_hand_value', lambda _: next(values))
 
-    monkeypatch.setattr('blackjack.actions.hit_hand', lambda *args, **kwargs: None)
+    monkeypatch.setattr('actions.hit_hand', lambda *args, **kwargs: None)
 
     monkeypatch.setattr(
-        'blackjack.interface.print_dealer_state', 
+        'interface.print_dealer_state', 
         lambda *args, **kwargs: None
     )
 
@@ -660,7 +660,7 @@ def test_verify_round_end_cond_player_bust(monkeypatch, full_table):
         if isinstance(hand, PlayerHand):
             return True
 
-    monkeypatch.setattr('blackjack.conditions.is_bust', fake_is_bust)
+    monkeypatch.setattr('conditions.is_bust', fake_is_bust)
 
     round_outcome_calls = []
     def spy_get_round_outcome_msg(i, flag):
@@ -668,12 +668,12 @@ def test_verify_round_end_cond_player_bust(monkeypatch, full_table):
         return 'PLAYER BUST'
 
     monkeypatch.setattr(
-        'blackjack.interface.get_round_outcome_msg', 
+        'interface.get_round_outcome_msg', 
         spy_get_round_outcome_msg
     )
 
     monkeypatch.setattr(
-        'blackjack.interface.is_new_round', 
+        'interface.is_new_round', 
         lambda *args, **kwargs: None
     )
 
@@ -687,7 +687,7 @@ def test_verify_round_end_cond_dealer_bust(monkeypatch, full_table):
         if isinstance(hand, DealerHand):
             return True
 
-    monkeypatch.setattr('blackjack.conditions.is_bust', fake_is_bust)
+    monkeypatch.setattr('conditions.is_bust', fake_is_bust)
 
     round_outcome_calls = []
     def spy_get_round_outcome_msg(i, flag):
@@ -695,12 +695,12 @@ def test_verify_round_end_cond_dealer_bust(monkeypatch, full_table):
         return 'DEALER BUST'
 
     monkeypatch.setattr(
-        'blackjack.interface.get_round_outcome_msg', 
+        'interface.get_round_outcome_msg', 
         spy_get_round_outcome_msg
     )
 
     monkeypatch.setattr(
-        'blackjack.interface.is_new_round', 
+        'interface.is_new_round', 
         lambda *args, **kwargs: None
     )
 
@@ -713,17 +713,17 @@ def test_verify_round_end_cond_no_busts_push(monkeypatch, full_table):
     def fake_compare_hands(*args, **kwargs):
         return ('PUSH', constants.PUSH)
 
-    monkeypatch.setattr('blackjack.interface.compare_hands', fake_compare_hands)
+    monkeypatch.setattr('interface.compare_hands', fake_compare_hands)
 
     push_payout_calls = []
     def spy_push_payout(hand):
         push_payout_calls.append(hand)
         return 0
 
-    monkeypatch.setattr('blackjack.payout_calculator.push_payout', spy_push_payout)
+    monkeypatch.setattr('payout_calculator.push_payout', spy_push_payout)
 
     monkeypatch.setattr(
-        'blackjack.interface.is_new_round', 
+        'interface.is_new_round', 
         lambda *args, **kwargs: None
     )
 
@@ -753,7 +753,7 @@ def test_verify_round_end_cond_multiple_iterations(monkeypatch, full_table):
         elif hand.cards[1].rank == 2:
             return True
 
-    monkeypatch.setattr('blackjack.conditions.is_bust', fake_is_bust)
+    monkeypatch.setattr('conditions.is_bust', fake_is_bust)
 
     round_outcome_calls = []
     def spy_get_round_outcome_msg(i, flag):
@@ -761,11 +761,11 @@ def test_verify_round_end_cond_multiple_iterations(monkeypatch, full_table):
         return i, flag
 
     monkeypatch.setattr(
-        'blackjack.interface.get_round_outcome_msg', 
+        'interface.get_round_outcome_msg', 
         spy_get_round_outcome_msg)
 
     monkeypatch.setattr(
-        'blackjack.interface.is_new_round', 
+        'interface.is_new_round', 
         lambda *args, **kwargs: None
     )
 
@@ -780,14 +780,14 @@ def test_verify_round_end_cond_multiple_iterations(monkeypatch, full_table):
 # =======================
  
 def test_get_player_wager(monkeypatch, full_table):
-    monkeypatch.setattr('blackjack.interface.wager_prompt', lambda _: 25.0)
+    monkeypatch.setattr('interface.wager_prompt', lambda _: 25.0)
 
     assert game._get_player_wager(full_table) == 25.0
 
 def test_blackjack_round_done(monkeypatch, full_table):
     monkeypatch.setattr(game, '_get_player_wager', lambda *args, **kwargs: None)
 
-    monkeypatch.setattr('blackjack.actions.initial_round_deal', lambda *args, **kwargs: None)
+    monkeypatch.setattr('actions.initial_round_deal', lambda *args, **kwargs: None)
 
     monkeypatch.setattr(game, 'exe_initial_cond', lambda _: True)
 

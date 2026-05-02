@@ -2,10 +2,12 @@
 Describes and visualizes a single playing card.
 
 This module provides the `Card` class, which represents a single playing card from 
-a deck, and determines its numeric value.
+a deck, and determines its numeric value and supports serialization/deserialization.
 """
 
 __author__ = 'Adrien P.'
+
+from typing import Self
 
 from constants import (
     ACE,
@@ -18,14 +20,13 @@ from constants import (
 
 class Card:
     """
-     Represents a single playing card with a rank and suit.
+    Represents a single playing card with a rank and suit.
 
-       Attributes:
+    Attributes:
         suit (str): The card's suit name.
         rank (int | str): The card's rank (an integer for pip cards, or a string for
-              face cards and Aces).
+            face cards and Aces).
     """
-
     def __init__ (self, suit: str, rank: int | str) -> None:
         """
         Initialize a `Card` with the given suit and rank.
@@ -47,7 +48,7 @@ class Card:
             raise ValueError(
                 f'Invalid suit, `suit` must be one of: '
                 f'\'Clubs\', \'Diamonds\', \'Hearts\', \'Spades\'.'
-              )
+            )
 
         if isinstance(rank, int) and (2 <= rank <= 11):
             self.rank = rank
@@ -59,6 +60,16 @@ class Card:
                 f'\'2\' through \'10\', \'Jack\', \'King\', \'Queen\', \'Ace\'.'
             )
 
+    @classmethod
+    def from_dict(cls, data: dict[str, int | str]) -> Self:
+        """Build a `Card` from a dictionary."""
+        assert isinstance(data['suit'], str)
+        return cls(suit=data['suit'], rank=data['rank'])
+    
+    def to_dict(self) -> dict[str, int | str]:
+        """Pack the `Card` into a dictionary."""
+        return {'suit': self.suit, 'rank': self.rank}
+    
     def get_rank_value(self) -> int:
         """
         Return the rank value of the `Card`. If the rank value is an Ace, return a 
@@ -76,7 +87,7 @@ class Card:
                 return DEFAULT_ACE_VALUE
 
         return 0
-
+    
     def to_string(self) -> str:
         """
         Return the string representation of the `Card`.

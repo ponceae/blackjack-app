@@ -2,12 +2,12 @@
 Manages the storage of a player's chips. 
 
 This module provides the `Bank` class, which acts as a player's wallet and manages,
-modifies, and stores casino chips based on the player's current game state.
+modifies, stores casino chips based on the player's current game state.
 """
 
 __author__ = 'Adrien P'
 
-from typing import Any
+from typing import Any, Self
 
 from constants import MAX_BANK
 
@@ -18,7 +18,6 @@ class Bank:
     Attributes:
         chips (float): The current total count of chips that the player owns.
     """
-
     def __init__(self, chips: float) -> None:
         """
         Initialize the player's `Bank` with the given amount of chips.
@@ -38,7 +37,7 @@ class Bank:
                 f'0 and {MAX_BANK:,.2f}.'
             )
 
-        self._chips = chips
+        self.chips = chips
 
     @staticmethod
     def _to_float(value: Any) -> float:
@@ -79,6 +78,15 @@ class Bank:
 
         self._chips = value
 
+    @classmethod
+    def from_dict(cls, data: dict[str, float]) -> Self:
+        """Build a `Bank` from a dictionary"""
+        return cls(chips=data['chips'])
+    
+    def to_dict(self) -> dict[str, float]:
+        """Pack the `Bank` into a dictionary."""
+        return {'chips': self.chips}
+    
     def to_string(self) -> str:
         """
         Return the string representation of the player's `Bank`.

@@ -8,5 +8,23 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <body>
     <!-- <img class='background' src="{{ url_for('static', filename='images/blackjack_background.png') }}"> -->
+    <div class="title">
+      <h1>Blackjack</h1>
+    </div>
+    <div class="buttons">
+      {% if not game_active %}
+        <form action="/deal" method="POST">
+          <button type="submit">Deal</button>
+        </form>
+      {% else %}
+        <form action="/hit" method="POST">
+          <button type="submit">Hit</button>
+        </form>
+
+        <form action="/stand" method="POST">
+          <button type="submit">Stand</button>
+        </form>
+      {% endif %}
+    </div>
   </body>
 </html>

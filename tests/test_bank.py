@@ -14,7 +14,7 @@ from constants import MAX_BANK
 from data.constants import (
     BANK_BOUNDS_ERR_MSG, 
     BANK_INVALID_VALUE_ERR_MSG, 
-    BANK_NEGATIVE_VALUE_ERR_MSG
+    BANK_NEGATIVE_VALUE_ERR_MSG,
 )
 
 @pytest.mark.parametrize(

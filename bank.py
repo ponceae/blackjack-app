@@ -2,7 +2,8 @@
 Manages the storage of a player's chips. 
 
 This module provides the `Bank` class, which acts as a player's wallet and manages,
-modifies, stores casino chips based on the player's current game state.
+modifies, and stores casino chips based on the player's current game state, as well
+as supports serialization/deserialization.
 """
 
 __author__ = 'Adrien P'
@@ -79,7 +80,7 @@ class Bank:
         self._chips = value
 
     @classmethod
-    def from_dict(cls, data: dict[str, float]) -> Self:
+    def from_dict(cls, data: dict[str, Any]) -> Self:
         """Build a `Bank` from a dictionary"""
         return cls(chips=data['chips'])
     

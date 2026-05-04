@@ -84,9 +84,7 @@ def is_twenty_one(hand: Hand) -> bool:
     return get_hand_value(hand) == 21
 
 def is_valid_wager(wager: float) -> bool:
-    """
-    Return `True` if the wager is greater than or equal to the `MIN_WAGER`.
-    """
+    """Return `True` if the wager is greater than or equal to the `MIN_WAGER`."""
     return wager >= MIN_WAGER
 
 def is_valid_hand_wager(hand: PlayerHand) -> bool:

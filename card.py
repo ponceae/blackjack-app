@@ -7,7 +7,7 @@ a deck, and determines its numeric value and supports serialization/deserializat
 
 __author__ = 'Adrien P.'
 
-from typing import Self
+from typing import Any, Self
 
 from constants import (
     ACE,
@@ -61,12 +61,11 @@ class Card:
             )
 
     @classmethod
-    def from_dict(cls, data: dict[str, int | str]) -> Self:
+    def from_dict(cls, data: dict[str, Any]) -> Self:
         """Build a `Card` from a dictionary."""
-        assert isinstance(data['suit'], str)
         return cls(suit=data['suit'], rank=data['rank'])
     
-    def to_dict(self) -> dict[str, int | str]:
+    def to_dict(self) -> dict[str, Any]:
         """Pack the `Card` into a dictionary."""
         return {'suit': self.suit, 'rank': self.rank}
     

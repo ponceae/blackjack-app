@@ -2,7 +2,8 @@
 Tests for the `bank.py` module.
 
 Ensures that the `Bank` class correctly initializes and validates the player's chips,
-and enforces the minimum and maximum chip balance bounds.
+enforces the minimum and maximum chip balance bounds, and validates object packing
+and unpacking.
 """
 
 __author__ = 'Adrien P.'
@@ -17,25 +18,44 @@ from data.constants import (
     BANK_NEGATIVE_VALUE_ERR_MSG,
 )
 
+# ========================
+# Fixtures and Generators.
+# ========================
+
+@pytest.fixture
+def bank() -> Bank:
+    """Provide a `Bank` instance with a moderate balance."""
+    return Bank(225.50)
+
+def _generate_test_banks() -> list[Bank]:
+    """Provide a list of `Bank` objects."""
+    return [
+        Bank(15.0),
+        Bank(1000.0),
+        Bank(34.5),
+        Bank(14.99),
+        Bank(0.0),
+        Bank(float('25')),
+        Bank(float('7.5')),    
+    ]
+
+def _bank_mapping_pairs() -> list[tuple]:
+    """Provide pairs of (`Bank`, expected data dictionary)."""
+    return [(bank, {'chips': bank.chips}) for bank in _generate_test_banks()]
+
 # =====================
 # Initialization Tests.
 # =====================
 
 @pytest.mark.parametrize(
-    'test_chips, expected_amount',
-    [
-        (15, 15.0),
-        (1000, 1000.0),
-        (34.5, 34.5),
-        (14.99, 14.99),
-        (0, 0.0),
-        ('15', 15.0),
-        ('7.5', 7.5),
-    ],
+    'bank, expected_chips',
+    zip(
+        _generate_test_banks(), 
+        [15.0, 1000.0, 34.5, 14.99, 0.0, 25.0, 7.5],
+    ),
 )
-def test_initial_bank_creation(test_chips, expected_amount):
-    bank = Bank(test_chips)
-    assert bank.chips == expected_amount
+def test_initial_bank_creation(bank, expected_chips):
+    assert bank == Bank(expected_chips)
 
 @pytest.mark.parametrize(
     'invalid_input, expected_err_msg',
@@ -73,43 +93,45 @@ def test_bank_equality():
     
     assert bank1 != '15.0'
 
-def _generate_bank_objects():
-    return [
-        Bank(15.0),
-        Bank(1000.0),
-        Bank(34.5),
-        Bank(14.99),
-        Bank(0.0),    
-    ]
-    
-def test_bank_string_display():
-    pass
-
-def test_bank_string_debug_display():
-    pass
+@pytest.mark.parametrize(
+    'bank, expected_string',
+    zip(
+        _generate_test_banks(), 
+        [
+            'Chips: $15.00', 
+            'Chips: $1,000.00', 
+            'Chips: $34.50', 
+            'Chips: $14.99', 
+            'Chips: $0.00', 
+            'Chips: $25.00', 
+            'Chips: $7.50',
+        ],
+    ),
+)
+def test_bank_string_display(bank, expected_string):
+    assert str(bank) == expected_string
 
 @pytest.mark.parametrize(
-    'chips, expected_display',
-    [
-        (15.0, 'Chips: $15.00'),
-        (1000.0, 'Chips: $1,000.00'),
-        (34.5, 'Chips: $34.50'),
-        (14.99, 'Chips: $14.99'),
-        (0.0, 'Chips: $0.00'),
-    ]
+    'bank, expected_string',
+    zip(
+        _generate_test_banks(), 
+        [
+            "Bank(chips='15.0')", 
+            "Bank(chips='1000.0')",
+            "Bank(chips='34.5')", 
+            "Bank(chips='14.99')", 
+            "Bank(chips='0.0')", 
+            "Bank(chips='25.0')", 
+            "Bank(chips='7.5')",
+        ],
+    ),
 )
-def test_bank_chips_to_string(chips, expected_display):
-    bank = Bank(chips)
-    assert str(bank) == expected_display
+def test_bank_string_debug_display(bank, expected_string):
+    assert repr(bank) == expected_string
 
 # ====================
 # Modification Tests.
 # ====================
-
-@pytest.fixture
-def bank() -> Bank:
-    """Provide a `Bank` instance with a moderate balance."""
-    return Bank(225.50)
 
 @pytest.mark.parametrize(
     'add_amount, expected_balance',
@@ -121,7 +143,8 @@ def bank() -> Bank:
 )
 def test_adding_chips_to_bank(bank, add_amount, expected_balance):
     bank.chips += add_amount
-    assert bank.chips == expected_balance
+
+    assert bank == Bank(expected_balance)
 
 @pytest.mark.parametrize(
     'removal_amount, expected_balance',
@@ -133,7 +156,8 @@ def test_adding_chips_to_bank(bank, add_amount, expected_balance):
 )
 def test_removing_chips_from_bank(bank, removal_amount, expected_balance):
     bank.chips -= removal_amount
-    assert bank.chips == expected_balance
+
+    assert bank == Bank(expected_balance)
 
 @pytest.mark.parametrize(
     'set_amount, expected_balance',
@@ -145,7 +169,8 @@ def test_removing_chips_from_bank(bank, removal_amount, expected_balance):
 )
 def test_setting_bank_chips(bank, set_amount, expected_balance):
     bank.chips = set_amount
-    assert bank.chips == expected_balance
+
+    assert bank == Bank(expected_balance)
 
 @pytest.mark.parametrize(
     'invalid_value, expected_err_msg',
@@ -172,34 +197,17 @@ def test_bank_chips_setter_raises_valueerror_on_invalid_value(
     with pytest.raises(ValueError, match=expected_err_msg):
         bank.chips = invalid_value
 
-# ==========================
-# Packing/Unpacking Tests.
-# ==========================
+# ====================================
+# Serialization/Deserialization Tests.
+# ====================================
 
-def _bank_mapping_pairs() -> list[tuple]:
-    """Provide a list of mapped packed and unpacked `Bank` objects."""
-    
-    return [
-        (Bank(0.0), {'chips': 0.0}),
-        (Bank(14.99), {'chips': 14.99}),
-        (Bank(1000.0), {'chips': 1000.0}),
-        (Bank(15.0), {'chips': 15.0}),
-        (Bank(34.5), {'chips': 34.5}),
-    ]
-
-@pytest.mark.parametrize(
-    'expected_bank, data_dict',
-    _bank_mapping_pairs(),
-)
+@pytest.mark.parametrize('expected_bank, data_dict', _bank_mapping_pairs())
 def test_from_dict_creates_object(expected_bank, data_dict):
     test_bank = Bank.from_dict(data_dict)
     
     assert test_bank.chips == expected_bank.chips
 
-@pytest.mark.parametrize(
-    'bank_object, expected_data_dict',
-    _bank_mapping_pairs(),
-)
+@pytest.mark.parametrize('bank_object, expected_data_dict', _bank_mapping_pairs())
 def to_dict_creates_data_dict(bank_object, expected_data_dict):
     data_dict = Bank.to_dict(bank_object)
     

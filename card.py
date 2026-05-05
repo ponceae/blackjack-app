@@ -88,9 +88,20 @@ class Card:
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> Self:
-        """Build a `Card` from a dictionary."""
+        """
+        Create a `Card` instance from a dictionary.
+        
+        Args:
+            data (dict[str, Any]): A dictionary containing `suit` and `rank`.
+        
+        Returns:
+            Card: A new Card instance.
+
+        Raises:
+            KeyError: if `suit` or `rank` is missing.
+        """
         return cls(suit=data['suit'], rank=data['rank'])
     
     def to_dict(self) -> dict[str, Any]:
-        """Pack the `Card` into a dictionary."""
+        """Serialize the `Card` into a dictionary with `suit` and `rank`."""
         return {'suit': self.suit, 'rank': self.rank}

@@ -2,7 +2,7 @@
 Tests for the `card.py` module.
 
 Ensures the `Card` class correctly initializes and validates the suit name, the rank
-value or name, and validates object serialization and deserialization.
+value or name, and validates object packing and unpacking.
 """
 
 __author__ = 'Adrien P.'
@@ -12,6 +12,10 @@ import pytest
 from card import Card
 from constants import CARD_RANKS, CARD_SUITS
 from data.constants import CARD_INVALID_RANK_ERR_MSG, CARD_INVALID_SUIT_ERR_MSG
+
+# ===========
+# Generators.
+# ===========
 
 def _generate_test_cards() -> list[Card]:
     """Provide a list of `Card` objects."""
@@ -133,9 +137,9 @@ def test_card_string_display(card, expected_string):
 def test_card_debug_display(card, expected_string):
     assert repr(card) == expected_string
 
-# ==========================
-# Packing/Unpacking Tests.
-# ==========================
+# ====================================
+# Serialization/Deserialization Tests.
+# ====================================
 
 @pytest.mark.parametrize('expected_card, data_dict', _card_mapping_pairs())
 def test_from_dict_creates_object(expected_card, data_dict):

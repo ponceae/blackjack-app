@@ -96,9 +96,20 @@ class Bank:
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> Self:
-        """Build a `Bank` from a dictionary"""
+        """
+        Create a `Bank` from a dictionary.
+        
+        Args:
+            data (dict[str, Any]): A dictionary containing `chips`.
+
+        Returns:
+            Bank: A new Bank instance.
+
+        Raises:
+            KeyError: If `chips` is missing.
+        """
         return cls(chips=data['chips'])
     
     def to_dict(self) -> dict[str, float]:
-        """Pack the `Bank` into a dictionary."""
+        """Serialize the `Bank` into a dictionary with `chips`."""
         return {'chips': self.chips}

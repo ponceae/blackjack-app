@@ -17,6 +17,10 @@ from data.constants import (
     BANK_NEGATIVE_VALUE_ERR_MSG,
 )
 
+# =====================
+# Initialization Tests.
+# =====================
+
 @pytest.mark.parametrize(
     'test_chips, expected_amount',
     [
@@ -53,6 +57,54 @@ def test_initial_bank_creation(test_chips, expected_amount):
 def test_init_raises_valueerror_on_invalid_input(invalid_input, expected_err_msg):
     with pytest.raises(ValueError, match=expected_err_msg):
         Bank(invalid_input)
+
+# =====================
+# Dunder Method Tests.
+# =====================
+
+def test_bank_equality():
+    bank1 = Bank(15.0)
+    bank2 = Bank(15.0)
+    bank3 = Bank(34.5)
+    
+    assert bank1 == bank2
+    
+    assert bank1 != bank3
+    
+    assert bank1 != '15.0'
+
+def _generate_bank_objects():
+    return [
+        Bank(15.0),
+        Bank(1000.0),
+        Bank(34.5),
+        Bank(14.99),
+        Bank(0.0),    
+    ]
+    
+def test_bank_string_display():
+    pass
+
+def test_bank_string_debug_display():
+    pass
+
+@pytest.mark.parametrize(
+    'chips, expected_display',
+    [
+        (15.0, 'Chips: $15.00'),
+        (1000.0, 'Chips: $1,000.00'),
+        (34.5, 'Chips: $34.50'),
+        (14.99, 'Chips: $14.99'),
+        (0.0, 'Chips: $0.00'),
+    ]
+)
+def test_bank_chips_to_string(chips, expected_display):
+    bank = Bank(chips)
+    assert str(bank) == expected_display
+
+# ====================
+# Modification Tests.
+# ====================
 
 @pytest.fixture
 def bank() -> Bank:
@@ -120,16 +172,35 @@ def test_bank_chips_setter_raises_valueerror_on_invalid_value(
     with pytest.raises(ValueError, match=expected_err_msg):
         bank.chips = invalid_value
 
-@pytest.mark.parametrize(
-    'chips, expected_display',
-    [
-        (15.0, 'Chips: $15.00'),
-        (1000.0, 'Chips: $1,000.00'),
-        (34.5, 'Chips: $34.50'),
-        (14.99, 'Chips: $14.99'),
-        (0.0, 'Chips: $0.00'),
+# ==========================
+# Packing/Unpacking Tests.
+# ==========================
+
+def _bank_mapping_pairs() -> list[tuple]:
+    """Provide a list of mapped packed and unpacked `Bank` objects."""
+    
+    return [
+        (Bank(0.0), {'chips': 0.0}),
+        (Bank(14.99), {'chips': 14.99}),
+        (Bank(1000.0), {'chips': 1000.0}),
+        (Bank(15.0), {'chips': 15.0}),
+        (Bank(34.5), {'chips': 34.5}),
     ]
+
+@pytest.mark.parametrize(
+    'expected_bank, data_dict',
+    _bank_mapping_pairs(),
 )
-def test_bank_chips_to_string(chips, expected_display):
-    bank = Bank(chips)
-    assert bank.to_string() == expected_display
+def test_from_dict_creates_object(expected_bank, data_dict):
+    test_bank = Bank.from_dict(data_dict)
+    
+    assert test_bank.chips == expected_bank.chips
+
+@pytest.mark.parametrize(
+    'bank_object, expected_data_dict',
+    _bank_mapping_pairs(),
+)
+def to_dict_creates_data_dict(bank_object, expected_data_dict):
+    data_dict = Bank.to_dict(bank_object)
+    
+    assert data_dict == expected_data_dict

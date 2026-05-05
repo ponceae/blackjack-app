@@ -47,18 +47,44 @@ class Card:
         else:
             raise ValueError(
                 f'Invalid suit, `suit` must be one of: '
-                f'\'Clubs\', \'Diamonds\', \'Hearts\', \'Spades\'.'
+                f"'Clubs', 'Diamonds', 'Hearts', 'Spades'."
             )
 
-        if isinstance(rank, int) and (2 <= rank <= 11):
+        if isinstance(rank, int) and (2 <= rank <= 10):
             self.rank = rank
         elif isinstance(rank, str) and rank.capitalize() in NAMED_CARD_RANKS:
             self.rank = rank.capitalize()
         else:
             raise ValueError(
                 f'Invalid rank, `rank` must be one of: '
-                f'\'2\' through \'10\', \'Jack\', \'King\', \'Queen\', \'Ace\'.'
+                f"'2' through '10', 'Jack', 'King', 'Queen', 'Ace'."
             )
+    
+    def __eq__(self, other: object) -> bool:
+        """Return `True` if this `Card` equals the other `Card`."""
+        if not isinstance(other, Card):
+            return False
+
+        return (self.suit, self.rank) == (other.suit, other.rank)
+    
+    def __repr__(self) -> str:
+        """e.g., Card(suit='Diamonds', rank='5')."""
+        return f"Card(suit='{self.suit}', rank='{self.rank}')"
+    
+    def __str__(self) -> str:
+        """e.g., ♦5."""
+        return f'{CARD_SUIT_SYMBOLS[self.suit]}{self.rank}'
+    
+    @property
+    def rank_value(self) -> int:
+        """The numeric value of the `Card`. Aces are `11`, face cards are `10`."""
+        if isinstance(self.rank, int):
+            return self.rank
+        
+        if self.rank == ACE:
+            return DEFAULT_ACE_VALUE
+        
+        return FACE_CARD_VALUE
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> Self:
@@ -68,30 +94,3 @@ class Card:
     def to_dict(self) -> dict[str, Any]:
         """Pack the `Card` into a dictionary."""
         return {'suit': self.suit, 'rank': self.rank}
-    
-    def get_rank_value(self) -> int:
-        """
-        Return the rank value of the `Card`. If the rank value is an Ace, return a 
-        value of `11`. If the rank value is a face card, return a value of `10`.
-
-        Returns:
-            int: The rank value.
-        """
-        if isinstance(self.rank, int):
-            return self.rank
-        elif isinstance(self.rank, str):
-            if self.rank != ACE:
-                return FACE_CARD_VALUE
-            else:
-                return DEFAULT_ACE_VALUE
-
-        return 0
-    
-    def to_string(self) -> str:
-        """
-        Return the string representation of the `Card`.
-
-        Returns:
-            str: The string representation (e.g., ♦5).
-        """
-        return f'{CARD_SUIT_SYMBOLS[self.suit]}{str(self.rank)}'

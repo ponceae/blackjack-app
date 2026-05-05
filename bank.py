@@ -40,6 +40,21 @@ class Bank:
 
         self.chips = chips
 
+    def __eq__(self, other: object) -> bool:
+        """Return `True` if this `Bank` equals the other `Bank`."""
+        if not isinstance(other, Bank):
+            return False
+        
+        return self.chips == other.chips
+    
+    def __repr__(self) -> str:
+        """e.g., Bank(chips='34.5')."""
+        return f"Bank(chips='{self.chips}')"
+    
+    def __str__(self) -> str:
+        """e.g., Chips: $34.50."""
+        return f'Chips: ${self.chips:,.2f}'
+
     @staticmethod
     def _to_float(value: Any) -> float:
         """ 
@@ -87,12 +102,3 @@ class Bank:
     def to_dict(self) -> dict[str, float]:
         """Pack the `Bank` into a dictionary."""
         return {'chips': self.chips}
-    
-    def to_string(self) -> str:
-        """
-        Return the string representation of the player's `Bank`.
-
-        Returns:
-            str: The string representation (e.g., Chips: $15.00).
-        """
-        return f'Chips: ${self.chips:,.2f}'

@@ -13,6 +13,22 @@ from card import Card
 from constants import CARD_RANKS, CARD_SUITS
 from data.constants import CARD_INVALID_RANK_ERR_MSG, CARD_INVALID_SUIT_ERR_MSG
 
+def _generate_test_cards() -> list[Card]:
+    """Provide a list of `Card` objects."""
+    return [
+        Card('Spades', 5),
+        Card('Hearts', 2),
+        Card('Clubs', 10),
+        Card('Diamonds', 'Ace'),
+        Card('Spades', 'Jack'),
+        Card('Clubs', 'Queen'),
+        Card('Hearts', 'King'),
+    ]
+
+def _card_mapping_pairs() -> list[tuple]:
+    """Provide pairs of (`Card`, expected data dictionary)."""
+    return [(c, {'suit': c.suit, 'rank': c.rank}) for c in _generate_test_cards()]
+
 # ======================
 # Initialization Tests.
 # ======================
@@ -29,11 +45,11 @@ from data.constants import CARD_INVALID_RANK_ERR_MSG, CARD_INVALID_SUIT_ERR_MSG
     ],
 )
 def test_init_mismatch_conversion(raw_suit, raw_rank, exp_suit, exp_rank):
-    card = Card(raw_suit, raw_rank)
-
-    assert card.suit == exp_suit
-    assert card.rank == exp_rank
-
+    test_card = Card(raw_suit, raw_rank)
+    expected_card = Card(exp_suit, exp_rank)
+    
+    assert test_card == expected_card
+    
 @pytest.mark.parametrize(
     'expected_rank, expected_suit',
     [
@@ -47,7 +63,7 @@ def test_all_cards_have_correct_rank_and_suit(expected_rank, expected_suit):
     assert card.suit == expected_suit
 
 @pytest.mark.parametrize(
-    'invalid_suit, invalid_rank, expected_err_msg',
+    'inv_suit, inv_rank, exp_err_msg',
     [
         (5, 8, CARD_INVALID_SUIT_ERR_MSG),
         ('Spades', '5', CARD_INVALID_RANK_ERR_MSG),
@@ -57,81 +73,79 @@ def test_all_cards_have_correct_rank_and_suit(expected_rank, expected_suit):
     ],
     ids=[
         'invalid_suit_a_int',
-        'invalid_rank_a_string',
+        'invalid_rank_a_str',
         'invalid_rank_b_big',
         'invalid_rank_c_small',
         'invalid_suit_b_err',
     ],
 )
-def test_init_raises_valueerror_on_invalid_input(
-    invalid_suit,
-    invalid_rank,
-    expected_err_msg,
-):
-    with pytest.raises(ValueError, match=expected_err_msg):
-        Card(invalid_suit, invalid_rank)
+def test_init_raises_valueerror_on_invalid_input(inv_suit, inv_rank, exp_err_msg,):
+    with pytest.raises(ValueError, match=exp_err_msg):
+        Card(inv_suit, inv_rank)
 
-# =====================================
-# Serialization/Deserialization Tests.
-# =====================================
+# =====================
+# Dunder Method Tests.
+# =====================
 
-def _card_serialization_mapping() -> list[tuple]:
-    """Provide a list of mapped packed and unpacked `Card` objects."""
-    return [
-        (Card('Spades', 8), {'suit': 'Spades', 'rank': 8}),
-        (Card('Hearts', 'Ace'), {'suit': 'Hearts', 'rank': 'Ace'}),
-        (Card('Diamonds', 'King'), {'suit': 'Diamonds', 'rank': 'King'}),
-        (Card('Clubs', 'Queen'), {'suit': 'Clubs', 'rank': 'Queen'}),
-        (Card('Spades', 'Jack'), {'suit': 'Spades', 'rank': 'Jack'}),
-        (Card('Hearts', 10), {'suit': 'Hearts', 'rank': 10}),
-        (Card('Clubs', 5), {'suit': 'Clubs', 'rank': 5}),
-    ]
+def test_card_equality():
+    card1 = Card('Spades', 5)
+    card2 = Card('Spades', 5)
+    card3 = Card('Diamonds', 6)
+    
+    assert card1 == card2
+    
+    assert card1 != card3
+    
+    assert card1 != '5 of Spades'
 
 @pytest.mark.parametrize(
-    'expected_card, data_dict',
-    _card_serialization_mapping(),
+    'card, expected_rank_value',
+    zip(_generate_test_cards(), [5, 2, 10, 11, 10, 10, 10])
 )
+def test_card_rank_value(card, expected_rank_value):
+    assert card.rank_value == expected_rank_value
+
+@pytest.mark.parametrize(
+    'card, expected_string',
+    zip(
+        _generate_test_cards(), 
+        ['♠5', '♥2', '♣10', '♦Ace', '♠Jack', '♣Queen','♥King'],
+    ),
+)
+def test_card_string_display(card, expected_string):
+    assert str(card) == expected_string
+
+@pytest.mark.parametrize(
+    'card, expected_string',
+    zip(
+        _generate_test_cards(),
+        [
+            "Card(suit='Spades', rank='5')",
+            "Card(suit='Hearts', rank='2')",
+            "Card(suit='Clubs', rank='10')",
+            "Card(suit='Diamonds', rank='Ace')",
+            "Card(suit='Spades', rank='Jack')",
+            "Card(suit='Clubs', rank='Queen')",
+            "Card(suit='Hearts', rank='King')",
+        ], 
+    ),
+)
+def test_card_debug_display(card, expected_string):
+    assert repr(card) == expected_string
+
+# ==========================
+# Packing/Unpacking Tests.
+# ==========================
+
+@pytest.mark.parametrize('expected_card, data_dict', _card_mapping_pairs())
 def test_from_dict_creates_object(expected_card, data_dict):
     test_card = Card.from_dict(data_dict)
     
     assert test_card.suit == expected_card.suit
     assert test_card.rank == expected_card.rank
 
-@pytest.mark.parametrize(
-    'card_object, expected_data_dict',
-    _card_serialization_mapping()
-)
+@pytest.mark.parametrize('card_object, expected_data_dict', _card_mapping_pairs())
 def test_to_dict_creates_data_dict(card_object, expected_data_dict):
-    data = card_object.to_dict()
+    data_dict = card_object.to_dict()
     
-    assert data == expected_data_dict
-
-# =======================
-# Rank and String Tests.
-# =======================
-
-def _generate_cards() -> list[Card]:
-    """Provide a list of `Card` objects."""
-    return [
-        Card('Spades', 5),
-        Card('Hearts', 2),
-        Card('Clubs', 10),
-        Card('Diamonds', 'Ace'),
-        Card('Spades', 'Jack'),
-        Card('Clubs', 'Queen'),
-        Card('Hearts', 'King'),
-    ]
-
-@pytest.mark.parametrize(
-    'card, expected_rank_value',
-    zip(_generate_cards(), [5, 2, 10, 11, 10, 10, 10])
-)
-def test_get_card_rank_value(card, expected_rank_value):
-    assert card.get_rank_value() == expected_rank_value
-
-@pytest.mark.parametrize(
-    'card, expected_string',
-    zip(_generate_cards(), ['♠5', '♥2', '♣10', '♦Ace', '♠Jack', '♣Queen','♥King'])
-)
-def test_card_to_string(card, expected_string):
-    assert card.to_string() == expected_string
+    assert data_dict == expected_data_dict

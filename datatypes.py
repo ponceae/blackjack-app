@@ -122,7 +122,7 @@ class PlayerHand(Hand):
     insurance_wager: float = 0.0
     is_active: bool = False
     
-    def from_dict(cls, data: dict[str, Any])
+    # def from_dict(cls, data: dict[str, Any])
 
 @dataclass
 class Player:

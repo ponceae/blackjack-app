@@ -24,36 +24,32 @@ def can_split(hand: Hand) -> bool:
     """
     return hand.cards[0].rank == hand.cards[1].rank
 
-def compare_initial_hands(table: Table) -> int:
-    """
-    Compare the hands at the start of the round and return the corresponding 
-    outcome flag.
+# def compare_initial_hands(table: Table) -> int:
+#     """
+#     Compare the hands at the start of the round and return the corresponding 
+#     outcome flag.
 
-    Args:
-        table (Table): The table containing the `PlayerHand` and `DealerHand`.
+#     Args:
+#         table (Table): The table containing the `PlayerHand` and `DealerHand`.
 
-    Returns:
-        int: The outcome flag of the round.
-            - `PLAYER_WIN` for a player blackjack.
-            - `DEALER_WIN` for a dealer blackjack. 
-            - `PUSH` for a player and dealer blackjack.
-            - `0` if none of the above conditions occurred.
-    """
-    player_blackjack = is_twenty_one(table.player.hands[0])
-    dealer_blackjack = is_twenty_one(table.dealer)
+#     Returns:
+#         int: The outcome flag of the round.
+#             - `PLAYER_WIN` for a player blackjack.
+#             - `DEALER_WIN` for a dealer blackjack. 
+#             - `PUSH` for a player and dealer blackjack.
+#             - `0` if none of the above conditions occurred.
+#     """
+#     player_blackjack = is_twenty_one(table.player.hands[0])
+#     dealer_blackjack = is_twenty_one(table.dealer)
 
-    if player_blackjack and dealer_blackjack:
-        return PUSH
-    elif player_blackjack and not dealer_blackjack:
-        return PLAYER_WIN
-    elif not player_blackjack and dealer_blackjack:
-        return DEALER_WIN
+#     if player_blackjack and dealer_blackjack:
+#         return PUSH
+#     elif player_blackjack and not dealer_blackjack:
+#         return PLAYER_WIN
+#     elif not player_blackjack and dealer_blackjack:
+#         return DEALER_WIN
 
-    return 0
-
-def is_bust(hand: Hand) -> bool:
-    """Return `True` if the hand's total numeric value is greater than 21."""
-    return hand.value > 21
+#     return 0
 
 def is_split_aces(hand: Hand) -> bool:
     """
@@ -66,10 +62,6 @@ def is_split_aces(hand: Hand) -> bool:
         bool: `True` if the hand has split Aces, `False` otherwise.
     """
     return hand.cards[0].rank == ACE and hand.cards[1].rank == ACE
-
-def is_twenty_one(hand: Hand) -> bool:
-    """Return `True` if the hand's total numeric value equals 21."""
-    return hand.value == 21
 
 def is_valid_wager(wager: float) -> bool:
     """Return `True` if the wager is greater than or equal to the `MIN_WAGER`."""

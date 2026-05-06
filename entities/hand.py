@@ -10,8 +10,8 @@ __author__ = 'Adrien P.'
 
 from typing import Any, Self
 
-from card import Card
-from constants import ACE_ALT_VALUE, DEFAULT_ACE_VALUE
+from . import Card
+from constants import ACE, ACE_ALT_VALUE, DEFAULT_ACE_VALUE
 from dataclasses import dataclass, field
 
 # ==========================
@@ -30,6 +30,10 @@ def _validate_type(field_name: str, value: Any, expected_type: type | tuple) -> 
             f'Expected `{field_name}` to be `{type_names}`, '
             f'got {type(value).__name__}'
         )
+
+# =================
+# Parent Dataclass.
+# =================
 
 @dataclass
 class Hand:
@@ -91,6 +95,24 @@ class Hand:
         return value
     
     @property
+    def is_initial_hand(self) -> bool:
+        return len(self.cards) == 2
+
+    @property
+    def can_split(self) -> bool:
+        return self.is_initial_hand and self.cards[0].rank == self.cards[1].rank
+
+    @property
+    def is_bust(self) -> bool:
+        """Return `True` if the hand's total numeric value is greater than 21."""
+        return self.value > 21
+
+    @property
+    def is_twenty_one(self) -> bool:
+        """Return `True` if the hand's total numeric value equals 21."""
+        return self.value == 21
+
+    @property
     def is_soft(self) -> bool:
         """
         Return `True` if the hand contains an Ace currently valued at 11.
@@ -100,6 +122,15 @@ class Hand:
         """
         return self.hard_value != self.value
     
+    def is_split_aces(self) -> bool:
+        """
+        Return `True` if the hand contains two Aces.
+
+        Returns:
+            bool: `True` if the hand has split Aces, `False` otherwise.
+        """
+        return self.cards[0].rank == ACE and self.cards[1].rank == ACE
+
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> Self:
         """
@@ -118,33 +149,27 @@ class Hand:
             
         Raises:
             TypeError: If `value` is not an int or `cards` is not a list.
-        """
-        instance = cls()
-        
-        raw_cards = data.get('cards', [])
+        """        
+        raw_cards = data['cards']
         _validate_type('cards', raw_cards, list)
         
-        instance.cards = [Card.from_dict(card) for card in raw_cards]
-        
-        return instance
+        return cls(cards=[Card.from_dict(card) for card in raw_cards])
             
     def to_dict(self) -> dict[str, Any]:
         """
         Serialize the current `Hand` state into a dictionary.
         
         Returns:
-            dict[str, Any]: A dictionary containing:
-            - cards (list[dict]): Serialized Card instances
-            - value (int): The optimal Blackjack hand score.
-            - hard_value (int): The hand score with all Aces counted as 1.
-            - is_soft (bool): True if the hand contains a soft Ace.
+            dict[str, Any]: A dictionary containing serialized `Card` instances.
         """
-        return {
-            'cards': [card.to_dict() for card in self.cards],
-            'value': self.value,
-            'hard_value': self.hard_value,
-            'is_soft': self.is_soft,
-        }
+        return {'cards': [card.to_dict() for card in self.cards]}
+
+    def add_card(self, card: Card) -> None:
+        self.cards.append(card)
+
+# ===========
+# Subclasses.
+# ===========
 
 @dataclass
 class DealerHand(Hand):

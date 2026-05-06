@@ -1,7 +1,22 @@
+""" 
+Manages the logic and state of a Blackjack hand.
+
+This module provides a `Hand` dataclass for storing cards, value, and state, along
+with `PlayerHand` `DealerHand` subclasses for specialized game roles. It supports
+automatic value calculation and provides methods for serialization and deserialization.
+"""
+
+__author__ = 'Adrien P.'
+
 from typing import Any, Self
 
 from card import Card
+from constants import ACE_ALT_VALUE, DEFAULT_ACE_VALUE
 from dataclasses import dataclass, field
+
+# ==========================
+# Private Helper Functions.
+# ==========================
 
 def _validate_type(field_name: str, value: Any, expected_type: type | tuple) -> None:
     """Enforce strict type checking during deserialization."""
@@ -18,19 +33,72 @@ def _validate_type(field_name: str, value: Any, expected_type: type | tuple) -> 
 
 @dataclass
 class Hand:
+    """ 
+    A base collection of cards with Blackjack scoring logic.
+    
+    This class serves as the parent for all hand types, providing automatic
+    calculation of soft and hard hand values and manages the card collection.
+    
+    Attributes:
+        cards (list[Card], optional): The cards currently in the hand. Defaults to an 
+            empty list. 
+    """
     cards: list[Card] = field(default_factory=list)    
     
     @property
-    def value(self):
-        pass
+    def value(self) -> int:
+        """
+        Return the optimal numeric vale of the hand.
+
+        Count the score by initially valuing Aces at 11, then contextually 
+        downgrading Ace values to 1 when needed to avoid exceeding 21.
+
+        Returns:
+            int: The highest possible score that is 21 or less.
+        """
+        value, ace_count = 0, 0
+
+        for card in self.cards:
+            if card.rank == 'Ace':	
+                value += DEFAULT_ACE_VALUE 
+                ace_count += 1 
+            else:
+                value += card.rank_value
+
+        while ace_count > 0 and value > 21: 
+            value -= DEFAULT_ACE_VALUE
+            value += ACE_ALT_VALUE 
+            ace_count -= 1
+
+        return value
     
     @property
-    def hard_value(self):
-        pass
+    def hard_value(self) -> int:
+        """
+        Return the total numeric value of the hand, counting all Aces as a 1.
+
+        Returns:
+            int: The final calculated hand value.
+        """
+        value = 0
+
+        for card in self.cards:
+            if card.rank == 'Ace':		
+                value += ACE_ALT_VALUE 
+            else:
+                value += card.rank_value
+
+        return value
     
     @property
-    def is_soft(self):
-        pass
+    def is_soft(self) -> bool:
+        """
+        Return `True` if the hand contains an Ace currently valued at 11.
+
+        Returns:
+            bool: `True` if the hand is soft, `False` otherwise.
+        """
+        return self.hard_value != self.value
     
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> Self:
@@ -42,10 +110,8 @@ class Hand:
         
         Args:
             data (dict[str, Any]): A dictionary containing:
-                - value (int, optional): The current value of the hand. Defaults 
-                    to `0`.
-                - cards (list[dict]): Data used to construct `Card` instances. 
-                    Defaults to an empty list.
+                - cards (list[dict], optional): Data used to construct `Card` 
+                    instances. Defaults to an empty list.
                 
         Returns:
             Self: A new Hand instance.
@@ -63,11 +129,32 @@ class Hand:
         return instance
             
     def to_dict(self) -> dict[str, Any]:
-        """Serialize the `Hand` into a dictionary with `value` and `cards` fields."""
-        return {'value': self.value, 'cards': [card.to_dict() for card in self.cards]}
+        """
+        Serialize the current `Hand` state into a dictionary.
+        
+        Returns:
+            dict[str, Any]: A dictionary containing:
+            - cards (list[dict]): Serialized Card instances
+            - value (int): The optimal Blackjack hand score.
+            - hard_value (int): The hand score with all Aces counted as 1.
+            - is_soft (bool): True if the hand contains a soft Ace.
+        """
+        return {
+            'cards': [card.to_dict() for card in self.cards],
+            'value': self.value,
+            'hard_value': self.hard_value,
+            'is_soft': self.is_soft,
+        }
 
 @dataclass
 class DealerHand(Hand):
+    """ 
+    A specialized hand belonging to the dealer, including its hole card state.
+    
+    Attributes:
+        is_face_up (bool): The state of the dealer's hole card, whether it is face up
+            or not. Defaults to `False`
+    """
     is_face_up: bool = False
     
     @classmethod
@@ -91,10 +178,10 @@ class DealerHand(Hand):
         """
         instance = super().from_dict(data)
         
-        hidden = data.get('is_face_up', True)
-        _validate_type('is_face_up', hidden, bool)
+        face_up = data.get('is_face_up', False)
+        _validate_type('is_face_up', face_up, bool)
         
-        instance.is_face_up = hidden
+        instance.is_face_up = face_up
         
         return instance
 
@@ -111,6 +198,17 @@ class DealerHand(Hand):
 
 @dataclass
 class PlayerHand(Hand):
+    """ 
+    A specialized hand belonging to a player, including the betting state and hand
+    current hand status.
+    
+    Attributes:
+        wager (float, optional): The hand's current wager. Defaults to `0.0`.
+        insurance_wager (float, optional): The hand's current insurance_wager. 
+            Defaults to `0.0`.
+        is_current (bool, optional): Whether this specific hand is currently being 
+            played with respect to split hands. Defaults to `False`.
+    """
     wager: float = 0.0
     insurance_wager: float = 0.0
     is_current: bool = False

@@ -14,9 +14,9 @@ from constants import CARD_RANKS, CARD_SUITS
 from data.constants import CARD_INVALID_RANK_ERR_MSG, CARD_INVALID_SUIT_ERR_MSG
 from entities.card import Card
 
-# ===========
-# Generators.
-# ===========
+# =========================
+# Card and Map Generators.
+# =========================
 
 def _generate_test_cards() -> list[Card]:
     """Provide a list of `Card` objects."""
@@ -140,9 +140,9 @@ def test_card_string_display(card, expected_string):
 def test_card_debug_display(card, expected_string):
     assert repr(card) == expected_string
 
-# ====================================
+# =====================================
 # Serialization/Deserialization Tests.
-# ====================================
+# =====================================
 
 @pytest.mark.parametrize('expected_card, data_dict', _card_mapping_pairs())
 def test_from_dict_creates_card_instance(expected_card, data_dict):
@@ -151,8 +151,8 @@ def test_from_dict_creates_card_instance(expected_card, data_dict):
     assert test_card.suit == expected_card.suit
     assert test_card.rank == expected_card.rank
 
-@pytest.mark.parametrize('card_object, expected_data_dict', _card_mapping_pairs())
-def test_to_dict_creates_correct_data(card_object, expected_data_dict):
-    data_dict = card_object.to_dict()
+@pytest.mark.parametrize('card, expected_data_dict', _card_mapping_pairs())
+def test_to_dict_creates_correct_data(card, expected_data_dict):
+    data_dict = card.to_dict()
     
     assert data_dict == expected_data_dict

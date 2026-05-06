@@ -9,18 +9,19 @@ and unpacking.
 __author__ = 'Adrien P.'
 
 import pytest
+from typing import Any
 
-from entities.bank import Bank
 from constants import MAX_BANK
 from data.constants import (
     BANK_BOUNDS_ERR_MSG, 
     BANK_INVALID_VALUE_ERR_MSG, 
     BANK_NEGATIVE_VALUE_ERR_MSG,
 )
+from entities.bank import Bank
 
-# ========================
-# Fixtures and Generators.
-# ========================
+# ======================================
+# Bank and Map Generators and Fixtures.
+# ======================================
 
 @pytest.fixture
 def bank() -> Bank:
@@ -30,22 +31,22 @@ def bank() -> Bank:
 def _generate_test_banks() -> list[Bank]:
     """Provide a list of `Bank` objects."""
     return [
-        Bank(15.0),
-        Bank(1000.0),
+        Bank(15),
+        Bank(1000),
         Bank(34.5),
         Bank(14.99),
-        Bank(0.0),
+        Bank(0),
         Bank(float('25')),
         Bank(float('7.5')),    
     ]
 
-def _bank_mapping_pairs() -> list[tuple]:
+def _bank_mapping_pairs() -> list[tuple[Bank, dict[str, Any]]]:
     """Generate pairs of `Bank` instances and their expected {`chips`} dicts."""
     return [(bank, {'chips': bank.chips}) for bank in _generate_test_banks()]
 
-# =====================
+# ======================
 # Initialization Tests.
-# =====================
+# ======================
 
 @pytest.mark.parametrize(
     'bank, expected_chips',
@@ -54,7 +55,7 @@ def _bank_mapping_pairs() -> list[tuple]:
         [15.0, 1000.0, 34.5, 14.99, 0.0, 25.0, 7.5],
     ),
 )
-def test_initial_bank_creation(bank, expected_chips):
+def test_init_creates_correct_bank_instance(bank, expected_chips):
     assert bank == Bank(expected_chips)
 
 @pytest.mark.parametrize(
@@ -197,9 +198,9 @@ def test_bank_chips_setter_raises_valueerror_on_invalid_value(
     with pytest.raises(ValueError, match=expected_err_msg):
         bank.chips = invalid_value
 
-# ====================================
+# =====================================
 # Serialization/Deserialization Tests.
-# ====================================
+# =====================================
 
 @pytest.mark.parametrize('expected_bank, data_dict', _bank_mapping_pairs())
 def test_from_dict_creates_object(expected_bank, data_dict):
@@ -207,8 +208,8 @@ def test_from_dict_creates_object(expected_bank, data_dict):
     
     assert test_bank.chips == expected_bank.chips
 
-@pytest.mark.parametrize('bank_object, expected_data_dict', _bank_mapping_pairs())
-def to_dict_creates_data_dict(bank_object, expected_data_dict):
-    data_dict = Bank.to_dict(bank_object)
+@pytest.mark.parametrize('bank, expected_data_dict', _bank_mapping_pairs())
+def to_dict_creates_data_dict(bank, expected_data_dict):
+    data_dict = Bank.to_dict(bank)
     
     assert data_dict == expected_data_dict

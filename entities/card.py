@@ -1,8 +1,9 @@
 """
-Describes and visualizes a single playing card.
+Represents and validates a single playing card.
 
-This module provides the `Card` class, which represents a single playing card from 
-a deck, and determines its numeric value and supports serialization/deserialization.
+This module provides the `Card` class, which serves as the core building block for
+the game deck. It handles rank and suit validation, determines numeric valuation for
+Blackjack scoring, and supports serialization and deserialization. 
 """
 
 __author__ = 'Adrien P.'

@@ -63,35 +63,6 @@ def initial_round_deal(table: Table) -> None:
         else:
             table.dealer.cards.append(card)
 
-def get_hand_value(hand: Hand) -> int:
-    """
-    Return the optimal numeric vale of the hand.
-
-    Count the score by initially valuing Aces at 11, then contextually 
-    downgrading Ace values to 1 when needed to avoid exceeding 21.
-
-    Args:
-        hand (Hand): The hand to calculate.
-
-    Returns:
-        int: The highest possible score that is 21 or less.
-    """
-    value, ace_count = 0, 0
-
-    for card in hand.cards:
-        if card.rank == 'Ace':	
-            value += DEFAULT_ACE_VALUE 
-            ace_count += 1 
-        else:
-            value += card.rank_value
-
-    while ace_count > 0 and value > 21: 
-        value -= DEFAULT_ACE_VALUE
-        value += ACE_ALT_VALUE 
-        ace_count -= 1
-
-    return value
-
 def get_hard_value(hand: Hand) -> int:
     """
     Return the total numeric value of the hand, counting all Aces as a 1.

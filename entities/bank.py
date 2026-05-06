@@ -2,8 +2,8 @@
 Manages the storage of a player's chips. 
 
 This module provides the `Bank` class, which acts as a player's wallet and manages,
-modifies, and stores casino chips based on the player's current game state, as well
-as supports serialization/deserialization.
+modifies, and stores casino chips based on the player's current game state, and 
+supports serialization/deserialization.
 """
 
 __author__ = 'Adrien P'

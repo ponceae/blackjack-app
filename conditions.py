@@ -7,9 +7,9 @@ player bank statuses.
 
 __author__ = 'Adrien P.'
 
-from actions import get_hand_value, get_hard_value
 from constants import ACE, DEALER_WIN, MAX_WAGER, MIN_WAGER, PLAYER_WIN, PUSH
-from datatypes import Hand, Player, PlayerHand, Table
+from datatypes import Player, Table
+from entities.hand import Hand, PlayerHand
 from payout_calculator import get_insurance_cost
 
 def can_split(hand: Hand) -> bool:
@@ -53,19 +53,7 @@ def compare_initial_hands(table: Table) -> int:
 
 def is_bust(hand: Hand) -> bool:
     """Return `True` if the hand's total numeric value is greater than 21."""
-    return get_hand_value(hand) > 21
-
-def is_soft(hand: Hand) -> bool:
-    """
-    Return `True` if the hand contains an Ace currently valued at 11.
-
-    Args:
-        hand (Hand): The hand to check.
-
-    Returns:
-        bool: `True` if the hand is soft, `False` otherwise.
-    """
-    return get_hard_value(hand) != get_hand_value(hand)
+    return hand.value > 21
 
 def is_split_aces(hand: Hand) -> bool:
     """
@@ -81,7 +69,7 @@ def is_split_aces(hand: Hand) -> bool:
 
 def is_twenty_one(hand: Hand) -> bool:
     """Return `True` if the hand's total numeric value equals 21."""
-    return get_hand_value(hand) == 21
+    return hand.value == 21
 
 def is_valid_wager(wager: float) -> bool:
     """Return `True` if the wager is greater than or equal to the `MIN_WAGER`."""

@@ -10,7 +10,7 @@ __author__ = 'Adrien P.'
 
 import pytest
 
-from bank import Bank
+from entities.bank import Bank
 from constants import MAX_BANK
 from data.constants import (
     BANK_BOUNDS_ERR_MSG, 
@@ -40,7 +40,7 @@ def _generate_test_banks() -> list[Bank]:
     ]
 
 def _bank_mapping_pairs() -> list[tuple]:
-    """Provide pairs of (`Bank`, expected data dictionary)."""
+    """Generate pairs of `Bank` instances and their expected {`chips`} dicts."""
     return [(bank, {'chips': bank.chips}) for bank in _generate_test_banks()]
 
 # =====================

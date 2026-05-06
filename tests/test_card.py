@@ -8,10 +8,11 @@ value or name, and validates object packing and unpacking.
 __author__ = 'Adrien P.'
 
 import pytest
+from typing import Any
 
-from card import Card
 from constants import CARD_RANKS, CARD_SUITS
 from data.constants import CARD_INVALID_RANK_ERR_MSG, CARD_INVALID_SUIT_ERR_MSG
+from entities.card import Card
 
 # ===========
 # Generators.
@@ -29,8 +30,10 @@ def _generate_test_cards() -> list[Card]:
         Card('Hearts', 'King'),
     ]
 
-def _card_mapping_pairs() -> list[tuple]:
-    """Provide pairs of (`Card`, expected data dictionary)."""
+def _card_mapping_pairs() -> list[tuple[Card, dict[str, Any]]]:
+    """
+    Generate pairs of `Card` instances and their expected {`suit`, `rank`} dicts.
+    """
     return [(c, {'suit': c.suit, 'rank': c.rank}) for c in _generate_test_cards()]
 
 # ======================
@@ -70,17 +73,17 @@ def test_all_cards_have_correct_rank_and_suit(expected_rank, expected_suit):
     'inv_suit, inv_rank, exp_err_msg',
     [
         (5, 8, CARD_INVALID_SUIT_ERR_MSG),
+        ('Card', 'Ace', CARD_INVALID_SUIT_ERR_MSG),
         ('Spades', '5', CARD_INVALID_RANK_ERR_MSG),
         ('Hearts', 12, CARD_INVALID_RANK_ERR_MSG),
-        ('Diamonds', 1, CARD_INVALID_RANK_ERR_MSG),
-        ('Card', 'Ace', CARD_INVALID_SUIT_ERR_MSG),
+        ('Diamonds', 1, CARD_INVALID_RANK_ERR_MSG),   
     ],
     ids=[
         'invalid_suit_a_int',
+        'invalid_suit_b_err',
         'invalid_rank_a_str',
         'invalid_rank_b_big',
         'invalid_rank_c_small',
-        'invalid_suit_b_err',
     ],
 )
 def test_init_raises_valueerror_on_invalid_input(inv_suit, inv_rank, exp_err_msg,):
@@ -142,14 +145,14 @@ def test_card_debug_display(card, expected_string):
 # ====================================
 
 @pytest.mark.parametrize('expected_card, data_dict', _card_mapping_pairs())
-def test_from_dict_creates_object(expected_card, data_dict):
+def test_from_dict_creates_card_instance(expected_card, data_dict):
     test_card = Card.from_dict(data_dict)
     
     assert test_card.suit == expected_card.suit
     assert test_card.rank == expected_card.rank
 
 @pytest.mark.parametrize('card_object, expected_data_dict', _card_mapping_pairs())
-def test_to_dict_creates_data_dict(card_object, expected_data_dict):
+def test_to_dict_creates_correct_data(card_object, expected_data_dict):
     data_dict = card_object.to_dict()
     
     assert data_dict == expected_data_dict

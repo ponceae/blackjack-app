@@ -7,7 +7,7 @@ Insurance offered.
 __author__ = 'Adrien P.'
 
 import actions
-from bank import Bank
+from entities.bank import Bank
 import conditions
 import constants
 from datatypes import (
@@ -54,7 +54,7 @@ def exe_initial_cond(table: Table) -> bool:
 
         interface.load_timer(constants.SHOW)
 
-        table.dealer.is_hidden = False
+        table.dealer.is_face_up = False
 
         interface.clear_and_print(table) 
 
@@ -183,7 +183,7 @@ def exe_player_control(table: Table) -> None:
     interface.clear_terminal()
      
     for i, hand in enumerate(table.player.hands):
-        table.player.hands[i].is_active = True
+        table.player.hands[i].is_current = True
 
         interface.print_hands(table)
 
@@ -221,7 +221,7 @@ def exe_player_control(table: Table) -> None:
                     continue
 
         finally:
-            table.player.hands[i].is_active = False
+            table.player.hands[i].is_current = False
 
 def _handle_hitting(
     table: Table,
@@ -384,7 +384,7 @@ def exe_dealer_control(table: Table) -> None:
     # Dealer will now show the hidden card
     interface.load_timer(constants.SHOW) 
 
-    table.dealer.is_hidden = False
+    table.dealer.is_face_up = False
     
     interface.clear_and_print(table)
     
@@ -425,7 +425,7 @@ def verify_round_end_cond(table: Table) -> bool:
     
     dealer_bust = conditions.is_bust(table.dealer)
     
-    table.dealer.is_hidden = False
+    table.dealer.is_face_up = False
     
     interface.print_hands(table)
     

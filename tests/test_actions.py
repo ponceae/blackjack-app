@@ -11,8 +11,9 @@ __author__ = 'Adrien P.'
 import pytest
 
 import actions
-from card import Card
-from datatypes import Hand, Player, PlayerHand, Table
+from entities.card import Card
+from datatypes import Player, Table
+from entities.hand import Hand, PlayerHand
 
 def _generate_test_cards() -> list[list[Card]]:
     """Provide a list of testable hands."""
@@ -98,8 +99,8 @@ def test_create_split_hands_created_new_hand(table):
 
     assert len(table.player.hands) == 2
 
-    assert table.player.hands[0].cards[0].to_string() == '♣6'
-    assert table.player.hands[1].cards[0].to_string() == '♥6'
+    assert str(table.player.hands[0].cards[0]) == '♣6'
+    assert str(table.player.hands[1].cards[0]) == '♥6'
 
 def test_hit_hand_added_card_to_hand(table):
     table.player.hands = [PlayerHand(cards=[Card('Clubs', 4), Card('Hearts', 6)])]

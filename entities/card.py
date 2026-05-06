@@ -95,10 +95,10 @@ class Card:
             data (dict[str, Any]): A dictionary containing `suit` and `rank`.
         
         Returns:
-            Card: A new Card instance.
+            Self: A new Card instance.
 
         Raises:
-            KeyError: if `suit` or `rank` is missing.
+            KeyError: If `suit` or `rank` is missing.
         """
         return cls(suit=data['suit'], rank=data['rank'])
     

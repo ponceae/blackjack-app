@@ -7,9 +7,10 @@ calculate hand values and payouts.
 
 __author__ = 'Adrien P.'
 
-from card import Card
+from entities.card import Card
 from constants import ACE_ALT_VALUE, DEFAULT_ACE_VALUE
-from datatypes import DealerHand, Hand, PlayerHand, Table
+from entities.hand import DealerHand, Hand, PlayerHand
+from datatypes import Table
 from deck import create_deck, shuffle_deck
 
 def create_split_hands(table: Table) -> None:
@@ -82,7 +83,7 @@ def get_hand_value(hand: Hand) -> int:
             value += DEFAULT_ACE_VALUE 
             ace_count += 1 
         else:
-            value += card.get_rank_value()
+            value += card.rank_value
 
     while ace_count > 0 and value > 21: 
         value -= DEFAULT_ACE_VALUE
@@ -107,7 +108,7 @@ def get_hard_value(hand: Hand) -> int:
         if card.rank == 'Ace':		
             value += ACE_ALT_VALUE 
         else:
-            value += card.get_rank_value()
+            value += card.rank_value
 
     return value
 

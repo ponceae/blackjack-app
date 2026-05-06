@@ -8,11 +8,12 @@ __author__ = 'Adrien P.'
 
 import pytest
 
-from bank import Bank
-from card import Card
+from entities.bank import Bank
+from entities.card import Card
 import conditions
 import constants
-from datatypes import DealerHand, Hand, Player, PlayerHand, Table
+from datatypes import Player, Table
+from entities.hand import DealerHand, Hand, PlayerHand
 
 @pytest.mark.parametrize(
     'test_cards, expected_bool',

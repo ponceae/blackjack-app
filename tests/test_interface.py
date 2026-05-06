@@ -12,8 +12,8 @@ __author__ = 'Adrien P.'
 import pytest
 import time
 
-from bank import Bank
-from card import Card
+from entities.bank import Bank
+from entities.card import Card
 import constants
 from datatypes import (
     DealerHand,
@@ -207,7 +207,7 @@ def split_hand_table():
                  ),
             ],
         ),
-        dealer=(DealerHand(is_hidden=False)),
+        dealer=(DealerHand(is_face_up=False)),
     )
 
 def test_print_player_hands_dealer_showing_both_cards_soft(capsys, split_hand_table):

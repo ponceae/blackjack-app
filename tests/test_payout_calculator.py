@@ -12,8 +12,9 @@ __author__ = 'Adrien P.'
 
 import pytest
 
-from bank import Bank
-from datatypes import Insurance, Player, PlayerHand
+from entities.bank import Bank
+from entities.hand import PlayerHand
+from datatypes import Insurance, Player
 import payout_calculator
 
 @pytest.mark.parametrize(

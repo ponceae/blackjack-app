@@ -8,7 +8,7 @@ __author__ = 'Adrien P.'
 
 import random
 
-from card import Card
+from entities.card import Card
 from constants import CARD_RANKS, CARD_SUITS
 
 def create_deck() -> list[Card]:

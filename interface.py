@@ -14,7 +14,7 @@ import sys
 import time
 
 from actions import get_hand_value, get_hard_value
-from bank import Bank
+from entities.bank import Bank
 from conditions import (
     is_soft, 
     is_twenty_one, 
@@ -124,10 +124,10 @@ def _print_dealer_hands(table: Table, buffers: Buffers) -> None:
     buffers.dealer.append('Dealer: ')
 
     # Display only the dealer's first card.
-    if table.dealer.is_hidden:
+    if table.dealer.is_face_up:
         buffers.dealer.append(
-            f'{table.dealer.cards[0].get_rank_value()}\n'
-            f'{table.dealer.cards[0].to_string()}\n'
+            f'{table.dealer.cards[0].rank_value}\n'
+            f'{str(table.dealer.cards[0])}\n'
             '?\n'
         )
     # Display both of the dealer's cards.
@@ -138,7 +138,7 @@ def _print_dealer_hands(table: Table, buffers: Buffers) -> None:
         buffers.dealer.append(f'{dealer_hand_value}\n')
 
         for card in table.dealer.cards:
-            buffers.dealer.append(f'{card.to_string()}\n')
+            buffers.dealer.append(f'{str(card)}\n')
 
     if table.player.hands[0].insurance_wager > 0:
         buffers.dealer.append(
@@ -173,16 +173,16 @@ def _print_player_hands(table: Table, buffers: Buffers) -> None:
             f'{_print_wager(table.player.hands[i].wager)}'
         )
 
-        if table.player.hands[i].is_active:
+        if table.player.hands[i].is_current:
             buffers.player.append(' <- Active\n')
         else:
             buffers.player.append('\n')
         for card in hand.cards:
-            buffers.player.append(f'{card.to_string()}\n')
+            buffers.player.append(f'{str(card)}\n')
 
         buffers.player.append('--------------------\n')
 
-    buffers.player.append(table.player.bank.to_string())
+    buffers.player.append(str(table.player.bank))
 
     buffers.main.append(buffers.player)
 
@@ -466,7 +466,7 @@ def _print_min_wager(bank: Bank) -> str:
             table's `MIN_WAGER`.
     """
     return (
-        f'{bank.to_string()}\n'
+        f'{str(bank)}\n'
         f'Minimum Wager is: $' + f'{MIN_WAGER:,.2f}\n'
     )
 

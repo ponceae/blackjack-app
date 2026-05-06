@@ -10,8 +10,8 @@ import pytest
 import time
 
 from actions import create_and_shuffle
-from bank import Bank
-from card import Card
+from entities.bank import Bank
+from entities.card import Card
 import constants
 from datatypes import (
     DealerHand,

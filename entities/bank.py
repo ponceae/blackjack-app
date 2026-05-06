@@ -103,7 +103,7 @@ class Bank:
             data (dict[str, Any]): A dictionary containing `chips`.
 
         Returns:
-            Bank: A new Bank instance.
+            Self: A new Bank instance.
 
         Raises:
             KeyError: If `chips` is missing.

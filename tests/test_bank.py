@@ -29,6 +29,7 @@ def bank() -> Bank:
     return Bank(225.50)
 
 def _generate_bank_test_data() -> list[tuple[Bank, float, str, str]]:
+    """Provide a list of `Bank` test data."""
     return [
         (Bank(15), 15.0, 'Chips: $15.00', "Bank(chips='15.0')"),
         (Bank(1000), 1000.0, 'Chips: $1,000.00', "Bank(chips='1000.0')"),

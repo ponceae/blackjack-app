@@ -19,6 +19,7 @@ from entities.card import Card
 # =========================
 
 def _generate_card_test_data() -> list[tuple[Card, int, str, str]]:
+    """Provide a list of `Card` test data"""
     return [
         (Card('Spades', 5), 5, '♠5', "Card(suit='Spades', rank='5')"),
         (Card('Hearts', 2), 2, '♥2', "Card(suit='Hearts', rank='2')"),

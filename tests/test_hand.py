@@ -3,6 +3,8 @@ Tests for the `hand.py` module.
 """
 
 import pytest
+
+from data.hand_data import generate_test_cards_large
 from entities.card import Card
 from entities.hand import _validate_type, Hand
 
@@ -10,57 +12,7 @@ from entities.hand import _validate_type, Hand
 # Generators.
 # ===========
 
-# [9, 20, 24, 16, 21, 16, 12, 12, 21, 12, 14, 20, 21, 12],
-# [9, 20, 24,  6, 11,  6, 12,  2, 11, 12,  4, 10, 11, 12],
-
-def _generate_test_cards_large() -> list[tuple[list[Card], str, int, int]]:
-    """Provide a list of lists of `Card` objects."""
-    return [
-        (
-            [Card('Clubs', 2), Card('Hearts', 3), Card('Spades', 4)], 
-            'two_pip_cards', 
-            9, 
-            9,
-        ),
-        (
-            [Card('Clubs', 10), Card('Hearts', 'Jack')], 
-            'one_pip_one_face_card', 
-            20, 
-            20
-        ),
-        (
-            [Card('Clubs', 7), Card('Hearts', 8), Card('Spades', 9)],
-            'three_pip_cards',
-            24,
-            24,
-        ),
-        (
-            [Card('Clubs', 'Ace'), Card('Hearts', 5)],
-            'one_ace_one_pip_card',
-            16,
-            6,
-        ),
-        (
-            [Card('Clubs', 'Ace'), Card('Spades', 'King')],
-            'one_ace_one_face_card',
-            
-        ),
-        # 
-        # [Card('Clubs', 'Ace'), Card('Hearts', 2), Card('Spades', 3)],
-        # [Card('Clubs', 2), Card('Hearts', 9), Card('Spades', 'Ace')],
-        # [Card('Clubs', 'Ace'), Card('Hearts', 'Ace')],
-        # [Card('Clubs', 'Ace'), Card('Hearts', 'Ace'), Card('Spades', 9)],
-        # [Card('Clubs', 'Ace'), Card('Hearts', 'Ace'), Card('Spades', 'King')],
-        # [
-        #     Card('Clubs', 'Ace'), 
-        #     Card('Hearts', 'Ace'), 
-        #     Card('Spades', 'Ace'), 
-        #     Card('Diamonds', 'Ace'),
-        # ],
-        # [Card('Clubs', 'Ace'), Card('Hearts', 9)],
-        # [Card('Clubs', 'Ace'), Card('Hearts', 4), Card('Spades', 6)],
-        # [Card('Clubs', 'Ace'), Card('Hearts', 5), Card('Spades', 6)],
-    ]
+def gene
 
 # ==============================
 # Private Helper Function Tests.
@@ -124,9 +76,9 @@ def test_hand_default_factory_creates_empty_list():
     'test_cards, exp_opt_val, exp_hard_val',
     [
         (cards, opt_val, hard_val) 
-        for (cards, _, opt_val, hard_val) in _generate_test_cards_large()
+        for (cards, _, opt_val, hard_val) in generate_test_cards_large()
     ],
-    ids=[tid[1] for tid in _generate_test_cards_large()]
+    ids=[tid[1] for tid in generate_test_cards_large()]
 )
 def test_hand_optimal_and_hard_value(test_cards, exp_opt_val, exp_hard_val):
     hand = Hand(cards=test_cards)
@@ -138,36 +90,36 @@ def test_hand_optimal_and_hard_value(test_cards, exp_opt_val, exp_hard_val):
 # # Hand State Tests.
 # # =================
 
-# @pytest.mark.parametrize(
-#     'test_cards, expected_bool',
-#     zip(_generate_test_cards_small(), [True, True, False, False]),
-#     ids=[
-#         'can_split_a',
-#         'can_split_b',
-#         'cannot_split_a',
-#         'cannot_split_b',  
-#     ],
-# )
-# def test_hand_can_split(test_cards, expected_bool):
-#     hand = Hand(cards=test_cards)
+@pytest.mark.parametrize(
+    'test_cards, expected_bool',
+    zip(_generate_test_cards_small(), [True, True, False, False]),
+    ids=[
+        'can_split_a',
+        'can_split_b',
+        'cannot_split_a',
+        'cannot_split_b',  
+    ],
+)
+def test_hand_can_split(test_cards, expected_bool):
+    hand = Hand(cards=test_cards)
     
-#     assert hand.can_split == expected_bool
+    assert hand.can_split == expected_bool
 
-# @pytest.mark.parametrize(
-#     'test_cards, expected_bool',
-#     zip(_generate_test_cards_small(), [True, True, True, False]),
-#     ids=
-#     [
-#         'is_initial_a',
-#         'is_initial_b',
-#         'is_initial_c',
-#         'not_is_initial_a',
-#     ]
-# )
-# def test_hand_is_initial_hand(test_cards, expected_bool):
-#     hand = Hand(cards=test_cards)
+@pytest.mark.parametrize(
+    'test_cards, expected_bool',
+    zip(_generate_test_cards_small(), [True, True, True, False]),
+    ids=
+    [
+        'is_initial_a',
+        'is_initial_b',
+        'is_initial_c',
+        'not_is_initial_a',
+    ]
+)
+def test_hand_is_initial_hand(test_cards, expected_bool):
+    hand = Hand(cards=test_cards)
     
-#     assert hand.is_initial_hand == expected_bool
+    assert hand.is_initial_hand == expected_bool
 
 # @pytest.mark.parametrize(
 #     'test_cards, expected_bool',

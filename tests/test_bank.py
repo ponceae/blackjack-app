@@ -28,32 +28,31 @@ def bank() -> Bank:
     """Provide a `Bank` instance with a moderate balance."""
     return Bank(225.50)
 
-def _generate_test_banks() -> list[Bank]:
-    """Provide a list of `Bank` objects."""
+def _generate_bank_test_data() -> list[tuple[Bank, float, str, str]]:
     return [
-        Bank(15),
-        Bank(1000),
-        Bank(34.5),
-        Bank(14.99),
-        Bank(0),
-        Bank(float('25')),
-        Bank(float('7.5')),    
+        (Bank(15), 15.0, 'Chips: $15.00', "Bank(chips='15.0')"),
+        (Bank(1000), 1000.0, 'Chips: $1,000.00', "Bank(chips='1000.0')"),
+        (Bank(34.5), 34.5, 'Chips: $34.50', "Bank(chips='34.5')"),
+        (Bank(14.99), 14.99, 'Chips: $14.99', "Bank(chips='14.99')"),
+        (Bank(0), 0, 'Chips: $0.00', "Bank(chips='0.0')"),
+        (Bank(float('25')), 25.0, 'Chips: $25.00', "Bank(chips='25.0')"),
+        (Bank(float('7.5')), 7.5, 'Chips: $7.50', "Bank(chips='7.5')"),    
     ]
 
 def _bank_mapping_pairs() -> list[tuple[Bank, dict[str, Any]]]:
     """Generate pairs of `Bank` instances and their expected {`chips`} dicts."""
-    return [(bank, {'chips': bank.chips}) for bank in _generate_test_banks()]
+    return [
+        (bank, {'chips': bank.chips}) 
+        for (bank, *_) in _generate_bank_test_data()
+    ]
 
-# ======================
-# Initialization Tests.
-# ======================
+# ==========================
+# Bank Initialization Tests.
+# ==========================
 
 @pytest.mark.parametrize(
     'bank, expected_chips',
-    zip(
-        _generate_test_banks(), 
-        [15.0, 1000.0, 34.5, 14.99, 0.0, 25.0, 7.5],
-    ),
+    [(bank, chips) for (bank, chips, *_) in _generate_bank_test_data()], 
 )
 def test_init_creates_correct_bank_instance(bank, expected_chips):
     assert bank == Bank(expected_chips)
@@ -79,9 +78,9 @@ def test_init_raises_valueerror_on_invalid_input(invalid_input, expected_err_msg
     with pytest.raises(ValueError, match=expected_err_msg):
         Bank(invalid_input)
 
-# =====================
-# Dunder Method Tests.
-# =====================
+# =========================
+# Bank Dunder Method Tests.
+# =========================
 
 def test_bank_equality():
     bank1 = Bank(15.0)
@@ -96,43 +95,21 @@ def test_bank_equality():
 
 @pytest.mark.parametrize(
     'bank, expected_string',
-    zip(
-        _generate_test_banks(), 
-        [
-            'Chips: $15.00', 
-            'Chips: $1,000.00', 
-            'Chips: $34.50', 
-            'Chips: $14.99', 
-            'Chips: $0.00', 
-            'Chips: $25.00', 
-            'Chips: $7.50',
-        ],
-    ),
+    [(bank, string) for (bank, _, string, *_) in _generate_bank_test_data()]
 )
 def test_bank_string_display(bank, expected_string):
     assert str(bank) == expected_string
 
 @pytest.mark.parametrize(
     'bank, expected_string',
-    zip(
-        _generate_test_banks(), 
-        [
-            "Bank(chips='15.0')", 
-            "Bank(chips='1000.0')",
-            "Bank(chips='34.5')", 
-            "Bank(chips='14.99')", 
-            "Bank(chips='0.0')", 
-            "Bank(chips='25.0')", 
-            "Bank(chips='7.5')",
-        ],
-    ),
+    [(bank, string) for (bank, *_, string) in _generate_bank_test_data()],
 )
 def test_bank_string_debug_display(bank, expected_string):
     assert repr(bank) == expected_string
 
-# ====================
-# Modification Tests.
-# ====================
+# ========================
+# Bank Modification Tests.
+# ========================
 
 @pytest.mark.parametrize(
     'add_amount, expected_balance',
@@ -198,9 +175,9 @@ def test_bank_chips_setter_raises_valueerror_on_invalid_value(
     with pytest.raises(ValueError, match=expected_err_msg):
         bank.chips = invalid_value
 
-# =====================================
-# Serialization/Deserialization Tests.
-# =====================================
+# =========================================
+# Bank Serialization/Deserialization Tests.
+# =========================================
 
 @pytest.mark.parametrize('expected_bank, data_dict', _bank_mapping_pairs())
 def test_from_dict_creates_object(expected_bank, data_dict):

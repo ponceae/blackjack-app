@@ -12,18 +12,6 @@ from datatypes import Player, Table
 from entities.hand import Hand, PlayerHand
 from payout_calculator import get_insurance_cost
 
-def can_split(hand: Hand) -> bool:
-    """
-    Return `True` if the first two cards in the hand have the same rank.
-
-    Args:
-        hand (Hand): The hand to check.
-
-    Returns:
-        bool: `True` if the hand can be split, `False` otherwise.
-    """
-    return hand.cards[0].rank == hand.cards[1].rank
-
 # def compare_initial_hands(table: Table) -> int:
 #     """
 #     Compare the hands at the start of the round and return the corresponding 
@@ -50,18 +38,6 @@ def can_split(hand: Hand) -> bool:
 #         return DEALER_WIN
 
 #     return 0
-
-def is_split_aces(hand: Hand) -> bool:
-    """
-    Return `True` if the hand contains two Aces.
-
-    Args:
-        hand (Hand): The hand to check.
-
-    Returns:
-        bool: `True` if the hand has split Aces, `False` otherwise.
-    """
-    return hand.cards[0].rank == ACE and hand.cards[1].rank == ACE
 
 def is_valid_wager(wager: float) -> bool:
     """Return `True` if the wager is greater than or equal to the `MIN_WAGER`."""

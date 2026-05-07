@@ -15,95 +15,47 @@ import constants
 from datatypes import Player, Table
 from entities.hand import DealerHand, Hand, PlayerHand
 
-@pytest.mark.parametrize(
-    'test_cards, expected_bool',
-    [
-        ([Card('Clubs', 8), Card('Hearts', 8)], True),
-        ([Card('Spades', 'Ace'), Card('Diamonds', 'Ace')], True),
-        ([Card('Hearts', 'King'), Card('Clubs', 'Queen')], False),
-        ([Card('Hearts', 9), Card('Clubs', 4)], False),
-    ],
-    ids=[
-        'can_split_a',
-        'can_split_b',
-        'cannot_split_a',
-        'cannot_split_b',  
-    ],
-)
-def test_can_split_hand(test_cards, expected_bool):
-    hand = Hand(cards=test_cards)
-    assert conditions.can_split(hand) == expected_bool
+# @pytest.mark.parametrize(
+#     'player_cards, dealer_cards, expected_flag',
+#     [
+#         (
+#             [Card('Clubs', 'Ace'), Card('Hearts', 10)], 
+#             [Card('Spades', 'Ace'), Card('Diamonds', 10)], 
+#             constants.PUSH
+#         ),
+#         (
+#             [Card('Clubs', 'Ace'), Card('Hearts', 10)],
+#             [Card('Spades', 2), Card('Diamonds', 10)],
+#             constants.PLAYER_WIN,
+#         ),
+#         (
+#             [Card('Clubs', 2), Card('Hearts', 10)],
+#             [Card('Spades', 'Ace'), Card('Diamonds', 10)],
+#             constants.DEALER_WIN,
+#         ),
+#         (
+#             [Card('Clubs', 2), Card('Hearts', 10)],
+#             [Card('Spades', 4), Card('Diamonds', 10)],
+#             0,
+#         ),
+#     ],
+#     ids=[
+#         'test_initial_push',
+#         'test_initial_player_win',
+#         'test_initial_dealer_win',
+#         'test_no_initial_outcome',
+#     ],
+# )
+# def test_initial_hands_outcome_flags_match(player_cards, dealer_cards, expected_flag):
+#     table = Table(
+#         player=Player(
+#             username='Test',
+#             hands=[PlayerHand(cards=player_cards)]
+#         ),
+#         dealer=DealerHand(cards=dealer_cards)
+#     )
 
-@pytest.mark.parametrize(
-    'player_cards, dealer_cards, expected_flag',
-    [
-        (
-            [Card('Clubs', 'Ace'), Card('Hearts', 10)], 
-            [Card('Spades', 'Ace'), Card('Diamonds', 10)], 
-            constants.PUSH
-        ),
-        (
-            [Card('Clubs', 'Ace'), Card('Hearts', 10)],
-            [Card('Spades', 2), Card('Diamonds', 10)],
-            constants.PLAYER_WIN,
-        ),
-        (
-            [Card('Clubs', 2), Card('Hearts', 10)],
-            [Card('Spades', 'Ace'), Card('Diamonds', 10)],
-            constants.DEALER_WIN,
-        ),
-        (
-            [Card('Clubs', 2), Card('Hearts', 10)],
-            [Card('Spades', 4), Card('Diamonds', 10)],
-            0,
-        ),
-    ],
-    ids=[
-        'test_initial_push',
-        'test_initial_player_win',
-        'test_initial_dealer_win',
-        'test_no_initial_outcome',
-    ],
-)
-def test_initial_hands_outcome_flags_match(player_cards, dealer_cards, expected_flag):
-    table = Table(
-        player=Player(
-            username='Test',
-            hands=[PlayerHand(cards=player_cards)]
-        ),
-        dealer=DealerHand(cards=dealer_cards)
-    )
-
-    assert conditions.compare_initial_hands(table) == expected_flag
-
-@pytest.mark.parametrize(
-    'test_cards, expected_bool',
-    [
-        ([Card('Clubs', 8), Card('Hearts', 8), Card('Diamonds', 8)], True),
-        ([Card('Spades', 'Ace'), Card('Diamonds', 5)], False),
-        ([Card('Spades', 10), Card('Clubs', 5), Card('Hearts', 10)], True),
-        ([Card('Hearts', 'Ace'), Card('Clubs', 'Ace'), Card('Spades', 10)], False),
-        (
-            [
-                Card('Clubs', 3), 
-                Card('Hearts', 4), 
-                Card('Spades', 7), 
-                Card('Clubs', 4),
-            ], 
-            False
-        ),
-    ],
-    ids=[
-        'three_card_bust_a',
-        'ace_two_card_nonbust',
-        'three_card_bust_b',
-        'two_ace_three_card_nonbust',
-        'four_card_nonbust',
-    ],
-)
-def test_hand_is_bust_or_not(test_cards, expected_bool):
-    hand = Hand(cards=test_cards)
-    assert conditions.is_bust(hand) == expected_bool
+#     assert conditions.compare_initial_hands(table) == expected_flag
 
 @pytest.mark.parametrize(
     'test_cards, expected_bool',
@@ -136,21 +88,6 @@ def test_hand_is_soft_or_not(test_cards, expected_bool):
 def test_hand_has_split_aces_or_not(test_cards, expected_bool):
     hand = Hand(cards=test_cards)
     assert conditions.is_split_aces(hand) == expected_bool
-
-@pytest.mark.parametrize(
-    'test_cards, expected_bool',
-    [
-        ([Card('Clubs', 7), Card('Hearts', 8), Card('Clubs', 6)], True),
-        ([Card('Spades', 5), Card('Diamonds', 10)], False),
-    ],
-    ids=[
-        'hand_is_twenty_one_a',
-        'hand_not_twenty_one_b',
-    ],
-)
-def test_is_hand_twenty_one(test_cards, expected_bool):
-    hand = Hand(cards=test_cards)
-    assert conditions.is_twenty_one(hand) == expected_bool
 
 @pytest.fixture
 def player():

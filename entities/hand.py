@@ -1,9 +1,5 @@
 """ 
 Manages the logic and state of a Blackjack hand.
-
-This module provides a `Hand` dataclass for storing cards, value, and state, along
-with `PlayerHand` `DealerHand` subclasses for specialized game roles. It supports
-automatic value calculation and provides methods for serialization and deserialization.
 """
 
 __author__ = 'Adrien P.'
@@ -38,10 +34,8 @@ def _validate_type(field_name: str, value: Any, expected_type: type | tuple) -> 
 @dataclass
 class Hand:
     """ 
-    A base collection of cards with Blackjack scoring logic.
-    
-    This class serves as the parent for all hand types, providing automatic
-    calculation of soft and hard hand values and manages the card collection.
+    A base collection of cards. Contains properties for automatically scoring hands,
+    and storing the current state of the hand.
     
     Attributes:
         cards (list[Card], optional): The cards currently in the hand. Defaults to an 
@@ -52,7 +46,7 @@ class Hand:
     @property
     def value(self) -> int:
         """
-        Return the optimal numeric vale of the hand.
+        Return the optimal numeric value of the hand.
 
         Count the score by initially valuing Aces at 11, then contextually 
         downgrading Ace values to 1 when needed to avoid exceeding 21.
@@ -95,12 +89,18 @@ class Hand:
         return value
     
     @property
-    def is_initial_hand(self) -> bool:
-        return len(self.cards) == 2
-
-    @property
     def can_split(self) -> bool:
+        """
+        Return `True` if this hand can be split.
+        
+        A hand can be split if the first two cards have equivalent rank.
+        """
         return self.is_initial_hand and self.cards[0].rank == self.cards[1].rank
+    
+    @property
+    def is_initial_hand(self) -> bool:
+        """Return `True` if this hand represents the initial state of the game."""
+        return len(self.cards) == 2
 
     @property
     def is_bust(self) -> bool:
@@ -122,6 +122,7 @@ class Hand:
         """
         return self.hard_value != self.value
     
+    @property
     def is_split_aces(self) -> bool:
         """
         Return `True` if the hand contains two Aces.
@@ -136,8 +137,8 @@ class Hand:
         """
         Create a `Hand` from a dictionary.
 
-        Validates that `value` is an int and `cards` is a list, and constructs
-        Card instances from the provided card data.
+        Validates that `cards` is a list, and constructs Card instances from the 
+        provided card data.
         
         Args:
             data (dict[str, Any]): A dictionary containing:
@@ -148,7 +149,8 @@ class Hand:
             Self: A new Hand instance.
             
         Raises:
-            TypeError: If `value` is not an int or `cards` is not a list.
+            KeyError: If `cards` is missing from the data.
+            TypeError: If `cards` is not a list.
         """        
         raw_cards = data['cards']
         _validate_type('cards', raw_cards, list)
@@ -164,8 +166,9 @@ class Hand:
         """
         return {'cards': [card.to_dict() for card in self.cards]}
 
-    def add_card(self, card: Card) -> None:
-        self.cards.append(card)
+    def add_card(self, other: Card) -> None:
+        """Add the other `Card` to this `Hand`"""
+        self.cards.append(other)
 
 # ===========
 # Subclasses.
@@ -187,8 +190,8 @@ class DealerHand(Hand):
         """
         Create a `DealerHand` from a dictionary.
         
-        Delegates parsing and validation of `value` and `cards` to `Hand.from_dict`.
-        Validates that the `is_face_up` field is a bool. 
+        Delegates parsing and validation `cards` to `Hand.from_dict`. Validates that 
+        the `is_face_up` field is a bool. 
 
         Args:
             data (dict[str, Any]): A dictionary containing base `Hand` fields and:
@@ -199,15 +202,17 @@ class DealerHand(Hand):
             Self: A new DealerHand instance.
         
         Raises:
+            KeyError: If any base `Hand` fields or `is_face_up` is missing from 
+                the data.
             TypeError: If `is_face_up` is not a bool.
         """
         instance = super().from_dict(data)
         
-        face_up = data.get('is_face_up', False)
+        face_up = data['is_face_up']
         _validate_type('is_face_up', face_up, bool)
         
         instance.is_face_up = face_up
-        
+                
         return instance
 
     def to_dict(self) -> dict[str, Any]:
@@ -224,7 +229,7 @@ class DealerHand(Hand):
 @dataclass
 class PlayerHand(Hand):
     """ 
-    A specialized hand belonging to a player, including the betting state and hand
+    A specialized hand belonging to a player, including the betting state and 
     current hand status.
     
     Attributes:
@@ -243,16 +248,16 @@ class PlayerHand(Hand):
         """ 
         Create a `PlayerHand` from a dictionary.
         
-        Delegates parsing and validation of `value` and `cards` to `Hand.from_dict`.
-        Validates that the `wager` and `insurance_wager` fields are numeric,  and 
-        that the `is_current` state is a bool.
+        Delegates parsing and validation `cards` to `Hand.from_dict`. Validates
+        that the `wager` and `insurance_wager` fields are numeric, and that the 
+        `is_current` state is a bool.
         
         Args:
             data (dict[str, Any]): A dictionary containing base `Hand` fields and:
                 - wager (float): The current wager on the hand.
                 - insurance_wager (float): The current insurance wager on the hand.
                 - is_current (bool): Whether this specific hand is currently being
-                    played (relevant during split hands).
+                    played.
         
         Returns:
             Self: A new PlayerHand instance.
@@ -263,13 +268,13 @@ class PlayerHand(Hand):
         """
         instance = super().from_dict(data)
 
-        raw_wager = data.get('wager', 0.0)
+        raw_wager = data['wager']
         _validate_type('wager', raw_wager, (int, float))
-          
-        raw_insurance_wager = data.get('insurance_wager', 0.0)
+         
+        raw_insurance_wager = data['insurance_wager']
         _validate_type('insurance_wager', raw_insurance_wager, (int, float))
                     
-        current = data.get('is_current', False)
+        current = data['is_current']
         _validate_type('is_current', current, bool)
 
         instance.wager = float(raw_wager)

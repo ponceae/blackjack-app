@@ -120,7 +120,7 @@ def generate_dealer_or_player_test_data(hand_type):
     
     return test_data
 
-def _dealerhand_mapping_pairs():
+def dealerhand_mapping_pairs():
     dealerhand_mappings = []
         
     for (_cards, tid, face_up) in generate_dealer_or_player_test_data('dealer'):
@@ -136,7 +136,7 @@ def _dealerhand_mapping_pairs():
     
     return dealerhand_mappings
 
-def _playerhand_mapping_pairs():
+def playerhand_mapping_pairs():
     playerhand_mappings = []
     
     for (

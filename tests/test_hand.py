@@ -6,8 +6,8 @@ import pytest
 from typing import Any
 
 from data.hand_data import (
-    _dealerhand_mapping_pairs,
-    _playerhand_mapping_pairs,
+    dealerhand_mapping_pairs,
+    playerhand_mapping_pairs,
     generate_dealer_or_player_test_data, 
     generate_test_cards_large,
 ) 
@@ -286,10 +286,10 @@ def test_add_card(hand, card, expected_length):
 @pytest.mark.parametrize(
     'expected_hand, data_dict', 
     [
-        (cards, data_dict) for (cards, data_dict, *_) in _dealerhand_mapping_pairs()
+        (cards, data_dict) for (cards, data_dict, *_) in dealerhand_mapping_pairs()
     ],
     ids=[
-        (tids) for (*_, tids) in _dealerhand_mapping_pairs()
+        (tids) for (*_, tids) in dealerhand_mapping_pairs()
     ],
 )
 def test_from_dict_creates_dealerhand_instance(expected_hand, data_dict):
@@ -300,10 +300,10 @@ def test_from_dict_creates_dealerhand_instance(expected_hand, data_dict):
 @pytest.mark.parametrize(
     'hand, expected_data_dict',
     [
-        (cards, data_dict) for (cards, data_dict, *_) in _dealerhand_mapping_pairs()
+        (cards, data_dict) for (cards, data_dict, *_) in dealerhand_mapping_pairs()
     ],
     ids=[
-        (tids) for (*_, tids) in _dealerhand_mapping_pairs()
+        (tids) for (*_, tids) in dealerhand_mapping_pairs()
     ]
 )
 def test_to_dict_creates_correct_dealerhand_data(hand, expected_data_dict):
@@ -318,10 +318,10 @@ def test_to_dict_creates_correct_dealerhand_data(hand, expected_data_dict):
 @pytest.mark.parametrize(
     'expected_hand, data_dict',
     [
-        (cards, data_dict) for (cards, data_dict, *_) in _playerhand_mapping_pairs()
+        (cards, data_dict) for (cards, data_dict, *_) in playerhand_mapping_pairs()
     ],
     ids=[
-        (tid) for (*_, tid) in _playerhand_mapping_pairs()
+        (tid) for (*_, tid) in playerhand_mapping_pairs()
     ]
 )
 def test_from_dict_creates_playerhand_instance(expected_hand, data_dict):
@@ -332,10 +332,10 @@ def test_from_dict_creates_playerhand_instance(expected_hand, data_dict):
 @pytest.mark.parametrize(
     'hand, expected_data_dict',
     [
-        (cards, data_dict) for (cards, data_dict, *_) in _playerhand_mapping_pairs()
+        (cards, data_dict) for (cards, data_dict, *_) in playerhand_mapping_pairs()
     ],
     ids=[
-        (tid) for (*_, tid) in _playerhand_mapping_pairs()
+        (tid) for (*_, tid) in playerhand_mapping_pairs()
     ]
 )
 def test_to_dict_creates_correct_playerhand_instance(hand, expected_data_dict):

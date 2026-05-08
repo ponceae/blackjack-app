@@ -7,9 +7,9 @@ from entities.hand import DealerHand, PlayerHand
 
 def generate_test_cards_large() -> list[tuple[list[Card], str, int, int]]:
     """
-    Provide a list of `Hand` test data.
-    
-    Organized as (Hand.cards, Test ID, Optimal Hand Value, Hard Hand Value).
+    Test data for the `Hand` cards, and the hand's optimal and hard values. Also
+    contains the TID (test ID) for each tuple.
+    (list[Card]: cards, str: tid, int: value, int: hard_value)
     """
     return [
         (
@@ -103,7 +103,11 @@ def generate_test_cards_large() -> list[tuple[list[Card], str, int, int]]:
         ),
     ]
     
-def generate_dealer_or_player_test_data(hand_type):    
+def _generate_dealer_or_player_test_data(hand_type):    
+    """
+    Test data that uses provided cards generator to create a new tuple with 
+    DealerHand or PlayerHand fields.
+    """
     test_data = []   
     for i, (cards, tid, *_) in enumerate(generate_test_cards_large()):
 
@@ -121,9 +125,10 @@ def generate_dealer_or_player_test_data(hand_type):
     return test_data
 
 def dealerhand_mapping_pairs():
+    """Generate pairs of `DealerHand` {'is_face_up'} dicts."""
     dealerhand_mappings = []
         
-    for (_cards, tid, face_up) in generate_dealer_or_player_test_data('dealer'):
+    for (_cards, tid, face_up) in _generate_dealer_or_player_test_data('dealer'):
         
         hand = DealerHand(cards=_cards, is_face_up=face_up)
         
@@ -137,6 +142,9 @@ def dealerhand_mapping_pairs():
     return dealerhand_mappings
 
 def playerhand_mapping_pairs():
+    """
+    Generate pairs of `PlayerHand` {'wager', 'insurance_wager', 'is_current'} dicts.
+    """
     playerhand_mappings = []
     
     for (
@@ -145,7 +153,7 @@ def playerhand_mapping_pairs():
         _wager, 
         _insurance_wager, 
         current
-    ) in generate_dealer_or_player_test_data('player'):
+    ) in _generate_dealer_or_player_test_data('player'):
         
         hand = PlayerHand(
             cards=_cards, 

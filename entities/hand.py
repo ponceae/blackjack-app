@@ -284,6 +284,10 @@ class PlayerHand(Hand):
         return instance
 
     def to_dict(self) -> dict[str, Any]:
+        """
+        Serialize the `PlayerHand` into a dictionary, extending base `Hand` fields with 
+        the `wager`, `insurance_wager`, and `is_current` values and state.
+        """
         data = super().to_dict()
         
         data['wager'] = self.wager

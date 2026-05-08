@@ -29,7 +29,13 @@ def bank() -> Bank:
     return Bank(225.50)
 
 def _generate_bank_test_data() -> list[tuple[Bank, float, str, str]]:
-    """Provide a list of `Bank` test data."""
+    """
+    Test data for the `Bank` chips, and the hand's optimal and hard values. Also
+    contains the TID (test ID) for each tuple.
+    
+    Provide a list of `Bank` test data.
+    
+    """
     return [
         (Bank(15), 15.0, 'Chips: $15.00', "Bank(chips='15.0')"),
         (Bank(1000), 1000.0, 'Chips: $1,000.00', "Bank(chips='1000.0')"),
@@ -108,9 +114,11 @@ def test_bank_string_display(bank, expected_string):
 def test_bank_string_debug_display(bank, expected_string):
     assert repr(bank) == expected_string
 
-# ========================
+# ==================================
 # Bank Modification Tests.
-# ========================
+# ----------------------------------
+# Test the bank.chips setter method.
+# ==================================
 
 @pytest.mark.parametrize(
     'add_amount, expected_balance',

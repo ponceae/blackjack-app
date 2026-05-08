@@ -3,16 +3,58 @@ Tests for the `hand.py` module.
 """
 
 import pytest
+from typing import Any
 
-from data.hand_data import generate_test_cards_large
+from data.hand_data import (
+    _dealerhand_mapping_pairs,
+    _playerhand_mapping_pairs,
+    generate_dealer_or_player_test_data, 
+    generate_test_cards_large,
+) 
 from entities.card import Card
-from entities.hand import _validate_type, Hand
+from entities.hand import _validate_type, DealerHand, Hand, PlayerHand
 
 # ===========
 # Generators.
 # ===========
 
-def gene
+HandTestData_A = list[tuple[list[Card], bool, bool]]
+
+def _generate_test_cards_for_split_and_initial() -> HandTestData_A:
+    """
+    Provide a list of tuples of `Hand` data for `can_split` and `is_initial`.
+    
+    Organized as (Hand.cards, can_split, is_initial).
+    """
+    return [
+        ([Card('Spades', 5), Card('Hearts', 5)], True, True),
+        ([Card('Clubs', 4), Card('Spades', 7), Card('Clubs', 3)], False, False),
+        ([Card('Spades', 6), Card('Diamonds', 6)], True, True),
+        ([Card('Clubs', 3), Card('Spades', 5), Card('Clubs', 2)], False, False),
+        ([Card('Diamonds', 4), Card('Spades', 6)], False, True),
+    ]
+
+HandTestData_B = list[tuple[list[Card], bool, bool]]
+
+def _generate_test_cards_for_bust_and_twenty_one() -> HandTestData_B:
+    """
+    Provide a list of tuples of `Hand` data for testing `is_bust` and `is_twenty_one`.
+    
+    Organized as (Hand.cards, is_bust, is_twenty_one.)
+    """
+    return [
+        ([Card('Clubs', 7), Card('Spades', 5), Card('Hearts', 'King')], True, False),
+        ([Card('Clubs', 'Ace'), Card('Hearts', 10)], False, True),
+        ([Card('Clubs', 10), Card('Hearts', 4), Card('Clubs', 10)], True, False),
+        ([Card('Spades', 'Queen'), Card('Diamonds', 'Ace')], False, True)
+    ]
+
+def _hand_mapping_pairs() -> list[tuple[Hand, dict[str, Any]]]:
+    """Generate pairs of `Hand` instances and their expected {`cards`} dicts."""
+    return [
+        (Hand(cards=_cards), {'cards': [c.to_dict() for c in _cards]})
+        for (_cards, *_) in generate_test_cards_large()
+    ]
 
 # ==============================
 # Private Helper Function Tests.
@@ -86,18 +128,22 @@ def test_hand_optimal_and_hard_value(test_cards, exp_opt_val, exp_hard_val):
     assert hand.value == exp_opt_val
     assert hand.hard_value == exp_hard_val
 
-# # =================
-# # Hand State Tests.
-# # =================
+# =================
+# Hand State Tests.
+# =================
 
 @pytest.mark.parametrize(
     'test_cards, expected_bool',
-    zip(_generate_test_cards_small(), [True, True, False, False]),
+    [
+        (cards, can_split) 
+        for (cards, can_split, *_) in _generate_test_cards_for_split_and_initial()
+    ],
     ids=[
         'can_split_a',
-        'can_split_b',
         'cannot_split_a',
-        'cannot_split_b',  
+        'can_split_b',
+        'cannot_split_b',
+        'cannot_split_c'  
     ],
 )
 def test_hand_can_split(test_cards, expected_bool):
@@ -107,13 +153,16 @@ def test_hand_can_split(test_cards, expected_bool):
 
 @pytest.mark.parametrize(
     'test_cards, expected_bool',
-    zip(_generate_test_cards_small(), [True, True, True, False]),
-    ids=
     [
+        (cards, is_initial) 
+        for (cards, _, is_initial, *_) in _generate_test_cards_for_split_and_initial()
+    ],    
+    ids=[
         'is_initial_a',
-        'is_initial_b',
-        'is_initial_c',
         'not_is_initial_a',
+        'is_initial_b',
+        'not_is_initial_b',
+        'is_initial_c',
     ]
 )
 def test_hand_is_initial_hand(test_cards, expected_bool):
@@ -121,57 +170,175 @@ def test_hand_is_initial_hand(test_cards, expected_bool):
     
     assert hand.is_initial_hand == expected_bool
 
-# @pytest.mark.parametrize(
-#     'test_cards, expected_bool',
-#     zip(
-#         _generate_test_cards_for_bust_and_twenty_one(),
-#         [False, True, False, True, False, False],
-#     ),
-#     ids=[
-#         'not_is_twenty_one_a',
-#         'is_twenty_one_a',
-#         'not_is_twenty_one_b',
-#         'is_twenty_one_b',
-#         'not_is_twenty_one_c',
-#         'not_is_twenty_one_d',
-#     ],
-# )
-# def test_hand_is_twenty_one(test_cards, expected_bool):
-#     hand = Hand(cards=test_cards)
+@pytest.mark.parametrize(
+    'test_cards, expected_bool',
+    [
+        (cards, twenty_one) 
+        for (cards, _, twenty_one, *_) 
+        in _generate_test_cards_for_bust_and_twenty_one()
+    ],
+    ids=[
+        'not_is_twenty_one_a',
+        'is_twenty_one_a',
+        'not_is_twenty_one_b',
+        'is_twenty_one_b',
+    ],
+)
+def test_hand_is_twenty_one(test_cards, expected_bool):
+    hand = Hand(cards=test_cards)
     
-#     assert hand.is_twenty_one == expected_bool
+    assert hand.is_twenty_one == expected_bool
 
-# @pytest.mark.parametrize(
-#     'test_cards, expected_bool',
-#     zip(
-#         _generate_test_cards_for_bust_and_twenty_one(),
-#         [True, False, False, False, False, True],
-#     ),
-#     ids=[
-#         'is_bust_a',
-#         'not_is_bust_a',
-#         'not_is_bust_b',
-#         'not_is_bust_c',
-#         'not_is_bust_d',
-#         'is_bust_b',
-#     ],
-# )
-# def test_hand_is_bust(test_cards, expected_bool):
-#     hand = Hand(cards=test_cards)
+@pytest.mark.parametrize(
+    'test_cards, expected_bool',
+    [
+        (cards, is_bust) 
+        for (cards, is_bust, *_) in _generate_test_cards_for_bust_and_twenty_one()
+    ],
+    ids=[
+        'is_bust_a',
+        'not_is_bust_a',
+        'is_bust_b',
+        'not_is_bust_b',
+    ],
+)
+def test_hand_is_bust(test_cards, expected_bool):
+    hand = Hand(cards=test_cards)
     
-#     assert hand.is_bust == expected_bool
+    assert hand.is_bust == expected_bool
 
-# @pytest.mark.parametrize(
-#     'test_cards, expected_bool',
-#     zip(
-#         _generate_test_cards_large(),
-#         [
-#             False, False, False, True, False, True, False, False, False, False, False, 
-#             True, False, False
-#         ]
-#     )
-# )
-# def test_hand_is_soft(test_cards, expected_bool):
-#     hand = Hand(cards=test_cards)
+@pytest.mark.parametrize(
+    'test_cards, expected_bool',
+    [
+        ([Card('Spades', 'Ace'), Card('Clubs', 4)], True),
+        ([Card('Spades', 'Ace'), Card('Hearts', 9), Card('Diamonds', 6)], False),
+        ([Card('Spades', 10), Card('Hearts', 7)], False),
+        ([Card('Clubs', 'Ace'), Card('Spades', 'Ace'), Card('Diamonds', 4)], True)
+    ],
+    ids=[
+        'is_soft_a',
+        'not_is_soft_b',
+        'not_is_soft_b',
+        'is_soft_b',
+    ],
+)
+def test_hand_is_soft(test_cards, expected_bool):
+    hand = Hand(cards=test_cards)
     
-#     assert hand.is_soft == expected_bool
+    assert hand.is_soft == expected_bool
+
+# =========================================
+# Hand Serialization/Deserialization Tests.
+# =========================================
+
+@pytest.mark.parametrize('expected_hand, data_dict', _hand_mapping_pairs())
+def test_from_dict_creates_hand_instance(expected_hand, data_dict):
+    test_hand = Hand.from_dict(data_dict)
+    
+    assert test_hand.cards == expected_hand.cards
+
+@pytest.mark.parametrize('hand, expected_data_dict', _hand_mapping_pairs())
+def test_to_dict_creates_correct_hand_data(hand, expected_data_dict):
+    data_dict = hand.to_dict()
+
+    assert data_dict == expected_data_dict
+    
+# ======================
+# Additional Hand Tests.
+# ======================
+
+@pytest.mark.parametrize(
+    'hand, card, expected_length,',
+    [
+        (
+            Hand(cards=[Card('Spades', 5), Card('Diamonds', 4)]), 
+            Card('Clubs', 10), 
+            3,
+        ),
+        (
+            Hand(cards=[Card('Spades', 2), Card('Diamonds', 6), Card('Hearts', 3)]), 
+            Card('Clubs', 10), 
+            4,
+        ), 
+        (
+            Hand(cards=[
+                    Card('Spades', 2), 
+                    Card('Diamonds', 6), 
+                    Card('Hearts', 3), 
+                    Card('Hearts', 2),
+                ],
+            ), 
+            Card('Spades', 10),
+            5,
+        )
+    ]
+)
+def test_add_card(hand, card, expected_length):
+    hand.add_card(card)
+    
+    assert len(hand.cards) == expected_length
+    assert hand.cards[-1] == card
+
+# ===============================================
+# DealerHand Serialization/Deserialization Tests.
+# ===============================================
+
+@pytest.mark.parametrize(
+    'expected_hand, data_dict', 
+    [
+        (cards, data_dict) for (cards, data_dict, *_) in _dealerhand_mapping_pairs()
+    ],
+    ids=[
+        (tids) for (*_, tids) in _dealerhand_mapping_pairs()
+    ],
+)
+def test_from_dict_creates_dealerhand_instance(expected_hand, data_dict):
+    test_hand = DealerHand.from_dict(data_dict)
+    
+    assert test_hand.cards == expected_hand.cards
+
+@pytest.mark.parametrize(
+    'hand, expected_data_dict',
+    [
+        (cards, data_dict) for (cards, data_dict, *_) in _dealerhand_mapping_pairs()
+    ],
+    ids=[
+        (tids) for (*_, tids) in _dealerhand_mapping_pairs()
+    ]
+)
+def test_to_dict_creates_correct_dealerhand_data(hand, expected_data_dict):
+    data_dict = hand.to_dict()
+
+    assert data_dict == expected_data_dict
+
+# ===============================================
+# PlayerHand Serialization/Deserialization Tests.
+# ===============================================
+
+@pytest.mark.parametrize(
+    'expected_hand, data_dict',
+    [
+        (cards, data_dict) for (cards, data_dict, *_) in _playerhand_mapping_pairs()
+    ],
+    ids=[
+        (tid) for (*_, tid) in _playerhand_mapping_pairs()
+    ]
+)
+def test_from_dict_creates_playerhand_instance(expected_hand, data_dict):
+    test_hand = PlayerHand.from_dict(data_dict)
+    
+    assert test_hand.cards == expected_hand.cards
+
+@pytest.mark.parametrize(
+    'hand, expected_data_dict',
+    [
+        (cards, data_dict) for (cards, data_dict, *_) in _playerhand_mapping_pairs()
+    ],
+    ids=[
+        (tid) for (*_, tid) in _playerhand_mapping_pairs()
+    ]
+)
+def test_to_dict_creates_correct_playerhand_instance(hand, expected_data_dict):
+    data_dict = hand.to_dict()
+
+    assert data_dict == expected_data_dict

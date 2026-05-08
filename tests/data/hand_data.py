@@ -3,9 +3,14 @@ Generator functions for the `test_hand.py` module.
 """
 
 from entities.card import Card
+from entities.hand import DealerHand, PlayerHand
 
 def generate_test_cards_large() -> list[tuple[list[Card], str, int, int]]:
-    """Provide a list of `Hand` test data."""
+    """
+    Provide a list of `Hand` test data.
+    
+    Organized as (Hand.cards, Test ID, Optimal Hand Value, Hard Hand Value).
+    """
     return [
         (
             [Card('Clubs', 2), Card('Hearts', 3), Card('Spades', 4)], 
@@ -97,3 +102,65 @@ def generate_test_cards_large() -> list[tuple[list[Card], str, int, int]]:
             12
         ),
     ]
+    
+def generate_dealer_or_player_test_data(hand_type):    
+    test_data = []   
+    for i, (cards, tid, *_) in enumerate(generate_test_cards_large()):
+
+        test_bool = (i % 2 == 1)
+        
+        test_float = (10 * i) / 2
+        
+        if hand_type == 'dealer':
+            test_data.append((cards, tid, test_bool))
+        
+        
+        elif hand_type == 'player':
+            test_data.append((cards, tid, test_float, test_float, test_bool))
+    
+    return test_data
+
+def _dealerhand_mapping_pairs():
+    dealerhand_mappings = []
+        
+    for (_cards, tid, face_up) in generate_dealer_or_player_test_data('dealer'):
+        
+        hand = DealerHand(cards=_cards, is_face_up=face_up)
+        
+        data = {
+            'cards': [c.to_dict() for c in _cards],
+            'is_face_up': face_up
+        }
+        
+        dealerhand_mappings.append((hand, data, tid))
+    
+    return dealerhand_mappings
+
+def _playerhand_mapping_pairs():
+    playerhand_mappings = []
+    
+    for (
+        _cards, 
+        tid, 
+        _wager, 
+        _insurance_wager, 
+        current
+    ) in generate_dealer_or_player_test_data('player'):
+        
+        hand = PlayerHand(
+            cards=_cards, 
+            wager=_wager, 
+            insurance_wager=_insurance_wager, 
+            is_current=current
+        )
+        
+        data = {
+            'cards': [c.to_dict() for c in _cards],
+            'wager': _wager,
+            'insurance_wager': _insurance_wager,
+            'is_current': current,
+        }
+
+        playerhand_mappings.append((hand, data, tid))
+
+    return playerhand_mappings

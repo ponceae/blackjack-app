@@ -9,23 +9,11 @@ from typing import Any, Self
 from . import Card
 from constants import ACE, ACE_ALT_VALUE, DEFAULT_ACE_VALUE
 from dataclasses import dataclass, field
+from utils import validation
 
 # ==========================
 # Private Helper Functions.
 # ==========================
-
-def _validate_type(field_name: str, value: Any, expected_type: type | tuple) -> None:
-    """Enforce strict type checking during deserialization."""
-    if not isinstance(value, expected_type):
-        if isinstance(expected_type, tuple):
-            type_names = ' or '.join(t.__name__ for t in expected_type)
-        else:
-            type_names = expected_type.__name__
-            
-        raise TypeError(
-            f'Expected `{field_name}` to be `{type_names}`, '
-            f'got {type(value).__name__}'
-        )
 
 # =================
 # Parent Dataclass.
@@ -153,7 +141,7 @@ class Hand:
             TypeError: If `cards` is not a list.
         """        
         raw_cards = data['cards']
-        _validate_type('cards', raw_cards, list)
+        validation.validate_type('cards', raw_cards, list)
         
         return cls(cards=[Card.from_dict(card) for card in raw_cards])
             
@@ -209,7 +197,7 @@ class DealerHand(Hand):
         instance = super().from_dict(data)
         
         face_up = data['is_face_up']
-        _validate_type('is_face_up', face_up, bool)
+        validation.validate_type('is_face_up', face_up, bool)
         
         instance.is_face_up = face_up
                 
@@ -269,13 +257,13 @@ class PlayerHand(Hand):
         instance = super().from_dict(data)
 
         raw_wager = data['wager']
-        _validate_type('wager', raw_wager, (int, float))
+        validation.validate_type('wager', raw_wager, (int, float))
          
         raw_insurance_wager = data['insurance_wager']
-        _validate_type('insurance_wager', raw_insurance_wager, (int, float))
+        validation.validate_type('insurance_wager', raw_insurance_wager, (int, float))
                     
         current = data['is_current']
-        _validate_type('is_current', current, bool)
+        validation.validate_type('is_current', current, bool)
 
         instance.wager = float(raw_wager)
         instance.insurance_wager = float(raw_insurance_wager)

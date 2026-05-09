@@ -11,7 +11,8 @@ from data.hand_data import (
     generate_test_cards_large,
 ) 
 from entities.card import Card
-from entities.hand import _validate_type, DealerHand, Hand, PlayerHand
+from entities.hand import DealerHand, Hand, PlayerHand
+from utils import validation 
 
 # ======================================
 # Generators For Parametrized Test Data.
@@ -96,7 +97,7 @@ def _hand_mapping_pairs() -> list[tuple[Hand, dict[str, Any]]]:
 )
 def test_validate_type_shows_correct_err_msg(name, test_value, exp_type, exp_err_msg):
     with pytest.raises(TypeError, match=exp_err_msg):
-        _validate_type(name, test_value, exp_type)
+        validation.validate_type(name, test_value, exp_type)
 
 # ==========================
 # Hand Initialization Tests.

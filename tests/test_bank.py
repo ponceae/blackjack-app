@@ -32,9 +32,7 @@ def _generate_bank_test_data() -> list[tuple[Bank, float, str, str]]:
     """
     Test data for the `Bank` chips, and the hand's optimal and hard values. Also
     contains the TID (test ID) for each tuple.
-    
-    Provide a list of `Bank` test data.
-    
+    (Bank(), str(), repr())
     """
     return [
         (Bank(15), 15.0, 'Chips: $15.00', "Bank(chips='15.0')"),
@@ -118,6 +116,7 @@ def test_bank_string_debug_display(bank, expected_string):
 # Bank Modification Tests.
 # ----------------------------------
 # Test the bank.chips setter method.
+# (addition, removal, & setting).
 # ==================================
 
 @pytest.mark.parametrize(

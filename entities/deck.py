@@ -1,8 +1,10 @@
 import random
+from typing import Any, Self
 
 from . import Card
-from dataclasses import dataclass, field
 from constants import CARD_RANKS, CARD_SUITS
+from dataclasses import dataclass, field
+from utils import validation
 
 def create_deck() -> list[Card]:
     """Create and return a list containing 52 `Card` objects."""
@@ -12,20 +14,30 @@ def create_deck() -> list[Card]:
 class Deck:
     cards: list[Card] = field(default_factory=create_deck)    
     
-    @staticmethod 
-    def shuffle_deck(deck: list[Card]) -> list[Card]:
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> Self:
         """
-        Shuffle and return the given list of `Card` objects.
-        
-        Args:
-            deck (list[Card]): The provided list to shuffle
-        
-        Returns:
-            list[Card]: The shuffled list of Card objects.
+        Create a `Deck` from a dictionary.
         """
-        for i in range(len(deck) - 1, 0, -1):
-            j = random.randint(0, i)
-            
-            deck[i], deck[j] = deck[j], deck[i]
+        pass
 
-        return deck
+    def to_dict(self):
+        pass
+
+    def shuffle(self) -> None:
+        """
+        Shuffle the given list of `Card` objects.
+        """
+        random.shuffle(self.cards)
+    
+    def draw_card(self) -> Card:
+        """Draw and return a `Card` from the deck, resetting the deck if empty."""
+        if not self.cards:
+            self.reset()
+
+        return self.cards.pop()
+
+    def reset(self) -> None:
+        """Create and shuffle a new 52 card deck."""
+        self.cards = create_deck()
+        self.shuffle()

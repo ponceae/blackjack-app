@@ -353,7 +353,7 @@ def test_add_chips_to_player_bank(mock_inputs, base_table):
 
     interface._add_chips(base_table)
 
-    assert base_table.player.bank.chips == 45.0
+    assert base_table.player.bank.balance == 45.0
 
 def test_add_chips_deny_and_program_exit(mock_inputs, base_table):
     mock_inputs(['n', '10', '35'])

@@ -70,7 +70,7 @@ def is_valid_player_wager(player: Player, wager: float) -> bool:
     if not is_valid_wager(wager):
         return False
 
-    return is_valid_wager(player.bank.chips)
+    return is_valid_wager(player.bank.balance)
 
 def is_valid_chip_bounds(chips: float) -> bool:
     """
@@ -95,7 +95,7 @@ def is_valid_doubled_wager(player: Player, hand: PlayerHand) -> bool:
     Returns:
         bool: `True` if the player can afford it, `False` otherwise.
     """
-    return player.bank.chips >= hand.wager
+    return player.bank.balance >= hand.wager
 
 def is_valid_insurance_wager(player: Player, hand: PlayerHand) -> bool: 
     """
@@ -108,4 +108,4 @@ def is_valid_insurance_wager(player: Player, hand: PlayerHand) -> bool:
     Returns:
         bool: `True` if the player can afford it, `False` otherwise.
     """
-    return get_insurance_cost(hand) <= player.bank.chips
+    return get_insurance_cost(hand) <= player.bank.balance

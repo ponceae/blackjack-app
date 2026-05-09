@@ -1,18 +1,42 @@
 """
 Tests for the `deck.py` module.
 
-Validates game deck initialization and modification.
+Validates game deck initialization and modification, and ensures serialization
+and deserialization creates valid data.
 """
 
 __author__ = 'Adrien P.'
 
 import pytest
+from typing import Any
 
 from entities.deck import  Deck
 
 @pytest.fixture
-def deck():
+def deck() -> Deck:
     return Deck()
+
+@pytest.fixture
+def deck_map_pair(deck) -> tuple[Deck, dict[str, Any]]:
+    return (deck, {'cards': [c.to_dict() for c in deck.cards]})
+
+# =========================================
+# Deck Serialization/Deserialization Tests.
+# =========================================
+
+def test_from_dict_creates_deck_instances(deck_map_pair):
+    test_deck = Deck.from_dict(deck_map_pair[1])
+
+    assert test_deck.cards == deck_map_pair[0].cards
+
+def test_to_dict_creates_correct_deck_data(deck_map_pair):
+    data_dict = deck_map_pair[0].to_dict()
+
+    assert data_dict == deck_map_pair[1]
+
+# ========================================
+# Deck Initialization and Shuffling Tests.
+# ========================================
 
 def test_create_deck_has_52_cards(deck):   
     assert len(deck.cards) == 52
@@ -21,6 +45,12 @@ def test_shuffle_deck_is_same_deck(deck):
     deck.shuffle()
 
     assert len(deck.cards) == 52
+
+# =======================================
+# Deck Instance Methods.
+# ---------------------------------------
+# Tests deck.reset() and deck.draw_card()
+# =======================================
 
 def test_reset_is_new_deck(deck):
     deck.draw_card()

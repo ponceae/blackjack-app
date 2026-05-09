@@ -104,7 +104,7 @@ def _handle_insurance(insurance: Insurance, table: Table) -> None:
                 insurance.active = True
 
                 player_hand.insurance_wager = insurance.cost
-                table.player.bank.chips -= insurance.cost
+                table.player.bank.balance -= insurance.cost
 
                 interface.clear_and_print(table)
             else:
@@ -134,12 +134,12 @@ def _handle_outcomes(outcome: Outcome, insurance: Insurance, table: Table) -> No
     # Return initial wager to the player.
     elif outcome.flag == constants.PUSH:
         outcome.payout = payout_calculator.push_payout(player_hand)
-        table.player.bank.chips += outcome.payout
+        table.player.bank.balance += outcome.payout
         # Even money payout.
         _insurance_helper(insurance, table)
     elif outcome.flag == constants.PLAYER_WIN:
         outcome.payout = payout_calculator.blackjack_payout(player_hand)
-        table.player.bank.chips += outcome.payout
+        table.player.bank.balance += outcome.payout
 
 def _insurance_helper(insurance: Insurance, table: Table) -> None:
     """
@@ -312,7 +312,7 @@ def _handle_double_down(table: Table, i: int, split: SplitHands) -> PlayerAction
             - 1: `NEXT_HAND`
             - 2: `END_TURN`
     """
-    table.player.bank.chips -= table.player.hands[i].wager
+    table.player.bank.balance -= table.player.hands[i].wager
 
     table.player.hands[i].wager += table.player.hands[i].wager
 
@@ -355,7 +355,7 @@ def _handle_split(table: Table, split: SplitHands) -> None:
         
         actions.create_split_hands(table)
 
-        table.player.bank.chips -= table.player.hands[0].wager
+        table.player.bank.balance -= table.player.hands[0].wager
         table.player.hands[1].wager = table.player.hands[0].wager
 
         if split_aces:
@@ -437,7 +437,7 @@ def verify_round_end_cond(table: Table) -> bool:
             # Check next hand if applicable or exit on a bust.
             continue 
         elif not player_bust and dealer_bust:
-            table.player.bank.chips += payout_calculator.standard_payout(hand)
+            table.player.bank.balance += payout_calculator.standard_payout(hand)
             
             tmp_buffer.append(interface.get_round_outcome_msg(i, constants.WIN))
             tmp_buffer.append(interface.get_round_outcome_payout_msg(hand))
@@ -447,9 +447,9 @@ def verify_round_end_cond(table: Table) -> bool:
             tmp_buffer.append(msg)
             
             if outcome.flag == constants.PUSH:
-                table.player.bank.chips += payout_calculator.push_payout(hand)
+                table.player.bank.balance += payout_calculator.push_payout(hand)
             elif outcome.flag == constants.PLAYER_WIN:
-                table.player.bank.chips += payout_calculator.standard_payout(hand)
+                table.player.bank.balance += payout_calculator.standard_payout(hand)
     
     interface.clear_and_print(table)
     
@@ -473,7 +473,7 @@ def _get_player_wager(table: Table) -> float:
 
     interface.clear_terminal()
 
-    table.player.bank.chips -= wager 
+    table.player.bank.balance -= wager 
 
     return wager
 

@@ -242,7 +242,7 @@ def _add_chips(table: Table) -> None:
                 chips = float(input('Enter the amount of chips to add:\n>'))
 
                 if is_valid_chip_bounds(chips):
-                    table.player.bank.chips += chips
+                    table.player.bank.balance += chips
                     break
 
                 print(
@@ -339,7 +339,7 @@ def wager_prompt(table: Table) -> float:
 
     while True:
         try:
-            if not is_valid_wager(table.player.bank.chips):
+            if not is_valid_wager(table.player.bank.balance):
                 # Prompt the user to add more chips
                 _wager_prompt_helper(table) 
 

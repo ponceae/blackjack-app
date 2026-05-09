@@ -4,10 +4,10 @@ Global constants for the testing modules, such as error message displays.
 
 __author__ = 'Adrien P.'
 
-from constants import MAX_BANK
+from constants import MAX_STARTING_CAP
 
 BANK_BOUNDS_ERR_MSG = (
-    f'Invalid value, `chips` must be a number between 0 and {MAX_BANK:,.2f}'
+    f'Invalid value, `balance` must be a number between 0 and {MAX_STARTING_CAP:,.2f}'
 )
 BANK_INVALID_VALUE_ERR_MSG = 'Invalid value, `value` must be a number.'
 BANK_NEGATIVE_VALUE_ERR_MSG = 'Invalid value, `value` is less than 0.'

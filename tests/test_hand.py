@@ -1,5 +1,9 @@
 """ 
 Tests for the `hand.py` module.
+
+Validates Hand states, properties, and that the Hand subclasses, DealerHand and 
+PlayerHand, correctly inherit Hand fields and that serialization and deserialization
+creates correct data.
 """
 
 import pytest

@@ -97,7 +97,7 @@ def test_handle_insurance_on_init_deal_not_broke_bank(
     assert insurance.active == active_test
 
     assert init_table.player.hands[0].insurance_wager == expected_cost
-    assert init_table.player.bank.chips == expected_chips
+    assert init_table.player.bank.balance == expected_chips
 
 def test_insurance_helper_on_init_deal(
     mock_inputs,
@@ -277,7 +277,7 @@ def test_handle_split_hands_unhappy_path(
 
     game._handle_split(full_table, split_status)
 
-    assert full_table.player.bank.chips == chips
+    assert full_table.player.bank.balance == chips
 
     assert full_table.player.hands[0].cards[0].to_string() == '♥5'
     assert full_table.player.hands[0].cards[1].to_string() == '♣5'

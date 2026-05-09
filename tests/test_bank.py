@@ -11,7 +11,7 @@ __author__ = 'Adrien P.'
 import pytest
 from typing import Any
 
-from constants import MAX_BANK
+from constants import MAX_STARTING_CAP
 from data.constants import (
     BANK_BOUNDS_ERR_MSG, 
     BANK_INVALID_VALUE_ERR_MSG, 
@@ -30,24 +30,24 @@ def bank() -> Bank:
 
 def _generate_bank_test_data() -> list[tuple[Bank, float, str, str]]:
     """
-    Test data for the `Bank` chips, and the hand's optimal and hard values. Also
+    Test data for the `Bank` balance, and the hand's optimal and hard values. Also
     contains the TID (test ID) for each tuple.
     (Bank(), str(), repr())
     """
     return [
-        (Bank(15), 15.0, 'Chips: $15.00', "Bank(chips='15.0')"),
-        (Bank(1000), 1000.0, 'Chips: $1,000.00', "Bank(chips='1000.0')"),
-        (Bank(34.5), 34.5, 'Chips: $34.50', "Bank(chips='34.5')"),
-        (Bank(14.99), 14.99, 'Chips: $14.99', "Bank(chips='14.99')"),
-        (Bank(0), 0, 'Chips: $0.00', "Bank(chips='0.0')"),
-        (Bank(float('25')), 25.0, 'Chips: $25.00', "Bank(chips='25.0')"),
-        (Bank(float('7.5')), 7.5, 'Chips: $7.50', "Bank(chips='7.5')"),    
+        (Bank(15), 15.0, 'Balance: $15.00', "Bank(balance='15.0')"),
+        (Bank(1000), 1000.0, 'Balance: $1,000.00', "Bank(balance='1000.0')"),
+        (Bank(34.5), 34.5, 'Balance: $34.50', "Bank(balance='34.5')"),
+        (Bank(14.99), 14.99, 'Balance: $14.99', "Bank(balance='14.99')"),
+        (Bank(0), 0, 'Balance: $0.00', "Bank(balance='0.0')"),
+        (Bank(float('25')), 25.0, 'Balance: $25.00', "Bank(balance='25.0')"),
+        (Bank(float('7.5')), 7.5, 'Balance: $7.50', "Bank(balance='7.5')"),    
     ]
 
 def _bank_mapping_pairs() -> list[tuple[Bank, dict[str, Any]]]:
-    """Generate pairs of `Bank` instances and their expected {`chips`} dicts."""
+    """Generate pairs of `Bank` instances and their expected {`balance`} dicts."""
     return [
-        (bank, {'chips': bank.chips}) 
+        (bank, {'balance': bank.balance}) 
         for (bank, *_) in _generate_bank_test_data()
     ]
 
@@ -56,16 +56,16 @@ def _bank_mapping_pairs() -> list[tuple[Bank, dict[str, Any]]]:
 # ==========================
 
 @pytest.mark.parametrize(
-    'bank, expected_chips',
-    [(bank, chips) for (bank, chips, *_) in _generate_bank_test_data()], 
+    'bank, expected_balance',
+    [(bank, balance) for (bank, balance, *_) in _generate_bank_test_data()], 
 )
-def test_init_creates_correct_bank_instance(bank, expected_chips):
-    assert bank == Bank(expected_chips)
+def test_init_creates_correct_bank_instance(bank, expected_balance):
+    assert bank == Bank(expected_balance)
 
 @pytest.mark.parametrize(
     'invalid_input, expected_err_msg',
     [
-        (MAX_BANK + 0.01, BANK_BOUNDS_ERR_MSG,),
+        (MAX_STARTING_CAP + 0.01, BANK_BOUNDS_ERR_MSG,),
         (-3, BANK_BOUNDS_ERR_MSG),
         (-2.56, BANK_BOUNDS_ERR_MSG),
         ('4a', BANK_INVALID_VALUE_ERR_MSG),
@@ -128,7 +128,7 @@ def test_bank_string_debug_display(bank, expected_string):
     ]
 )
 def test_adding_chips_to_bank(bank, add_amount, expected_balance):
-    bank.chips += add_amount
+    bank.balance += add_amount
 
     assert bank == Bank(expected_balance)
 
@@ -141,7 +141,7 @@ def test_adding_chips_to_bank(bank, add_amount, expected_balance):
     ]
 )
 def test_removing_chips_from_bank(bank, removal_amount, expected_balance):
-    bank.chips -= removal_amount
+    bank.balance -= removal_amount
 
     assert bank == Bank(expected_balance)
 
@@ -154,7 +154,7 @@ def test_removing_chips_from_bank(bank, removal_amount, expected_balance):
     ]
 )
 def test_setting_bank_chips(bank, set_amount, expected_balance):
-    bank.chips = set_amount
+    bank.balance = set_amount
 
     assert bank == Bank(expected_balance)
 
@@ -181,7 +181,7 @@ def test_bank_chips_setter_raises_valueerror_on_invalid_value(
         expected_err_msg
 ):
     with pytest.raises(ValueError, match=expected_err_msg):
-        bank.chips = invalid_value
+        bank.balance = invalid_value
 
 # =========================================
 # Bank Serialization/Deserialization Tests.
@@ -191,7 +191,7 @@ def test_bank_chips_setter_raises_valueerror_on_invalid_value(
 def test_from_dict_creates_object(expected_bank, data_dict):
     test_bank = Bank.from_dict(data_dict)
     
-    assert test_bank.chips == expected_bank.chips
+    assert test_bank.balance == expected_bank.balance
 
 @pytest.mark.parametrize('bank, expected_data_dict', _bank_mapping_pairs())
 def to_dict_creates_data_dict(bank, expected_data_dict):

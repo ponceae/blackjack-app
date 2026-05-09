@@ -36,7 +36,7 @@ def test_insurance_logic_and_bank_update_low_cost():
     payout_calculator.insurance_logic(insurance, player)
 
     assert insurance.payout == 15.0
-    assert player.bank.chips == 30.0
+    assert player.bank.balance == 30.0
 
 def test_insurance_logic_and_bank_update_high_cost():
     insurance = Insurance(cost=27.5)
@@ -45,7 +45,7 @@ def test_insurance_logic_and_bank_update_high_cost():
     payout_calculator.insurance_logic(insurance, player)
 
     assert insurance.payout == 55.0
-    assert player.bank.chips == 80.0
+    assert player.bank.balance == 80.0
 
 @pytest.mark.parametrize(
     'test_wager, expected_cost',

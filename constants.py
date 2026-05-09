@@ -87,7 +87,7 @@ PLAYER_CHIPS = 'player_chips'
 # WAGERS & BANK 
 # ==============
 
-MAX_BANK = 1000000 # 1 Million
+MAX_STARTING_CAP = 1000000 # 1 Million
 
 MIN_WAGER = 15
 MAX_WAGER = 1000000 # 1 Million

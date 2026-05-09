@@ -10,16 +10,16 @@ __author__ = 'Adrien P'
 
 from typing import Any, Self
 
-from constants import MAX_BANK
+from constants import MAX_STARTING_CAP
 
 class Bank:
     """
-    Represents a player's wallet for storing casino chips.
+    Represents a player's wallet for storing their money.
 
     Attributes:
-        chips (float): The current total count of chips that the player owns.
+        balance (float): The current total balance of the player.
     """
-    def __init__(self, chips: float) -> None:
+    def __init__(self, balance: float) -> None:
         """
         Initialize the player's `Bank` with the given amount of chips.
 
@@ -30,30 +30,30 @@ class Bank:
             ValueError: If the `chips` value is not a valid number, is less than 0,
                 or exceeds the maximum allowed bounds.
         """
-        chips = self._to_float(chips)
+        balance = self._to_float(balance)
 
-        if not (0 <= chips <= MAX_BANK):
+        if not (0 <= balance <= MAX_STARTING_CAP):
             raise ValueError(
-                f'Invalid value, `chips` must be a number between '
-                f'0 and {MAX_BANK:,.2f}.'
+                f'Invalid value, `balance` must be a number between '
+                f'0 and {MAX_STARTING_CAP:,.2f}.'
             )
 
-        self.chips = chips
+        self.balance = balance
 
     def __eq__(self, other: object) -> bool:
         """Return `True` if this `Bank` equals the other `Bank`."""
         if not isinstance(other, Bank):
             return False
         
-        return self.chips == other.chips
+        return self.balance == other.balance
     
     def __repr__(self) -> str:
-        """e.g., Bank(chips='34.5')."""
-        return f"Bank(chips='{self.chips}')"
+        """e.g., Bank(balance='34.5')."""
+        return f"Bank(balance='{self.balance}')"
     
     def __str__(self) -> str:
-        """e.g., Chips: $34.50."""
-        return f'Chips: ${self.chips:,.2f}'
+        """e.g., Balance: $34.50."""
+        return f'Balance: ${self.balance:,.2f}'
 
     @staticmethod
     def _to_float(value: Any) -> float:
@@ -75,24 +75,24 @@ class Bank:
             raise ValueError('Invalid value, `value` must be a number.')
 
     @property
-    def chips(self) -> float:
+    def balance(self) -> float:
         """
-        float: The player's current chip balance.
+        float: The player's current balance.
 
         Raises:
             ValueError: If the assigned value is less than 0 or cannot be converted
                 to a float.
         """
-        return self._chips
+        return self._balance
 
-    @chips.setter
-    def chips(self, value: float) -> None:
+    @balance.setter
+    def balance(self, value: float) -> None:
         value = self._to_float(value)
 
         if value < 0:
             raise ValueError('Invalid value, `value` is less than 0.')
 
-        self._chips = value
+        self._balance = value
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> Self:
@@ -100,16 +100,16 @@ class Bank:
         Create a `Bank` from a dictionary.
         
         Args:
-            data (dict[str, Any]): A dictionary containing `chips`.
+            data (dict[str, Any]): A dictionary containing `balance`.
 
         Returns:
             Self: A new Bank instance.
 
         Raises:
-            KeyError: If `chips` is missing.
+            KeyError: If `balance` is missing.
         """
-        return cls(chips=data['chips'])
+        return cls(balance=data['balance'])
     
     def to_dict(self) -> dict[str, float]:
-        """Serialize the `Bank` into a dictionary with `chips`."""
-        return {'chips': self.chips}
+        """Serialize the `Bank` into a dictionary with `balance`."""
+        return {'balance': self.balance}

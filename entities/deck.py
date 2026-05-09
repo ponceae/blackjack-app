@@ -1,3 +1,9 @@
+""" 
+Manages and modifies the state of a Blackjack game deck.
+"""
+
+__author__ = 'Adrien P.'
+
 import random
 from typing import Any, Self
 
@@ -12,17 +18,47 @@ def create_deck() -> list[Card]:
 
 @dataclass
 class Deck:
+    """
+    Represents a standard deck of playing cards used in Blackjack.
+
+    Attributes:
+        cards (list[Card]): The current deck of cards at the table.
+    """
     cards: list[Card] = field(default_factory=create_deck)    
     
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> Self:
         """
         Create a `Deck` from a dictionary.
-        """
-        pass
 
-    def to_dict(self):
-        pass
+        Validates that `cards` is a list, and constructs Card instances from the 
+        provided card data.
+
+        Args:
+            data (dict[str, Any]): A dictionary containing:
+                - cards (list[dict], optional): Data used to construct `Card`
+                    instances. Defaults to a standard 52 card deck.
+
+        Returns:
+            Self: A new Deck instance.
+
+        Raises:
+            KeyError: If `cards` is missing from the data.
+            TypeError: If `cards` is not a list.
+        """
+        raw_cards = data['cards']
+        validation.validate_type('cards', raw_cards, list)
+
+        return cls(cards=[Card.from_dict(card) for card in raw_cards])
+
+    def to_dict(self) -> dict[str, Any]:
+        """
+        Serialize the current `Deck` state into a dictionary.
+        
+        Returns:
+            dict[str, Any]: A dictionary containing serialized `Card` instances.
+        """
+        return {'cards': [card.to_dict() for card in self.cards]}
 
     def shuffle(self) -> None:
         """

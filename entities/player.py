@@ -43,13 +43,13 @@ class Player:
             TypeError: if `bank` is not a Bank or `hands` is not a list.
         """
         raw_bank = data['bank']
-        validation.validate_type('bank', raw_bank, Bank)
+        validation.validate_type('bank', Bank.from_dict(data['bank']), Bank)
 
         raw_hands = data['hands']
         validation.validate_type('hands', raw_hands, list)
 
         return cls(
-            bank=raw_bank, 
+            bank=Bank.from_dict(data['bank']), 
             hands=[PlayerHand.from_dict(hand_data) for hand_data in raw_hands]
         )
 
@@ -82,6 +82,3 @@ class Player:
     
     def has_active_hands(self) -> bool:
         return self.count() > 0
-
-    
-    

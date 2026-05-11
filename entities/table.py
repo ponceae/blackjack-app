@@ -1,7 +1,18 @@
-from dataclasses import dataclass, field
+""" 
+Storage for all the current active Blackjack entities.
+
+Acts as a container for all instantiated Blackjack entities, such as:
+    - The Blackjack dealer.
+    - The player at the table.
+    - The current game deck.
+"""
+
+__author__ = 'Adrien P.'
+
 from typing import Any, Self
 
 from . import DealerHand, Deck, Player
+from dataclasses import dataclass, field
 from utils import validation
 
 @dataclass

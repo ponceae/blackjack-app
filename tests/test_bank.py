@@ -161,13 +161,13 @@ def test_bank_chips_setter_raises_valueerror_on_invalid_value(
 # =========================================
 
 @pytest.mark.parametrize('expected_bank, data_dict', bank_data.bank_mapping_pairs())
-def test_from_dict_creates_object(expected_bank, data_dict):
+def test_from_dict_creates_bank_instance(expected_bank, data_dict):
     test_bank = Bank.from_dict(data_dict)
     
     assert test_bank.balance == expected_bank.balance
 
 @pytest.mark.parametrize('bank, expected_data_dict', bank_data.bank_mapping_pairs())
-def test_to_dict_creates_data_dict(bank, expected_data_dict):
+def test_to_dict_creates_correct_data_dict(bank, expected_data_dict):
     data_dict = Bank.to_dict(bank)
     
     assert data_dict == expected_data_dict

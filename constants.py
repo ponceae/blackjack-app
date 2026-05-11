@@ -5,16 +5,13 @@ Provides a single source for static game data, including:
 - Card definitions (card ranks, suits, and numeric values)
 - Game logic variables (user inputs, round outcomes, and timer messages)
 - Monetary settings (wager and bank limits and configuration)
-- File system constants (JSON file paths)
 """
 
 __author__ = 'Adrien P.'
 
-from pathlib import Path
-
-# ===============
-# CARD CONSTANTS
-# ===============
+# ====================================
+# Card Constants (Values and Strings).
+# ====================================
 
 ACE = 'Ace'
 ACE_ALT_VALUE = 1
@@ -31,32 +28,17 @@ CARD_SUIT_SYMBOLS = {
 }
 NAMED_CARD_RANKS = ['Ace', 'Jack', 'Queen', 'King']
 
-# ==========
-# I/O FLAGS
-# ==========
-
-HIT = 'H'
-STAND = 'S'
-
-NO = 'N'
-YES = 'Y'
-
-BUST = 'B'
-DOUBLE = 'D'
-
-WIN = 'W'
-
-# ==============
-# OUTCOME FLAGS
-# ==============
+# ========================
+# Blackjack Outcome Flags.
+# ========================
 
 PLAYER_WIN = 1
 DEALER_WIN = 2
 PUSH = 3
 
-# ============
-# TIMER FLAGS
-# ============
+# ========================
+# Timer Flags and Display.
+# ========================
 
 INITIAL = 1
 PLAYER = 2
@@ -76,24 +58,17 @@ TIMER_MESSAGES = {
     7: 'You cannot afford that... {}',
 }
 
-# ==========
-# JSON INFO
-# ==========
-
-FILE_PATH = Path(__file__).parent / 'save_data.json'
-PLAYER_CHIPS = 'player_chips'
-
-# ==============
-# WAGERS & BANK 
-# ==============
+# ===========================
+# Wager and Bank Information. 
+# ===========================
 
 MAX_STARTING_CAP = 1000000 # 1 Million
 
 MIN_WAGER = 15
 MAX_WAGER = 1000000 # 1 Million
 
-# ===============
-# MISCELLANEOUS
-# ===============
+# ========================
+# Miscellaneous Variables.
+# ========================
 
 ROMAN_NUMERALS = {1: 'I', 2: 'II'}

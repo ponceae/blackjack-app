@@ -162,7 +162,7 @@ def test_from_dict_creates_hand_instance(expected_hand, data_dict):
     assert test_hand.cards == expected_hand.cards
 
 @pytest.mark.parametrize('hand, expected_data_dict', hand_data.hand_mapping_pairs())
-def test_to_dict_creates_correct_hand_data(hand, expected_data_dict):
+def test_to_dict_creates_correct_hand_data_dict(hand, expected_data_dict):
     data_dict = hand.to_dict()
 
     assert data_dict == expected_data_dict
@@ -237,7 +237,7 @@ def test_from_dict_creates_dealerhand_instance(expected_hand, data_dict):
         (tids) for (*_, tids) in hand_data.dealerhand_mapping_pairs()
     ]
 )
-def test_to_dict_creates_correct_dealerhand_data(hand, expected_data_dict):
+def test_to_dict_creates_correct_dealerhand_data_dict(hand, expected_data_dict):
     data_dict = hand.to_dict()
 
     assert data_dict == expected_data_dict
@@ -273,7 +273,7 @@ def test_from_dict_creates_playerhand_instance(expected_hand, data_dict):
         (tid) for (*_, tid) in hand_data.playerhand_mapping_pairs()
     ]
 )
-def test_to_dict_creates_correct_playerhand_instance(hand, expected_data_dict):
+def test_to_dict_creates_correct_playerhand_data_dict(hand, expected_data_dict):
     data_dict = hand.to_dict()
 
     assert data_dict == expected_data_dict

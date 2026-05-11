@@ -41,7 +41,7 @@ def test_from_dict_creates_player_instance(expected_player, data_dict):
     'player, expected_data_dict',
     player_data.player_mapping_pairs()
 )
-def test_to_dict_creates_correct_data(player, expected_data_dict):
+def test_to_dict_creates_correct_data_dict(player, expected_data_dict):
     data_dict = player.to_dict()
 
     assert data_dict == expected_data_dict

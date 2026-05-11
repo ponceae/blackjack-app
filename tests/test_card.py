@@ -116,7 +116,7 @@ def test_from_dict_creates_card_instance(expected_card, data_dict):
     assert test_card.rank == expected_card.rank
 
 @pytest.mark.parametrize('card, expected_data_dict', card_data.card_mapping_pairs())
-def test_to_dict_creates_correct_data(card, expected_data_dict):
+def test_to_dict_creates_correct_data_dict(card, expected_data_dict):
     data_dict = card.to_dict()
     
     assert data_dict == expected_data_dict

@@ -47,9 +47,3 @@ class Outcome():
     """Tracks winning entity flag and the corresponding payout."""
     flag: int = 0
     payout: float = 0
-
-@dataclass
-class SplitHands:
-    split_hand: bool = False
-    split_aces: bool = False
-

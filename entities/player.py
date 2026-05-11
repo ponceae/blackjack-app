@@ -89,10 +89,13 @@ class Player:
         self.bank.balance -= amount
 
     def can_afford(self, amount: float) -> bool:
+        """Return `True` if the current player can afford the provided amount."""
         return self.bank.balance >= amount
     
     def count(self) -> int:
+        """Return the current count of the player's hands."""
         return len(self.hands)
     
     def has_active_hands(self) -> bool:
+        """Return `True` if the current player contains at least one hand."""
         return self.count() > 0

@@ -31,7 +31,7 @@ def test_from_dict_creates_deck_instances(deck_map_pair):
 
     assert test_deck.cards == deck_map_pair[0].cards
 
-def test_to_dict_creates_correct_deck_data(deck_map_pair):
+def test_to_dict_creates_correct_data_dict(deck_map_pair):
     data_dict = deck_map_pair[0].to_dict()
 
     assert data_dict == deck_map_pair[1]

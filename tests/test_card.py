@@ -8,41 +8,11 @@ value or name, and validates object packing and unpacking.
 __author__ = 'Adrien P.'
 
 import pytest
-from typing import Any
 
 from constants import CARD_RANKS, CARD_SUITS
+from data import card_data
 from data.metadata import CARD_INVALID_RANK_ERR_MSG, CARD_INVALID_SUIT_ERR_MSG
 from entities.card import Card
-
-# =========================
-# Card and Map Generators.
-# =========================
-
-def _generate_card_test_data() -> list[tuple[Card, int, str, str]]:
-    """
-    Test data for the `Card` ranks and suits, and the card's string and debug string
-    display for each tuple.
-    
-    (Card(), rank, str(), repr()).
-    """
-    return [
-        (Card('Spades', 5), 5, '♠5', "Card(suit='Spades', rank='5')"),
-        (Card('Hearts', 2), 2, '♥2', "Card(suit='Hearts', rank='2')"),
-        (Card('Clubs', 10), 10, '♣10', "Card(suit='Clubs', rank='10')"),
-        (Card('Diamonds', 'Ace'), 11, '♦Ace', "Card(suit='Diamonds', rank='Ace')"),
-        (Card('Spades', 'Jack'), 10, '♠Jack', "Card(suit='Spades', rank='Jack')"),
-        (Card('Clubs', 'Queen'), 10, '♣Queen', "Card(suit='Clubs', rank='Queen')"),
-        (Card('Hearts', 'King'), 10, '♥King', "Card(suit='Hearts', rank='King')"),
-    ]
-
-def _card_mapping_pairs() -> list[tuple[Card, dict[str, Any]]]:
-    """
-    Generate pairs of `Card` instances and their expected {`suit`, `rank`} dicts.
-    """
-    return [
-        (card, {'suit': card.suit, 'rank': card.rank}) 
-        for (card, *_) in _generate_card_test_data()
-    ]
 
 # ==========================
 # Card Initialization Tests.
@@ -115,21 +85,21 @@ def test_card_equality():
 
 @pytest.mark.parametrize(
     'card, expected_rank_value',
-    [(card, value) for (card, value, *_) in _generate_card_test_data()]
+    [(card, value) for (card, value, *_) in card_data.generate_card_test_data()]
 )
 def test_card_rank_value(card, expected_rank_value):
     assert card.rank_value == expected_rank_value
 
 @pytest.mark.parametrize(
     'card, expected_string',
-    [(card, string) for (card, _, string, *_) in _generate_card_test_data()],
+    [(card, string) for (card, _, string, *_) in card_data.generate_card_test_data()],
 )
 def test_card_string_display(card, expected_string):
     assert str(card) == expected_string
 
 @pytest.mark.parametrize(
     'card, expected_string',
-    [(card, string) for (card, *_, string) in _generate_card_test_data()],
+    [(card, string) for (card, *_, string) in card_data.generate_card_test_data()],
 )
 def test_card_debug_display(card, expected_string):
     assert repr(card) == expected_string
@@ -138,14 +108,14 @@ def test_card_debug_display(card, expected_string):
 # Card Serialization/Deserialization Tests.
 # =========================================
 
-@pytest.mark.parametrize('expected_card, data_dict', _card_mapping_pairs())
+@pytest.mark.parametrize('expected_card, data_dict', card_data.card_mapping_pairs())
 def test_from_dict_creates_card_instance(expected_card, data_dict):
     test_card = Card.from_dict(data_dict)
     
     assert test_card.suit == expected_card.suit
     assert test_card.rank == expected_card.rank
 
-@pytest.mark.parametrize('card, expected_data_dict', _card_mapping_pairs())
+@pytest.mark.parametrize('card, expected_data_dict', card_data.card_mapping_pairs())
 def test_to_dict_creates_correct_data(card, expected_data_dict):
     data_dict = card.to_dict()
     

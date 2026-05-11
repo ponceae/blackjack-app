@@ -63,3 +63,9 @@ def test_reset_is_new_deck(deck):
 def test_draw_card_removes_one(deck):
     deck.draw_card()
     assert len(deck.cards) == 51
+    
+def test_draw_card_on_empty_deck(deck):
+    deck.cards.clear()
+    deck.draw_card()
+    
+    assert len(deck.cards) == 51

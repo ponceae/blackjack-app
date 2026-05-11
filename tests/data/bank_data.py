@@ -2,22 +2,15 @@
 Test data generator and and mapping logic for the `test_bank.py` module.
 
 Provides:
-    - Bank fixture.
-    - Bank generator with string representations
+    - Bank object generator with string representations.
     - Dictonary factory for `from_dict`/`to_dict`.
 """
 
 __author__ = 'Adrien P.'
 
-import pytest
 from typing import Any
 
 from entities.bank import Bank
-
-@pytest.fixture
-def bank() -> Bank:
-    """Provide a `Bank` instance with a moderate balance."""
-    return Bank(225.50)
 
 def generate_bank_test_data() -> list[tuple[Bank, float, str, str]]:
     """

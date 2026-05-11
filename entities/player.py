@@ -1,5 +1,13 @@
 """ 
 Manages the state of a player at a Blackjack table.
+
+This module provides a Player class with the following functionality:
+    - Add a hand to the player or reset the player's hands.
+    - Add or remove a monetary amount from the player's hands.
+    - Count the number of player hands.
+    - Check the status of a the player's hands.
+    - Validate if the current player can afford a wager.
+    - Provide serialization and deserialization for state persistence.
 """
 
 __author__ = 'Adrien P.'
@@ -65,15 +73,19 @@ class Player:
         }
 
     def add_hand(self, hand: PlayerHand) -> None:
+        """Add the provided hand to the current player's hands."""
         self.hands.append(hand)
 
     def reset(self) -> None:
+        """Clear the player's hands."""
         self.hands.clear()
 
     def add_balance(self, amount: float) -> None:
+        """Add the amount to the player's balance."""
         self.bank.balance += amount
 
     def remove_balance(self, amount: float) -> None:
+        """Remove the amount from the player's balance."""
         self.bank.balance -= amount
 
     def can_afford(self, amount: float) -> bool:

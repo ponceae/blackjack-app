@@ -19,6 +19,11 @@ from data.metadata import (
 )
 from entities.bank import Bank
 
+@pytest.fixture
+def bank() -> Bank:
+    """Provide a `Bank` instance with a moderate balance."""
+    return Bank(225.50)
+
 # ==========================
 # Bank Initialization Tests.
 # ==========================
@@ -34,8 +39,8 @@ def test_init_creates_correct_bank_instance(bank, expected_balance):
     'invalid_input, expected_err_msg',
     [
         (MAX_STARTING_CAP + 0.01, BANK_BOUNDS_ERR_MSG,),
-        (-3, BANK_BOUNDS_ERR_MSG),
-        (-2.56, BANK_BOUNDS_ERR_MSG),
+        (-3, BANK_NEGATIVE_VALUE_ERR_MSG),
+        (-2.56, BANK_NEGATIVE_VALUE_ERR_MSG),
         ('4a', BANK_INVALID_VALUE_ERR_MSG),
         ('4.56num', BANK_INVALID_VALUE_ERR_MSG,),
     ],
@@ -162,7 +167,7 @@ def test_from_dict_creates_object(expected_bank, data_dict):
     assert test_bank.balance == expected_bank.balance
 
 @pytest.mark.parametrize('bank, expected_data_dict', bank_data.bank_mapping_pairs())
-def to_dict_creates_data_dict(bank, expected_data_dict):
+def test_to_dict_creates_data_dict(bank, expected_data_dict):
     data_dict = Bank.to_dict(bank)
     
     assert data_dict == expected_data_dict

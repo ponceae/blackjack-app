@@ -1,8 +1,8 @@
 """
-Manages the storage of a player's chips. 
+Manages the storage of a player's balance. 
 
 This module provides the `Bank` class, which acts as a player's wallet and manages,
-modifies, and stores casino chips based on the player's current game state, and 
+modifies, and stores a monetary balance based on the player's current game state, and 
 supports serialization/deserialization.
 """
 
@@ -21,24 +21,23 @@ class Bank:
     """
     def __init__(self, balance: float) -> None:
         """
-        Initialize the player's `Bank` with the given amount of chips.
+        Initialize the player's `Bank` with the given amount of balance.
 
         Args:
-            chips (float): The amount of chips to add to the player's bank.
+            balance (float): The amount of balance to add to the player's bank.
 
         Raises:
-            ValueError: If the `chips` value is not a valid number, is less than 0,
+            ValueError: If the `balance` value is not a valid number, is less than 0,
                 or exceeds the maximum allowed bounds.
         """
-        balance = self._to_float(balance)
-
-        if not (0 <= balance <= MAX_STARTING_CAP):
+        temp_balance = self._to_float(balance)
+        
+        if temp_balance > MAX_STARTING_CAP:
             raise ValueError(
-                f'Invalid value, `balance` must be a number between '
-                f'0 and {MAX_STARTING_CAP:,.2f}.'
+                f'Invalid value, `balance` cannot exceed {MAX_STARTING_CAP:,.2f}.'
             )
 
-        self.balance = balance
+        self.balance = temp_balance
 
     def __eq__(self, other: object) -> bool:
         """Return `True` if this `Bank` equals the other `Bank`."""

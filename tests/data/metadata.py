@@ -7,7 +7,7 @@ __author__ = 'Adrien P.'
 from constants import MAX_STARTING_CAP
 
 BANK_BOUNDS_ERR_MSG = (
-    f'Invalid value, `balance` must be a number between 0 and {MAX_STARTING_CAP:,.2f}'
+    f'Invalid value, `balance` cannot exceed {MAX_STARTING_CAP:,.2f}.'
 )
 BANK_INVALID_VALUE_ERR_MSG = 'Invalid value, `value` must be a number.'
 BANK_NEGATIVE_VALUE_ERR_MSG = 'Invalid value, `value` is less than 0.'

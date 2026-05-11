@@ -9,6 +9,7 @@ def generate_test_cards_large() -> list[tuple[list[Card], str, int, int]]:
     """
     Test data for the `Hand` cards, and the hand's optimal and hard values. Also
     contains the TID (test ID) for each tuple.
+    
     (list[Card]: cards, str: tid, int: value, int: hard_value)
     """
     return [
@@ -117,7 +118,6 @@ def _generate_dealer_or_player_test_data(hand_type):
         
         if hand_type == 'dealer':
             test_data.append((cards, tid, test_bool))
-        
         
         elif hand_type == 'player':
             test_data.append((cards, tid, test_float, test_float, test_bool))

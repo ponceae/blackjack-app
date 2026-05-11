@@ -12,7 +12,7 @@ import pytest
 from typing import Any
 
 from constants import MAX_STARTING_CAP
-from data.constants import (
+from .data.metadata import (
     BANK_BOUNDS_ERR_MSG, 
     BANK_INVALID_VALUE_ERR_MSG, 
     BANK_NEGATIVE_VALUE_ERR_MSG,
@@ -32,6 +32,7 @@ def _generate_bank_test_data() -> list[tuple[Bank, float, str, str]]:
     """
     Test data for the `Bank` balance, and the hand's optimal and hard values. Also
     contains the TID (test ID) for each tuple.
+    
     (Bank(), str(), repr())
     """
     return [

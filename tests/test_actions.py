@@ -1,19 +1,19 @@
-""" 
-Tests for the `actions.py` module.
+# """ 
+# Tests for the `actions.py` module.
 
-Validates hand values, ensures that hitting and splitting adds the correct
-amount of cards to the hand, and that only two cards are dealt at the beginning
-of the round.
-"""
+# Validates hand values, ensures that hitting and splitting adds the correct
+# amount of cards to the hand, and that only two cards are dealt at the beginning
+# of the round.
+# """
 
-__author__ = 'Adrien P.'
+# __author__ = 'Adrien P.'
 
-import pytest
+# import pytest
 
-import actions
-from entities.card import Card
-from datatypes import Player, Table
-from entities.hand import Hand, PlayerHand
+# import actions
+# from entities.card import Card
+# from datatypes import Player, Table
+# from entities.hand import Hand, PlayerHand
 
 # @pytest.fixture
 # def table() -> Table:

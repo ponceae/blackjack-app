@@ -1,5 +1,12 @@
 """ 
 Manages the logic and state of a Blackjack hand.
+
+This module provides the base Hand class with automatic scoring (bust, twenty one, 
+soft/hard totals) and state checking logic. It includes specialized subclasses:
+    - DealerHand: Manages hole card status.
+    - PlayerHand: Manages wagers, split logic, and active hand status.
+
+All classes support serialization and deserialization for state persistence.
 """
 
 __author__ = 'Adrien P.'
@@ -11,9 +18,9 @@ from constants import ACE, ACE_ALT_VALUE, DEFAULT_ACE_VALUE
 from dataclasses import dataclass, field
 from utils import validation
 
-# =================
-# Parent Dataclass.
-# =================
+# ============================================
+#              | Parent Dataclass |
+# ============================================
 
 @dataclass
 class Hand:
@@ -130,9 +137,9 @@ class Hand:
         """Add the other `Card` to this `Hand`"""
         self.cards.append(other)
 
-# ===========
-# Subclasses.
-# ===========
+# ============================================
+#                | Subclasses |                   
+# ============================================
 
 @dataclass
 class DealerHand(Hand):

@@ -11,7 +11,7 @@ import pytest
 from typing import Any
 
 from constants import CARD_RANKS, CARD_SUITS
-from data.constants import CARD_INVALID_RANK_ERR_MSG, CARD_INVALID_SUIT_ERR_MSG
+from data.metadata import CARD_INVALID_RANK_ERR_MSG, CARD_INVALID_SUIT_ERR_MSG
 from entities.card import Card
 
 # =========================
@@ -22,6 +22,7 @@ def _generate_card_test_data() -> list[tuple[Card, int, str, str]]:
     """
     Test data for the `Card` ranks and suits, and the card's string and debug string
     display for each tuple.
+    
     (Card(), rank, str(), repr()).
     """
     return [

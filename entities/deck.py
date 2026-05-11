@@ -1,5 +1,9 @@
 """ 
 Manages and modifies the state of a Blackjack game deck.
+
+This module creates a standard 52 card deck and has functionality for shuffling and
+drawing a card from the deck, and provides serialization and deserialization for
+state persistence.
 """
 
 __author__ = 'Adrien P.'

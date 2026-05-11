@@ -14,10 +14,12 @@ from entities.deck import  Deck
 
 @pytest.fixture
 def deck() -> Deck:
+    """Provide a `Deck` instance with an unshuffled deck."""
     return Deck()
 
 @pytest.fixture
 def deck_map_pair(deck) -> tuple[Deck, dict[str, Any]]:
+    """Provide a pair of a `Deck` instance and a {`cards`} dict."""
     return (deck, {'cards': [c.to_dict() for c in deck.cards]})
 
 # =========================================

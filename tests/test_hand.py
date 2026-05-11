@@ -231,7 +231,8 @@ def test_to_dict_creates_correct_hand_data(hand, expected_data_dict):
             4,
         ), 
         (
-            Hand(cards=[
+            Hand(
+                cards=[
                     Card('Spades', 2), 
                     Card('Diamonds', 6), 
                     Card('Hearts', 3), 
@@ -357,5 +358,13 @@ def test_hand_is_initial_hand(test_cards, expected_bool):
     
     assert hand.is_initial_hand == expected_bool
 
-def test_hand_is_split_aces():
-    
+@pytest.mark.parametrize(
+    'hand, expected_bool',
+    (
+        (PlayerHand(cards=[Card('Spades', 'Ace'), Card('Clubs', 'Ace')]), True),
+        (PlayerHand(cards=[Card('Spades', 'Ace'), Card('Clubs', 10)]), False),
+        (PlayerHand(cards=[Card('Spades', 10), Card('Clubs', 10)]), False)
+    )
+)
+def test_hand_is_split_aces(hand, expected_bool):
+    assert hand.is_split_aces == expected_bool

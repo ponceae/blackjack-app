@@ -1,5 +1,5 @@
 """ 
-Global constants for the testing modules, such as error message displays.
+Global constants for the testing modules, including error message displays.
 """
 
 __author__ = 'Adrien P.'

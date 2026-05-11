@@ -1,6 +1,6 @@
-from .card import Card
 from .bank import Bank
-from .hand import Hand, PlayerHand, DealerHand
+from .card import Card
 from .deck import Deck
+from .hand import Hand, PlayerHand, DealerHand
 from .player import Player
 from .table import Table

@@ -54,7 +54,11 @@ def _player_mapping_pairs():
     Generate pairs of `Player` instances and their expected {`bank`, `hands`} dicts.
     """
     return [
-        (player, {'bank': player.bank.to_dict(), 'hands': [hand.to_dict() for hand in player.hands]})
+        (player, {
+            'bank': player.bank.to_dict(), 
+            'hands': [hand.to_dict() for hand in player.hands]
+            }
+        )
         for player in _generate_player_objects()
     ]
 
@@ -88,3 +92,52 @@ def test_to_dict_creates_correct_data(player, expected_data_dict):
     data_dict = player.to_dict()
 
     assert data_dict == expected_data_dict
+
+# ============================================
+# Hand Instance Method Tests.
+# --------------------------------------------
+# Tests add_hand(), reset(), add_balance(),
+# remove_balance(), can_afford(), count(), and
+# has_active_hands()
+# ============================================
+
+def test_add_hand(player):
+    player.add_hand(PlayerHand(cards=[Card('Spades', 5), Card('Diamonds', 10)]))
+
+    assert len(player.hands) == 1
+
+def test_reset_hands(player):
+    player.add_hand(PlayerHand(cards=[Card('Spades', 5), Card('Diamonds', 10)]))
+    player.reset()
+
+    assert len(player.hands) == 0    
+
+def test_remove_balance(player):
+    player.remove_balance(400)
+
+    assert player.bank.balance == 100.0
+
+def test_add_balance(player):
+    player.add_balance(400)
+
+    assert player.bank.balance == 900.0
+
+def test_can_afford(player):
+    assert player.can_afford(500) == True
+
+def test_cannot_afford(player):
+    assert player.can_afford(500.01) == False
+
+def test_hand_count(player):
+    assert player.count() == 0
+
+    player.add_hand(PlayerHand(cards=[Card('Spades', 5), Card('Diamonds', 10)]))
+
+    assert player.count() == 1
+
+def test_has_active_hands(player):
+    assert player.has_active_hands() == False
+
+    player.add_hand(PlayerHand(cards=[Card('Spades', 5), Card('Diamonds', 10)]))
+
+    assert player.has_active_hands() == True

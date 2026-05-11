@@ -11,10 +11,6 @@ from constants import ACE, ACE_ALT_VALUE, DEFAULT_ACE_VALUE
 from dataclasses import dataclass, field
 from utils import validation
 
-# ==========================
-# Private Helper Functions.
-# ==========================
-
 # =================
 # Parent Dataclass.
 # =================
@@ -77,20 +73,6 @@ class Hand:
         return value
     
     @property
-    def can_split(self) -> bool:
-        """
-        Return `True` if this hand can be split.
-        
-        A hand can be split if the first two cards have equivalent rank.
-        """
-        return self.is_initial_hand and self.cards[0].rank == self.cards[1].rank
-    
-    @property
-    def is_initial_hand(self) -> bool:
-        """Return `True` if this hand represents the initial state of the game."""
-        return len(self.cards) == 2
-
-    @property
     def is_bust(self) -> bool:
         """Return `True` if the hand's total numeric value is greater than 21."""
         return self.value > 21
@@ -110,16 +92,6 @@ class Hand:
         """
         return self.hard_value != self.value
     
-    @property
-    def is_split_aces(self) -> bool:
-        """
-        Return `True` if the hand contains two Aces.
-
-        Returns:
-            bool: `True` if the hand has split Aces, `False` otherwise.
-        """
-        return self.cards[0].rank == ACE and self.cards[1].rank == ACE
-
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> Self:
         """
@@ -231,6 +203,30 @@ class PlayerHand(Hand):
     insurance_wager: float = 0.0
     is_current: bool = False
     
+    @property
+    def can_split(self) -> bool:
+        """
+        Return `True` if this hand can be split.
+        
+        A hand can be split if the first two cards have equivalent rank.
+        """
+        return self.is_initial_hand and self.cards[0].rank == self.cards[1].rank
+
+    @property
+    def is_initial_hand(self) -> bool:
+        """Return `True` if this hand represents the initial state of the game."""
+        return len(self.cards) == 2
+
+    @property
+    def is_split_aces(self) -> bool:
+        """
+        Return `True` if the hand contains two Aces.
+
+        Returns:
+            bool: `True` if the hand has split Aces, `False` otherwise.
+        """
+        return self.cards[0].rank == ACE and self.cards[1].rank == ACE
+
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> Self:
         """ 

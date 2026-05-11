@@ -132,50 +132,11 @@ def test_hand_optimal_and_hard_value(test_cards, exp_opt_val, exp_hard_val):
     assert hand.value == exp_opt_val
     assert hand.hard_value == exp_hard_val
 
-# =======================================================================
+# ==================================================
 # Hand State Tests.
-# -----------------------------------------------------------------------
-# Tests the can_split, is_initial_hand, is_bust, is_twenty_one, is_soft, 
-# and is_split_aces methods.
-# =======================================================================
-
-@pytest.mark.parametrize(
-    'test_cards, expected_bool',
-    [
-        (cards, can_split) 
-        for (cards, can_split, *_) in _generate_test_cards_for_split_and_initial()
-    ],
-    ids=[
-        'can_split_a',
-        'cannot_split_a',
-        'can_split_b',
-        'cannot_split_b',
-        'cannot_split_c'  
-    ],
-)
-def test_hand_can_split(test_cards, expected_bool):
-    hand = Hand(cards=test_cards)
-    
-    assert hand.can_split == expected_bool
-
-@pytest.mark.parametrize(
-    'test_cards, expected_bool',
-    [
-        (cards, is_initial) 
-        for (cards, _, is_initial, *_) in _generate_test_cards_for_split_and_initial()
-    ],    
-    ids=[
-        'is_initial_a',
-        'not_is_initial_a',
-        'is_initial_b',
-        'not_is_initial_b',
-        'is_initial_c',
-    ]
-)
-def test_hand_is_initial_hand(test_cards, expected_bool):
-    hand = Hand(cards=test_cards)
-    
-    assert hand.is_initial_hand == expected_bool
+# --------------------------------------------------
+# Tests the is_bust, is_twenty_one, is_soft methods.
+# ==================================================
 
 @pytest.mark.parametrize(
     'test_cards, expected_bool',
@@ -351,3 +312,50 @@ def test_to_dict_creates_correct_playerhand_instance(hand, expected_data_dict):
     data_dict = hand.to_dict()
 
     assert data_dict == expected_data_dict
+
+# ================================================================
+# PlayerHand State Tests.
+# ----------------------------------------------------------------
+# Tests the can_split, is_initial_hand, and is_split_aces methods.
+# ================================================================
+
+@pytest.mark.parametrize(
+    'test_cards, expected_bool',
+    [
+        (cards, can_split) 
+        for (cards, can_split, *_) in _generate_test_cards_for_split_and_initial()
+    ],
+    ids=[
+        'can_split_a',
+        'cannot_split_a',
+        'can_split_b',
+        'cannot_split_b',
+        'cannot_split_c'  
+    ],
+)
+def test_hand_can_split(test_cards, expected_bool):
+    hand = PlayerHand(cards=test_cards)
+    
+    assert hand.can_split == expected_bool
+
+@pytest.mark.parametrize(
+    'test_cards, expected_bool',
+    [
+        (cards, is_initial) 
+        for (cards, _, is_initial, *_) in _generate_test_cards_for_split_and_initial()
+    ],    
+    ids=[
+        'is_initial_a',
+        'not_is_initial_a',
+        'is_initial_b',
+        'not_is_initial_b',
+        'is_initial_c',
+    ]
+)
+def test_hand_is_initial_hand(test_cards, expected_bool):
+    hand = PlayerHand(cards=test_cards)
+    
+    assert hand.is_initial_hand == expected_bool
+
+def test_hand_is_split_aces():
+    

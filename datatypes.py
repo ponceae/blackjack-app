@@ -53,18 +53,3 @@ class SplitHands:
     split_hand: bool = False
     split_aces: bool = False
 
-# ===================
-# BLACKJACK ENTITIES
-# ===================
-
-@dataclass
-class Player:
-    username: str
-    bank: Bank = field(default_factory=lambda: Bank(0))
-    hands: list[PlayerHand] = field(default_factory=list)
-
-@dataclass
-class Table:
-    player: Player
-    dealer: DealerHand = field(default_factory=DealerHand)
-    deck: list[Card] = field(default_factory=list)

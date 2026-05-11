@@ -27,7 +27,7 @@ class Player:
         """
         Create a `Player` from a dictionary.
         
-        Validates that `bank` is a Bank and `hands` is a list., and constructs a
+        Validates that `bank` is a Bank and `hands` is a list, and constructs a
         `Player` instance from the provided data.
 
         Args:
@@ -42,7 +42,6 @@ class Player:
             KeyError: If `bank` or `hands` is missing from the data.
             TypeError: if `bank` is not a Bank or `hands` is not a list.
         """
-        raw_bank = data['bank']
         validation.validate_type('bank', Bank.from_dict(data['bank']), Bank)
 
         raw_hands = data['hands']
@@ -71,8 +70,11 @@ class Player:
     def reset(self) -> None:
         self.hands.clear()
 
-    def adjust_balance(self, amount: float) -> None:
-        self.bank.balance = amount
+    def add_balance(self, amount: float) -> None:
+        self.bank.balance += amount
+
+    def remove_balance(self, amount: float) -> None:
+        self.bank.balance -= amount
 
     def can_afford(self, amount: float) -> bool:
         return self.bank.balance >= amount

@@ -169,7 +169,8 @@ def test_to_dict_creates_correct_hand_data_dict(hand, expected_data_dict):
 # =============================
 # Other Hand Tests.
 # -----------------------------
-# Tests the add_cards method.
+# Tests the add_cards and 
+# remove_cards methods.
 # ============================= 
 
 @pytest.mark.parametrize(
@@ -204,6 +205,67 @@ def test_add_card(hand, card, expected_length):
     
     assert len(hand.cards) == expected_length
     assert hand.cards[-1] == card
+
+@pytest.mark.parametrize(
+    'hand, expected_length, expected_card',
+    [
+        (PlayerHand(
+                cards=[Card('Clubs', 4)],
+            ), 
+            0, 
+            Card('Clubs', 4)
+        ),
+        (PlayerHand(
+                cards=[Card('Clubs', 4), Card('Diamonds', 3)],
+            ), 
+            1, 
+            Card('Diamonds', 3)
+        ),
+        (PlayerHand(
+                cards=[Card('Clubs', 4), Card('Diamonds', 3), Card('Spades', 7)],
+            ), 
+            2, 
+            Card('Spades', 7),
+        ),
+        (
+            PlayerHand(
+                cards=[
+                    Card('Clubs', 3), 
+                    Card('Diamonds', 3), 
+                    Card('Spades', 7), 
+                    Card('Hearts', 3),
+                ],
+            ), 
+            3, 
+            Card('Hearts', 3),
+        ),
+        (
+            PlayerHand(
+                cards=[
+                    Card('Clubs', 3), 
+                    Card('Diamonds', 3), 
+                    Card('Spades', 7), 
+                    Card('Hearts', 3), 
+                    Card('Diamonds', 2),
+                ],
+            ), 
+            4, 
+            Card('Diamonds', 2),
+        ),
+    ],
+    ids=[
+        'remove_hand_len_1',
+        'remove_hand_len_2',
+        'remove_hand_len_3',
+        'remove_hand_len_4',
+        'remove_hand_len_5',
+    ]
+)
+def test_remove_card(hand, expected_length, expected_card):
+    card = hand.remove_card()
+    
+    assert len(hand.cards) == expected_length
+    assert card == expected_card
 
 # ===============================================
 # DealerHand Serialization/Deserialization Tests.

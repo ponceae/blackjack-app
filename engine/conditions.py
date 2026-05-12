@@ -5,39 +5,38 @@
 # player bank statuses.
 # """
 
-# __author__ = 'Adrien P.'
+__author__ = 'Adrien P.'
 
 # from constants import ACE, DEALER_WIN, MAX_WAGER, MIN_WAGER, PLAYER_WIN, PUSH
 # from datatypes import Player, Table
 # from entities.hand import Hand, PlayerHand
 # from engine.payout_calculator import get_insurance_cost
 
-# # def compare_initial_hands(table: Table) -> int:
-# #     """
-# #     Compare the hands at the start of the round and return the corresponding 
-# #     outcome flag.
+from entities import Outcome, OutcomeFlag, Table
 
-# #     Args:
-# #         table (Table): The table containing the `PlayerHand` and `DealerHand`.
+def compare_initial_hands(table: Table) -> Outcome:
+    """
+    Compare the hands at the start of the round and return the outcome.
 
-# #     Returns:
-# #         int: The outcome flag of the round.
-# #             - `PLAYER_WIN` for a player blackjack.
-# #             - `DEALER_WIN` for a dealer blackjack. 
-# #             - `PUSH` for a player and dealer blackjack.
-# #             - `0` if none of the above conditions occurred.
-# #     """
-# #     player_blackjack = is_twenty_one(table.player.hands[0])
-# #     dealer_blackjack = is_twenty_one(table.dealer)
+    Args:
+        table (Table): The table containing the player's and dealer's hands.
 
-# #     if player_blackjack and dealer_blackjack:
-# #         return PUSH
-# #     elif player_blackjack and not dealer_blackjack:
-# #         return PLAYER_WIN
-# #     elif not player_blackjack and dealer_blackjack:
-# #         return DEALER_WIN
+    Returns:
+        Outcome: The outcome after the initial cards have been dealt.
+    """
+    player_blackjack = table.player.hands[0].is_twenty_one
+    dealer_blackjack = table.dealer.is_twenty_one
 
-# #     return 0
+    outcome = Outcome()
+
+    if player_blackjack and dealer_blackjack:
+        outcome.flag = OutcomeFlag.PUSH
+    elif player_blackjack and not dealer_blackjack:
+        outcome.flag = OutcomeFlag.PLAYER_BLACKJACK
+    elif not player_blackjack and dealer_blackjack:
+        outcome.flag = OutcomeFlag.DEALER_BLACKJACK
+
+    return outcome
 
 # def is_valid_wager(wager: float) -> bool:
 #     """Return `True` if the wager is greater than or equal to the `MIN_WAGER`."""

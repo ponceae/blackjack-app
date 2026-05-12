@@ -1,5 +1,8 @@
 """
-Blackjack game actions and calculations.
+Blackjack game actions.
+
+Contains functionality for initializing the Blackjack game and modifying the player's
+and dealer's current hand.
 """
 
 __author__ = 'Adrien P.'
@@ -33,29 +36,6 @@ def deal_initial_cards(table: Table) -> Table:
             
     return table
 
-# def initial_round_deal(table: Table) -> None:
-#     """
-#     Initialize a `PlayerHand` and a `DealerHand` on the table by dealing both 
-#     two cards each.
-
-#     Args:
-#         table (Table): The table containing the `PlayerHand`, the `DealerHand`, and  
-#             the deck of cards.
-#     """
-#     table.player.hands = [PlayerHand()]
-#     table.dealer = DealerHand()
-
-#     for i in range(4):
-#         if not table.deck:
-#             table.deck = create_and_shuffle()	
-
-#         card = table.deck.pop()
-
-#         if i % 2 == 0:
-#             table.player.hands[0].cards.append(card)
-#         else:
-#             table.dealer.cards.append(card)
-
 def hit_hand(table: Table, hand: Hand) -> Card:
     """
     Draw a card from the table's deck and add it to the provided hand.
@@ -72,19 +52,22 @@ def hit_hand(table: Table, hand: Hand) -> Card:
     
     return card
 
-def split_hand(table: Table) -> None:
-    pass
+def split_hand(table: Table) -> Table:
+    """
+    Create a new `PlayerHand` by removing a card from the first initial hand and
+    drawing and adding a card to both hands.
 
-# def create_split_hands(table: Table) -> None:
-#     """
-#     Create a new `PlayerHand` by popping a card from the first initial hand and
-#     hitting both hands.
+    Args:
+        table (Table): The table containing the player's hand and the game deck.
 
-#     Args:
-#         table (Table): The table containing the player's hand and the deck of cards.
-#     """
-#     table.player.hands.append(PlayerHand(cards=[table.player.hands[0].cards.pop()]))
+    Returns:
+        Table: The updated game table.
+    """
+    card = table.player.hands[0].remove_card()
 
-#     for hand in table.player.hands:
-#         hit_hand(table, hand)
+    table.player.add_hand(PlayerHand(cards=[card]))
 
+    for hand in table.player.hands:
+        hand.add_card(table.deck.draw_card())
+
+    return table

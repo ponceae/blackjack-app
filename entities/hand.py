@@ -137,6 +137,10 @@ class Hand:
         """Add the other `Card` to this `Hand`"""
         self.cards.append(other)
 
+    def remove_card(self) -> Card:
+        """Remove and return a `Card` from this `Hand`"""
+        return self.cards.pop()
+
 # ============================================
 #                | Subclasses |                   
 # ============================================

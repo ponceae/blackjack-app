@@ -1,5 +1,9 @@
 """
 Tests for the `player.py` module.
+
+Validates that the Player default factory instantiates correctly and ensures that
+serialization and deserialization create the correct Player instance and data
+dictionary.
 """
 
 __author__ = 'Adrien P.'

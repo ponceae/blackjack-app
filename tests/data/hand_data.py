@@ -113,7 +113,7 @@ def generate_test_cards_large() -> list[tuple[list[Card], str, int, int]]:
         ),
     ]
     
-def generate_dealer_or_player_test_data(hand_type: str) -> list[tuple[Any, ...]]:    
+def _generate_dealer_or_player_test_data(hand_type: str) -> list[tuple[Any, ...]]:    
     """
     Test data that uses provided cards generator to create a new tuple with 
     DealerHand or PlayerHand fields.
@@ -137,7 +137,7 @@ def dealerhand_mapping_pairs() -> list[tuple[DealerHand, dict, str]]:
     """Generate pairs of `DealerHand` {'is_face_up'} dicts."""
     dealerhand_mappings = []
         
-    for (_cards, tid, face_up) in generate_dealer_or_player_test_data('dealer'):
+    for (_cards, tid, face_up) in _generate_dealer_or_player_test_data('dealer'):
         
         hand = DealerHand(cards=_cards, is_face_up=face_up)
         
@@ -164,7 +164,7 @@ def playerhand_mapping_pairs() -> PlayerHandData:
         _wager, 
         _insurance_wager, 
         current
-    ) in generate_dealer_or_player_test_data('player'):
+    ) in _generate_dealer_or_player_test_data('player'):
         
         hand = PlayerHand(
             cards=_cards, 

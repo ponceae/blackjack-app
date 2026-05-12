@@ -30,7 +30,7 @@ def bank() -> Bank:
 
 @pytest.mark.parametrize(
     'bank, expected_balance',
-    [(bank, balance) for (bank, balance, *_) in bank_data.generate_bank_test_data()], 
+    [(bank, balance) for (bank, balance, *_) in bank_data._generate_bank_test_data()], 
 )
 def test_init_creates_correct_bank_instance(bank, expected_balance):
     assert bank == Bank(expected_balance)
@@ -73,14 +73,14 @@ def test_bank_equality():
 
 @pytest.mark.parametrize(
     'bank, expected_string',
-    [(bank, string) for (bank, _, string, *_) in bank_data.generate_bank_test_data()]
+    [(bank, string) for (bank, _, string, *_) in bank_data._generate_bank_test_data()]
 )
 def test_bank_string_display(bank, expected_string):
     assert str(bank) == expected_string
 
 @pytest.mark.parametrize(
     'bank, expected_string',
-    [(bank, string) for (bank, *_, string) in bank_data.generate_bank_test_data()],
+    [(bank, string) for (bank, *_, string) in bank_data._generate_bank_test_data()],
 )
 def test_bank_string_debug_display(bank, expected_string):
     assert repr(bank) == expected_string

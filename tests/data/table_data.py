@@ -1,5 +1,9 @@
 """ 
 Test data generators and mappings for `test_table.py`.
+
+Provides:
+    - Table object generator.
+    - Dictionary factory for Table. 
 """
 
 __author__ = 'Adrien P.'
@@ -8,7 +12,7 @@ from typing import Any
 
 from entities import Bank, Card, Deck, DealerHand, Player, PlayerHand, Table
 
-def generate_deck_with_drawn_cards(amount) -> Deck:
+def _generate_deck_with_drawn_cards(amount) -> Deck:
     """Generate a deck with the specified amount of card objects missing."""
     deck = Deck()
     
@@ -17,7 +21,7 @@ def generate_deck_with_drawn_cards(amount) -> Deck:
     
     return deck
 
-def generate_table_objects() -> list[Table]:
+def _generate_table_objects() -> list[Table]:
     """Provide a list of `Table` objects."""
     return [
         Table(
@@ -43,7 +47,7 @@ def generate_table_objects() -> list[Table]:
             dealer=DealerHand(
                 cards=[Card('Diamonds', 5), Card('Hearts', 10)],
             ),
-            deck=generate_deck_with_drawn_cards(6)
+            deck=_generate_deck_with_drawn_cards(6)
         ),
         Table(
             player=Player(
@@ -60,7 +64,7 @@ def generate_table_objects() -> list[Table]:
                 cards=[Card('Clubs', 10), Card('Hearts', 9)],
                 is_face_up=True
             ),
-            deck=generate_deck_with_drawn_cards(4)
+            deck=_generate_deck_with_drawn_cards(4)
         ),
         Table(
             player=Player(
@@ -80,7 +84,7 @@ def generate_table_objects() -> list[Table]:
             dealer=DealerHand(
                 cards=[Card('Clubs', 4), Card('Diamonds', 9)],
             ),
-            deck=generate_deck_with_drawn_cards(6)
+            deck=_generate_deck_with_drawn_cards(6)
         ),
         Table(
             player=Player(
@@ -88,7 +92,7 @@ def generate_table_objects() -> list[Table]:
                 hands=[
                     PlayerHand(
                         cards=[
-                            Card('Hearts', '4'), 
+                            Card('Hearts', 4), 
                             Card('Spades', 'King'), 
                             Card('Diamonds', 10),
                         ], 
@@ -106,13 +110,20 @@ def generate_table_objects() -> list[Table]:
                 cards=[Card('Clubs', 4), Card('Diamonds', 'King'), Card('Spades', 4)],
                 is_face_up=True
             ),
-            deck=generate_deck_with_drawn_cards(6)
+            deck=_generate_deck_with_drawn_cards(6)
         ),
     ]
 
 def table_mapping_pairs() -> list[tuple[Table, dict[str, Any]]]:
     """Generate pairs of `Table` {'player', 'dealer', 'deck'} dicts."""
     return [
-        (table, {'player': table.player, 'dealer': table.dealer, 'deck': table.deck})
-        for table in generate_table_objects()
+        (
+            table, 
+            {
+                'player': table.player.to_dict(), 
+                'dealer': table.dealer.to_dict(), 
+                'deck': table.deck.to_dict()
+            }
+        )
+        for table in _generate_table_objects()
     ]

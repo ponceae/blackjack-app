@@ -12,7 +12,7 @@ from typing import Any
 
 from entities.bank import Bank
 
-def generate_bank_test_data() -> list[tuple[Bank, float, str, str]]:
+def _generate_bank_test_data() -> list[tuple[Bank, float, str, str]]:
     """
     Test data for the `Bank` balance, and the hand's optimal and hard values. Also
     contains the TID (test ID) for each tuple.
@@ -33,5 +33,5 @@ def bank_mapping_pairs() -> list[tuple[Bank, dict[str, Any]]]:
     """Generate pairs of `Bank` instances and their expected {`balance`} dicts."""
     return [
         (bank, {'balance': bank.balance}) 
-        for (bank, *_) in generate_bank_test_data()
+        for (bank, *_) in _generate_bank_test_data()
     ]

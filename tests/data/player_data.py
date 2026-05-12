@@ -15,7 +15,7 @@ from entities.card import Card
 from entities.hand import PlayerHand
 from entities.player import Player
 
-def generate_player_objects() -> list[Player]:
+def _generate_player_objects() -> list[Player]:
     """Provide a list of `Player` objects."""
     return [
         Player(
@@ -62,5 +62,5 @@ def player_mapping_pairs() -> list[tuple[Player, dict[str, Any]]]:
             'hands': [hand.to_dict() for hand in player.hands]
             }
         )
-        for player in generate_player_objects()
+        for player in _generate_player_objects()
     ]

@@ -8,9 +8,8 @@ creates correct data.
 
 import pytest
 
-from data import hand_data
-from entities.card import Card
-from entities.hand import DealerHand, Hand, PlayerHand
+from data import hand_data as hd
+from entities import Card, DealerHand, Hand, PlayerHand
 from utils import validation 
 
 # =========================================
@@ -77,9 +76,9 @@ def test_hand_default_factory_creates_empty_list():
     'test_cards, exp_opt_val, exp_hard_val',
     [
         (cards, opt_val, hard_val) 
-        for (cards, _, opt_val, hard_val) in hand_data.generate_test_cards_large()
+        for (cards, _, opt_val, hard_val) in hd.generate_test_cards_large()
     ],
-    ids=[tid[1] for tid in hand_data.generate_test_cards_large()]
+    ids=[tid[1] for tid in hd.generate_test_cards_large()]
 )
 def test_hand_optimal_and_hard_value(test_cards, exp_opt_val, exp_hard_val):
     hand = Hand(cards=test_cards)
@@ -98,7 +97,7 @@ def test_hand_optimal_and_hard_value(test_cards, exp_opt_val, exp_hard_val):
     [
         (cards, twenty_one) 
         for (cards, _, twenty_one, *_) 
-        in hand_data.generate_test_cards_for_bust_and_twenty_one()
+        in hd.generate_test_cards_for_bust_and_twenty_one()
     ],
     ids=[
         'not_is_twenty_one_a',
@@ -117,7 +116,7 @@ def test_hand_is_twenty_one(test_cards, expected_bool):
     [
         (cards, is_bust) 
         for (cards, is_bust, *_) 
-        in hand_data.generate_test_cards_for_bust_and_twenty_one()
+        in hd.generate_test_cards_for_bust_and_twenty_one()
     ],
     ids=[
         'is_bust_a',
@@ -155,13 +154,13 @@ def test_hand_is_soft(test_cards, expected_bool):
 # Hand Serialization/Deserialization Tests.
 # =========================================
 
-@pytest.mark.parametrize('expected_hand, data_dict', hand_data.hand_mapping_pairs())
+@pytest.mark.parametrize('expected_hand, data_dict', hd.hand_mapping_pairs())
 def test_from_dict_creates_hand_instance(expected_hand, data_dict):
     test_hand = Hand.from_dict(data_dict)
     
     assert test_hand.cards == expected_hand.cards
 
-@pytest.mark.parametrize('hand, expected_data_dict', hand_data.hand_mapping_pairs())
+@pytest.mark.parametrize('hand, expected_data_dict', hd.hand_mapping_pairs())
 def test_to_dict_creates_correct_hand_data_dict(hand, expected_data_dict):
     data_dict = hand.to_dict()
 
@@ -215,10 +214,10 @@ def test_add_card(hand, card, expected_length):
     [
         (cards, data_dict) 
         for (cards, data_dict, *_) 
-        in hand_data.dealerhand_mapping_pairs()
+        in hd.dealerhand_mapping_pairs()
     ],
     ids=[
-        (tids) for (*_, tids) in hand_data.dealerhand_mapping_pairs()
+        (tids) for (*_, tids) in hd.dealerhand_mapping_pairs()
     ],
 )
 def test_from_dict_creates_dealerhand_instance(expected_hand, data_dict):
@@ -231,10 +230,10 @@ def test_from_dict_creates_dealerhand_instance(expected_hand, data_dict):
     [
         (cards, data_dict) 
         for (cards, data_dict, *_) 
-        in hand_data.dealerhand_mapping_pairs()
+        in hd.dealerhand_mapping_pairs()
     ],
     ids=[
-        (tids) for (*_, tids) in hand_data.dealerhand_mapping_pairs()
+        (tids) for (*_, tids) in hd.dealerhand_mapping_pairs()
     ]
 )
 def test_to_dict_creates_correct_dealerhand_data_dict(hand, expected_data_dict):
@@ -251,10 +250,10 @@ def test_to_dict_creates_correct_dealerhand_data_dict(hand, expected_data_dict):
     [
         (cards, data_dict) 
         for (cards, data_dict, *_) 
-        in hand_data.playerhand_mapping_pairs()
+        in hd.playerhand_mapping_pairs()
     ],
     ids=[
-        (tid) for (*_, tid) in hand_data.playerhand_mapping_pairs()
+        (tid) for (*_, tid) in hd.playerhand_mapping_pairs()
     ]
 )
 def test_from_dict_creates_playerhand_instance(expected_hand, data_dict):
@@ -267,10 +266,10 @@ def test_from_dict_creates_playerhand_instance(expected_hand, data_dict):
     [
         (cards, data_dict) 
         for (cards, data_dict, *_) 
-        in hand_data.playerhand_mapping_pairs()
+        in hd.playerhand_mapping_pairs()
     ],
     ids=[
-        (tid) for (*_, tid) in hand_data.playerhand_mapping_pairs()
+        (tid) for (*_, tid) in hd.playerhand_mapping_pairs()
     ]
 )
 def test_to_dict_creates_correct_playerhand_data_dict(hand, expected_data_dict):
@@ -289,7 +288,7 @@ def test_to_dict_creates_correct_playerhand_data_dict(hand, expected_data_dict):
     [
         (cards, can_split) 
         for (cards, can_split, *_) 
-        in hand_data.generate_test_cards_for_split_and_initial()
+        in hd.generate_test_cards_for_split_and_initial()
     ],
     ids=[
         'can_split_a',
@@ -309,7 +308,7 @@ def test_hand_can_split(test_cards, expected_bool):
     [
         (cards, is_initial) 
         for (cards, _, is_initial, *_) 
-        in hand_data.generate_test_cards_for_split_and_initial()
+        in hd.generate_test_cards_for_split_and_initial()
     ],    
     ids=[
         'is_initial_a',

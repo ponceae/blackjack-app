@@ -10,10 +10,7 @@ __author__ = 'Adrien P.'
 
 from typing import Any
 
-from entities.bank import Bank
-from entities.card import Card
-from entities.hand import PlayerHand
-from entities.player import Player
+from entities import Bank, Card, PlayerHand, Player
 
 def _generate_player_objects() -> list[Player]:
     """Provide a list of `Player` objects."""

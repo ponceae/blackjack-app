@@ -10,9 +10,8 @@ __author__ = 'Adrien P.'
 import pytest
 
 from constants import CARD_RANKS, CARD_SUITS
-from data import card_data
-from data.metadata import CARD_INVALID_RANK_ERR_MSG, CARD_INVALID_SUIT_ERR_MSG
-from entities.card import Card
+from data import card_data, metadata as meta
+from entities import Card
 
 # ==========================
 # Card Initialization Tests.
@@ -50,11 +49,11 @@ def test_all_cards_have_correct_rank_and_suit(expected_rank, expected_suit):
 @pytest.mark.parametrize(
     'inv_suit, inv_rank, exp_err_msg',
     [
-        (5, 8, CARD_INVALID_SUIT_ERR_MSG),
-        ('Card', 'Ace', CARD_INVALID_SUIT_ERR_MSG),
-        ('Spades', '5', CARD_INVALID_RANK_ERR_MSG),
-        ('Hearts', 12, CARD_INVALID_RANK_ERR_MSG),
-        ('Diamonds', 1, CARD_INVALID_RANK_ERR_MSG),   
+        (5, 8, meta.CARD_INVALID_SUIT_ERR_MSG),
+        ('Card', 'Ace', meta.CARD_INVALID_SUIT_ERR_MSG),
+        ('Spades', '5', meta.CARD_INVALID_RANK_ERR_MSG),
+        ('Hearts', 12, meta.CARD_INVALID_RANK_ERR_MSG),
+        ('Diamonds', 1, meta.CARD_INVALID_RANK_ERR_MSG),   
     ],
     ids=[
         'invalid_suit_a_int',

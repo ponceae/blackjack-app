@@ -11,13 +11,8 @@ __author__ = 'Adrien P.'
 import pytest
 
 from constants import MAX_STARTING_CAP
-from data import bank_data
-from data.metadata import (
-    BANK_BOUNDS_ERR_MSG, 
-    BANK_INVALID_VALUE_ERR_MSG, 
-    BANK_NEGATIVE_VALUE_ERR_MSG,
-)
-from entities.bank import Bank
+from data import bank_data, metadata as meta
+from entities import Bank
 
 @pytest.fixture
 def bank() -> Bank:
@@ -38,11 +33,11 @@ def test_init_creates_correct_bank_instance(bank, expected_balance):
 @pytest.mark.parametrize(
     'invalid_input, expected_err_msg',
     [
-        (MAX_STARTING_CAP + 0.01, BANK_BOUNDS_ERR_MSG,),
-        (-3, BANK_NEGATIVE_VALUE_ERR_MSG),
-        (-2.56, BANK_NEGATIVE_VALUE_ERR_MSG),
-        ('4a', BANK_INVALID_VALUE_ERR_MSG),
-        ('4.56num', BANK_INVALID_VALUE_ERR_MSG,),
+        (MAX_STARTING_CAP + 0.01, meta.BANK_BOUNDS_ERR_MSG,),
+        (-3, meta.BANK_NEGATIVE_VALUE_ERR_MSG),
+        (-2.56, meta.BANK_NEGATIVE_VALUE_ERR_MSG),
+        ('4a', meta.BANK_INVALID_VALUE_ERR_MSG),
+        ('4.56num', meta.BANK_INVALID_VALUE_ERR_MSG,),
     ],
     ids=[
         'invalid_count_a_big_float',
@@ -134,11 +129,11 @@ def test_setting_bank_chips(bank, set_amount, expected_balance):
 @pytest.mark.parametrize(
     'invalid_value, expected_err_msg',
     [
-        (-5.5, BANK_NEGATIVE_VALUE_ERR_MSG),
-        (-0.01, BANK_NEGATIVE_VALUE_ERR_MSG),
-        ('number string', BANK_INVALID_VALUE_ERR_MSG),
-        (None, BANK_INVALID_VALUE_ERR_MSG),
-        ([], BANK_INVALID_VALUE_ERR_MSG),
+        (-5.5, meta.BANK_NEGATIVE_VALUE_ERR_MSG),
+        (-0.01, meta.BANK_NEGATIVE_VALUE_ERR_MSG),
+        ('number string', meta.BANK_INVALID_VALUE_ERR_MSG),
+        (None, meta.BANK_INVALID_VALUE_ERR_MSG),
+        ([], meta.BANK_INVALID_VALUE_ERR_MSG),
     ],
     ids=[
         'invalid_value_a_negative_float_a',

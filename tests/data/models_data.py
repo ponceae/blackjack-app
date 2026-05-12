@@ -10,7 +10,7 @@ Provides:
 
 from typing import Any
 
-from entities.models import Insurance, Outcome, OutcomeFlag
+from entities import Insurance, Outcome, OutcomeFlag
 
 __author__ = 'Adrien P.'
 

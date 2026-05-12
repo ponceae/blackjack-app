@@ -11,8 +11,7 @@ __author__ = 'Adrien P.'
 
 from typing import Any
 
-from entities.card import Card
-from entities.hand import DealerHand, Hand, PlayerHand
+from entities import Card, DealerHand, Hand, PlayerHand
 
 def generate_test_cards_large() -> list[tuple[list[Card], str, int, int]]:
     """

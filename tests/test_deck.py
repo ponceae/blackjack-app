@@ -10,7 +10,7 @@ __author__ = 'Adrien P.'
 import pytest
 from typing import Any
 
-from entities.deck import  Deck
+from entities import  Deck
 
 @pytest.fixture
 def deck() -> Deck:

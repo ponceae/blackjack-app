@@ -9,22 +9,16 @@ __author__ = 'Adrien P.'
 
 import pytest 
 
-from data import table_data
-from entities.table import Table
+from data import table_data as td
+from entities import Table
 
-@pytest.mark.parametrize(
-    'expected_table, data_dict',
-    table_data.table_mapping_pairs()
-)
+@pytest.mark.parametrize('expected_table, data_dict', td.table_mapping_pairs())
 def test_from_dict_creates_table_instance(expected_table, data_dict):
     test_table = Table.from_dict(data_dict)
     
     assert test_table == expected_table
 
-@pytest.mark.parametrize(
-    'table, expected_data_dict',
-    table_data.table_mapping_pairs()
-)
+@pytest.mark.parametrize('table, expected_data_dict', td.table_mapping_pairs())
 def test_to_dict_creates_correct_data_dict(table, expected_data_dict):
     data_dict = table.to_dict()
     

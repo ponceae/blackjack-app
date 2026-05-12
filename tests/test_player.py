@@ -10,9 +10,8 @@ __author__ = 'Adrien P.'
 
 import pytest
 
-from data import player_data
-from entities.card import Card
-from entities.player import Player, PlayerHand
+from data import player_data as pd
+from entities import Card, Player, PlayerHand
 
 @pytest.fixture
 def player() -> Player:
@@ -31,20 +30,14 @@ def test_player_default_factory_creates_moderate_bank_and_empty_list(player):
 # Player Serialization/Deserialization Tests.
 # ===========================================
 
-@pytest.mark.parametrize(
-    'expected_player, data_dict',
-    player_data.player_mapping_pairs()
-)
+@pytest.mark.parametrize('expected_player, data_dict', pd.player_mapping_pairs())
 def test_from_dict_creates_player_instance(expected_player, data_dict):
     test_player = Player.from_dict(data_dict)
 
     assert test_player.bank == expected_player.bank
     assert test_player.hands == expected_player.hands
 
-@pytest.mark.parametrize(
-    'player, expected_data_dict',
-    player_data.player_mapping_pairs()
-)
+@pytest.mark.parametrize('player, expected_data_dict', pd.player_mapping_pairs())
 def test_to_dict_creates_correct_data_dict(player, expected_data_dict):
     data_dict = player.to_dict()
 

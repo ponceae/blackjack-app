@@ -10,7 +10,7 @@ __author__ = 'Adrien P.'
 
 from typing import Any
 
-from entities.card import Card
+from entities import Card
 
 def generate_card_test_data() -> list[tuple[Card, int, str, str]]:
     """

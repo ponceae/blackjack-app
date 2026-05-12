@@ -10,7 +10,7 @@ __author__ = 'Adrien P.'
 
 from typing import Any
 
-from entities.bank import Bank
+from entities import Bank
 
 def _generate_bank_test_data() -> list[tuple[Bank, float, str, str]]:
     """

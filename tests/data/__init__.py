@@ -3,6 +3,7 @@ from . import hand_data
 from . import metadata
 from . import player_data
 from . import table_data
+from . import conditions_data
 
 __all__ = [
     'bank_data',
@@ -10,4 +11,5 @@ __all__ = [
     'metadata',
     'player_data',
     'table_data',
+    'conditions_data',
 ]

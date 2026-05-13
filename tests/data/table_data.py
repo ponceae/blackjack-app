@@ -44,10 +44,8 @@ def _generate_table_objects() -> list[Table]:
                     ),
                 ],
             ),
-            dealer=DealerHand(
-                cards=[Card('Diamonds', 5), Card('Hearts', 10)],
-            ),
-            deck=_generate_deck_with_drawn_cards(6)
+            dealer=DealerHand(cards=[Card('Diamonds', 5), Card('Hearts', 10)]),
+            deck=_generate_deck_with_drawn_cards(6),
         ),
         Table(
             player=Player(
@@ -81,9 +79,7 @@ def _generate_table_objects() -> list[Table]:
                     ),
                 ],
             ),
-            dealer=DealerHand(
-                cards=[Card('Clubs', 4), Card('Diamonds', 9)],
-            ),
+            dealer=DealerHand(cards=[Card('Clubs', 4), Card('Diamonds', 9)]),
             deck=_generate_deck_with_drawn_cards(6)
         ),
         Table(

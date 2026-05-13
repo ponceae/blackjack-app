@@ -63,9 +63,7 @@ def split_hand(table: Table) -> Table:
     Returns:
         Table: The updated game table.
     """
-    card = table.player.hands[0].remove_card()
-
-    table.player.add_hand(PlayerHand(cards=[card]))
+    table.player.add_hand(PlayerHand(cards=[table.player.hands[0].remove_card()]))
 
     for hand in table.player.hands:
         hand.add_card(table.deck.draw_card())

@@ -7,16 +7,45 @@
 }
 */
 
-h1 {
+.game-contianer {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  display: flex;
+  flex-direction: row;
+
+  justify-content: center;
+}
+
+.dealer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.player {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.buttons {
   display: flex;
   flex-direction: row;
   justify-content: center;
 }
 
-.buttons {
-  padding-top: 15%;
+.hand {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  gap: 20px;
+}
+
+.card-img {  
+  height: auto;
+  width: 100px;
 }

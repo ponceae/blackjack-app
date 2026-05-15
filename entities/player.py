@@ -29,6 +29,7 @@ class Player:
     """
     bank: Bank = field(default_factory=lambda: Bank(500))
     hands: list[PlayerHand] = field(default_factory=list)
+    active_hand_index: int = 0
 
     @classmethod 
     def from_dict(cls, data: dict[str, Any]) -> Self:
@@ -54,10 +55,10 @@ class Player:
 
         raw_hands = data['hands']
         validation.validate_type('hands', raw_hands, list)
-
+        
         return cls(
             bank=Bank.from_dict(data['bank']), 
-            hands=[PlayerHand.from_dict(hand_data) for hand_data in raw_hands]
+            hands=[PlayerHand.from_dict(hand_data) for hand_data in raw_hands],
         )
 
     def to_dict(self) -> dict[str, Any]:
@@ -69,8 +70,13 @@ class Player:
         """
         return {
             'bank': self.bank.to_dict(), 
-            'hands': [_hands.to_dict() for _hands in self.hands]
+            'hands': [_hands.to_dict() for _hands in self.hands],
         }
+
+    @property
+    def current_hand(self) -> PlayerHand:
+        """Return the player's currently active hand."""
+        return self.hands[self.active_hand_index]
 
     def add_hand(self, hand: PlayerHand) -> None:
         """Add the provided hand to the current player's hands."""

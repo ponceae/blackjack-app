@@ -1,6 +1,7 @@
 from functools import wraps
 
-from flask import Flask, render_template, redirect, session
+from flask import Flask, redirect, render_template, session, url_for
+import json
 
 from engine import actions
 from entities import Player, Table
@@ -24,35 +25,54 @@ def _game_active_required(func):
 
 @app.route('/')
 def home():
+    # ===================
+    # FOR DEBUGGING ONLY
+    # ===================
+    create_debug_section(session)
+    
     is_active = session.get('game_active', False)
     table = session_utils.get_table()
     return render_template('index.html', game_active=is_active, table=table)
 
 @app.route('/deal', methods=['POST'])
-def deal():
+def deal():    
     table = Table(player=Player())
     table = actions.deal_initial_cards(table)
 
     session['game_active'] = True
     session_utils.save_table(table)
     
-    return render_template('index.html', game_active=True, table=table)
+    return redirect(url_for('home'))
 
 @app.route('/hit', methods=['POST'])
 @_game_active_required
 def hit():
-    return 'SUCCESS, the HIT button works.'
+    table = session_utils.get_table()
+    
+    card = actions.hit_hand(table, table.player.current_hand)
+    
+    session_utils.save_table(table)
+    
+    return redirect(url_for('home'))
 
 @app.route('/stand', methods=['POST'])
 @_game_active_required
 def stand():
     return 'SUCCESS, the STAND button works.'
 
-# FOR DEBUGGING PURPOSES
+# ===================
+# FOR DEBUGGING ONLY
+# ===================
 @app.route('/reset')
 def reset():
     session.clear()
     return redirect('/')
+
+def create_debug_section(session):
+    debug_session = dict(session)
+        
+    print('== Current Session ==')
+    print(json.dumps(debug_session, indent=4))
     
 if __name__ == '__main__':
     app.run(debug=True)

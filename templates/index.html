@@ -20,11 +20,10 @@
                     class="card-img" alt="Hidden Card">
           {% else %}
                 <img src="{{ url_for('static', filename='cards/' ~ card.rank|lower ~ '_of_' ~ card.suit|lower ~ '.png') }}"
-                    class="card-img" alt="{{ card.rank }} of {{card.suit}}">
-              </div>
+                    class="card-img" alt="{{ card.rank }} of {{card.suit}}">      
           {% endif %}
         {% endfor %} 
-      </div>
+      </div></div>
 
       <div class="title">
         <h1>Blackjack</h1>
@@ -32,13 +31,13 @@
 
       <div class="player">
         {% for hand in table.player.hands %}
-          {% for card in hand.cards %}
-            <div class="hand">
+          <div class="hand">
+          {% for card in hand.cards %}  
               <img src="{{ url_for('static', filename='cards/' ~ card.rank|lower ~ '_of_' ~ card.suit|lower ~ '.png') }}"
                   class="card-img" alt="{{ card.rank }} of {{card.suit}}">
-            </div>
           {% endfor %}
-            <h3>Hand {{ loop.index }} [Wager: {{ hand.wager }}]</h3>
+          </div>
+            <h3>Hand [Wager: {{ hand.wager }}]</h3>
         {% endfor %}
       </div>
 

@@ -10,7 +10,8 @@ __author__ = 'Adrien P.'
 import pytest
 from typing import Any
 
-from entities import  Deck
+from entities import Deck
+from entities.deck import create_deck
 
 @pytest.fixture
 def deck() -> Deck:
@@ -19,8 +20,12 @@ def deck() -> Deck:
 
 @pytest.fixture
 def deck_map_pair(deck) -> tuple[Deck, dict[str, Any]]:
-    """Provide a pair of a `Deck` instance and a {`cards`} dict."""
-    return (deck, {'cards': [c.to_dict() for c in deck.cards]})
+    """Provide a pair of a `Deck` instance and a {`cards`} indices dict."""
+    master_deck = create_deck()
+    
+    expected_indices = [master_deck.index(card) for card in deck.cards]
+    
+    return (deck, {'cards': expected_indices})
 
 # =========================================
 # Deck Serialization/Deserialization Tests.

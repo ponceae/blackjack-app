@@ -53,3 +53,28 @@ def test_split_hand_creates_new_playerhand(table):
     assert len(test_table.deck.cards) == 46
     
     assert table.player.count() == 2
+
+def test_dealer_turn(table):    
+    table.dealer.add_card(Card('Spades', 10))
+    table.dealer.add_card(Card('Clubs', 6))
+    
+    table = actions.dealer_turn(table)
+    
+    assert len(table.dealer.cards) == 3
+    assert table.dealer.is_face_up == True
+
+def test_handle_stand_hands_left(table):
+    table.player.add_hand(PlayerHand())
+    table.player.add_hand(PlayerHand())
+    
+    cond = actions.handle_stand(table)
+    
+    assert cond == True
+    
+def test_handle_stand_no_hands_left(table):
+    table.player.add_hand(PlayerHand())
+    
+    cond = actions.handle_stand(table)
+    
+    assert cond == False
+    

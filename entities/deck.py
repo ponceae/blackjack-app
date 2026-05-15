@@ -50,10 +50,14 @@ class Deck:
             KeyError: If `cards` is missing from the data.
             TypeError: If `cards` is not a list.
         """
-        raw_cards = data['cards']
-        validation.validate_type('cards', raw_cards, list)
+        indices = data['cards']
+        validation.validate_type('cards', indices, list)
 
-        return cls(cards=[Card.from_dict(card) for card in raw_cards])
+        master_deck = create_deck()
+        
+        rebuilt_cards = [master_deck[i] for i in indices]
+
+        return cls(cards=rebuilt_cards)
 
     def to_dict(self) -> dict[str, Any]:
         """
@@ -62,7 +66,11 @@ class Deck:
         Returns:
             dict[str, Any]: A dictionary containing serialized `Card` instances.
         """
-        return {'cards': [card.to_dict() for card in self.cards]}
+        master_deck = create_deck()
+        
+        indices = [master_deck.index(card) for card in self.cards]
+        
+        return {'cards': indices}
 
     def shuffle(self) -> None:
         """

@@ -24,7 +24,7 @@ def deal_initial_cards(table: Table) -> Table:
     table.deck = Deck()  
     table.deck.shuffle()
     
-    table.player.add_hand(PlayerHand())
+    table.player.add_hand(PlayerHand(is_current=True))
     
     for i in range(4):
         card = table.deck.draw_card()
@@ -68,4 +68,43 @@ def split_hand(table: Table) -> Table:
     for hand in table.player.hands:
         hand.add_card(table.deck.draw_card())
 
+    return table
+
+def handle_stand(table: Table) -> bool:
+    """
+    Return `True` if the player has hands left to play and increment
+    the `active_hand_index`. If the player has no hands left, execute
+    the dealer's turn.
+    
+    Args:
+        table (Table): The current game table containing the player's hands.
+    
+    Returns:
+        (bool): `True` if the player has hands left to play, `False` otherwise.
+    """
+    if table.player.active_hand_index < table.player.count() - 1:
+        table.player.active_hand_index += 1
+        return True
+    
+    table = dealer_turn(table)
+    return False
+    
+
+def dealer_turn(table: Table) -> Table:
+    """
+    Change the dealer's `is_face_up` field to `True` and draw cards until
+    the dealer's hand value reaches or exceeds 17.
+    
+    Args: 
+        table (Table): The current game table containing the dealer's cards.
+        
+    Returns:
+        Table: The updated game table.
+    """
+    table.dealer.is_face_up = True
+    
+    while table.dealer.value < 17:
+        card = table.deck.draw_card()
+        table.dealer.add_card(card)
+        
     return table

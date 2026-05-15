@@ -17,3 +17,4 @@ def get_table() -> Table:
 
 def save_table(table) -> None:
     session['table'] = table.to_dict()
+    session.modified = True

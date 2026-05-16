@@ -97,6 +97,7 @@ class OutcomeFlag(IntEnum):
     DEALER_WIN = 3
     DEALER_BLACKJACK = 4
     PUSH= 5
+    LOSE=6
 
 @dataclass
 class Outcome:
@@ -109,6 +110,19 @@ class Outcome:
     """
     flag: OutcomeFlag = OutcomeFlag.NONE
     payout: float = 0.0
+    
+    @property
+    def message(self) -> str:
+        mapping = {
+            OutcomeFlag.NONE: '',
+            OutcomeFlag.PLAYER_WIN: 'You Win!',
+            OutcomeFlag.PLAYER_BLACKJACK: 'Blackjack!',
+            OutcomeFlag.DEALER_WIN: 'Dealer Wins',
+            OutcomeFlag.DEALER_BLACKJACK: 'Dealer Blackjack',
+            OutcomeFlag.PUSH: 'Push',
+            OutcomeFlag.LOSE: 'You Lost'
+        }
+        return mapping.get(self.flag, '')
     
     @classmethod
     def from_dict(cls, data) -> Self:
@@ -131,8 +145,10 @@ class Outcome:
         _flag = data['flag']
         validation.validate_type('flag', _flag, int)
         
-        if _flag not in OutcomeFlag:
-            raise ValueError(f'Invalid outcome code: {_flag}')
+        try:
+            OutcomeFlag(_flag)
+        except ValueError:
+            raise ValueError()
                 
         raw_payout = data['payout']
         validation.validate_type('payout', raw_payout, (int, float))

@@ -11,51 +11,97 @@
 
     <div class="game-container">
 
-      <div class="dealer">
-        {% for card in table.dealer.cards %}
-          {% if loop.first and not table.dealer.is_face_up %}
-              <h3>Dealer</h3>
-              <div class="hand">
+      <!-- Dealer Section -->
+
+      {% if table.dealer.cards|length > 0 %}
+        <div class="dealer"> 
+          <h3>Dealer</h3>
+          
+          <div class="score-display">
+            {% if table.dealer.is_face_up %}
+
+              {% if table.dealer.is_soft %}
+                <p>{{ table.dealer.hard_value }} / {{table.dealer.value}}</p>
+              {% else %}
+                <p>{{ table.dealer.value }}</p>
+              {% endif %}
+            {% endif %}
+          </div>
+
+          <div class="hand">
+            {% for card in table.dealer.cards %}
+              
+              {% if loop.first and not table.dealer.is_face_up %}
                 <img src="{{ url_for('static', filename='cards/card_back.png') }}"
-                    class="card-img" alt="Hidden Card">
-          {% else %}
+                    class="card-img" 
+                    alt="Hidden Card">
+              {% else %}
                 <img src="{{ url_for('static', filename='cards/' ~ card.rank|lower ~ '_of_' ~ card.suit|lower ~ '.png') }}"
-                    class="card-img" alt="{{ card.rank }} of {{card.suit}}">      
-          {% endif %}
-        {% endfor %} 
-      </div></div>
+                    class="card-img" 
+                    alt="{{ card.rank }} of {{card.suit}}">      
+              {% endif %}
+
+            {% endfor %} 
+          </div> 
+        </div> 
+      {% endif %} 
 
       <div class="title">
         <h1>Blackjack</h1>
       </div>
 
+      <!-- Player Section -->
+
       <div class="player">
         {% for hand in table.player.hands %}
-          <div class="hand">
+        <div class="hand">
+        
           {% for card in hand.cards %}  
-              <img src="{{ url_for('static', filename='cards/' ~ card.rank|lower ~ '_of_' ~ card.suit|lower ~ '.png') }}"
-                  class="card-img" alt="{{ card.rank }} of {{card.suit}}">
-          {% endfor %}
-          </div>
-            <h3>Hand [Wager: {{ hand.wager }}]</h3>
-        {% endfor %}
+            <img src="{{ url_for('static', filename='cards/' ~ card.rank|lower ~ '_of_' ~ card.suit|lower ~ '.png') }}"
+                class="card-img" 
+                alt="{{ card.rank }} of {{card.suit}}">
+        {% endfor %} 
+        </div> 
+        
+        <h3>Hand [Wager: {{ hand.wager }}]</h3>
+
+            <div class="score-display">
+              {% if hand.is_soft %}
+                <p>{{ hand.hard_value }} / {{hand.value}}</p>
+              {% else %}
+                <p>{{ hand.value }}</p>
+              {% endif %}
+            </div>
+
+        {% endfor %} 
       </div>
 
-      <div class="buttons">
-        {% if not game_active %}
-          <form action="/deal" method="POST">
-            <button type="submit">Deal</button>
-          </form>
-        {% else %}
-          <form action="/hit" method="POST">
-            <button type="submit">Hit</button>
-          </form>
+      <div class="gamebar">
+        <div class="buttons">
+          {% if not game_active %}
+            <form action="/deal" method="POST">
+              <button type="submit">Deal</button>
+            </form>
+          {% else %}
+            <form action="/hit" method="POST">
+              <button type="submit">Hit</button>
+            </form>
 
-          <form action="/stand" method="POST">
-            <button type="submit">Stand</button>
-          </form>
-        {% endif %}
+            <form action="/stand" method="POST">
+              <button type="submit">Stand</button>
+            </form>
+          {% endif %}
+        </div>
+
+        <div class="chips"></div>
+        <div class="bank"></div>
+
       </div>
+
+      <div class="outcome">
+        <h4>{{ outcome.message }}</h4>
+      </div>
+
     </div>
   </body>
 </html>

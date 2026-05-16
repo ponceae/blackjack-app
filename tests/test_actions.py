@@ -34,16 +34,13 @@ def test_deal_initial_initializes_game_table(table):
 def test_hit_hand_adds_card_to_deck_and_returns_expected_card(table):  
     table.player.add_hand(PlayerHand())
       
-    card_a = actions.hit_hand(table, table.player.hands[0])
-    card_b = actions.hit_hand(table, table.dealer)
+    actions.hit_hand(table, table.player.hands[0])
+    actions.hit_hand(table, table.dealer)
     
     assert len(table.deck.cards) == 50
     
     assert table.player.count() == 1
     assert len(table.dealer.cards) == 1
-    
-    assert card_a == Card('Spades', 'Ace')
-    assert card_b == Card('Spades', 'King')
     
 def test_split_hand_creates_new_playerhand(table):
     test_table = actions.deal_initial_cards(table)

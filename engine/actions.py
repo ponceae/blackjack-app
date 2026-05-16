@@ -36,7 +36,7 @@ def deal_initial_cards(table: Table) -> Table:
             
     return table
 
-def hit_hand(table: Table, hand: Hand) -> Card:
+def hit_hand(table: Table, hand: Hand) -> None:
     """
     Draw a card from the table's deck and add it to the provided hand.
     
@@ -50,8 +50,6 @@ def hit_hand(table: Table, hand: Hand) -> Card:
     card = table.deck.draw_card()
     hand.add_card(card)
     
-    return card
-
 def split_hand(table: Table) -> Table:
     """
     Create a new `PlayerHand` by removing a card from the first initial hand and

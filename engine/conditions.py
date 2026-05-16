@@ -44,10 +44,18 @@ def compare_hands(player_hand: PlayerHand, dealer_hand: DealerHand) -> Outcome:
     Returns:
         Outcome: The outcome after the round has finished.
     """
+    
     player_score = player_hand.value
     dealer_score = dealer_hand.value
     
     outcome = Outcome()
+    
+    if not player_hand.is_bust and dealer_hand.is_bust:
+        return Outcome(flag=OutcomeFlag.PLAYER_WIN)
+    elif player_hand.is_bust and not dealer_hand.is_bust:
+        return Outcome(flag=OutcomeFlag.DEALER_WIN)
+    elif player_hand.is_bust and dealer_hand.is_bust:
+        return Outcome(flag=OutcomeFlag.LOSE)
     
     if player_score == dealer_score:
         outcome.flag = OutcomeFlag.PUSH

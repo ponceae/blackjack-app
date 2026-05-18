@@ -7,10 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <body>
-    <!-- <img class='background' src="{{ url_for('static', filename='images/blackjack_background.png') }}"> -->
-
+    
     <div class="game-container">
-
       <!-- Dealer Section -->
 
       {% if table.dealer.cards|length > 0 %}
@@ -93,13 +91,67 @@
           {% endif %}
         </div>
 
-        <div class="chips"></div>
-        <div class="bank"></div>
+        <div class="chips">
 
+          <ul class="chips-list">
+            <li>
+              <form action="/bet/1" method="POST">
+                <button type="submit" class="chip-btn chip-1">
+                  <img src="/static/images/1_chip.png" alt="$1 Chip">
+                </button>
+              </form>
+            </li>
+            <li>
+              <form action="/bet/2.5" method="POST">
+                <button type="submit" class="chip-btn chip-2.5">
+                  <img src="/static/images/2.5_chip.png" alt="$2.5 Chip">
+                </button>
+              </form>
+            </li>
+            <li>
+              <form action="/bet/5" method="POST">
+                <button type="submit" class="chip-btn chip-5">
+                  <img src="/static/images/5_chip.png" alt="$5 Chip">
+                </button>
+              </form>
+            </li>
+            <li>
+              <form action="/bet/25" method="POST">
+                <button type="submit" class="chip-btn chip-25">
+                  <img src="/static/images/25_chip.png" alt="$25 Chip">
+                </button>
+              </form>
+            </li>
+            <li>
+              <form action="/bet/100" method="POST">
+                <button type="submit" class="chip-btn chip-100">
+                  <img src="/static/images/100_chip.png" alt="$100 Chip">
+                </button>
+              </form>
+            </li>
+            <li>
+              <form action="/bet/500" method="POST">
+                <button type="submit" class="chip-btn chip-500">
+                  <img src="/static/images/500_chip.png" alt="$500 Chip">
+                </button>
+              </form>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+      
+      <div>
+        {% if session.get('current_wager', 0) > 0 %}
+          <p>Wager: {{ session.get('current_wager', 0) }}</p>
+        {% endif %}
       </div>
 
       <div class="outcome">
         <h4>{{ outcome.message }}</h4>
+        {% if 'winnings' in session and session['winnings'] > 0 %}
+          <h4> You Won ${{ session['winnings']}}</h4>
+        {% endif %}
       </div>
 
     </div>

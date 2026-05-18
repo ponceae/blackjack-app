@@ -28,6 +28,10 @@ def _force_stand_sequence(table: Table, curr_hand: PlayerHand):
     return _end_round_sequence(table, outcome)
 
 def _end_round_sequence(table: Table, outcome: Outcome):
+    curr_hand = table.player.hands[table.player.active_hand_index]
+    winnings = actions.handle_payout(curr_hand, outcome)
+    session['winnings'] = winnings
+    table.player.bank.balance += winnings
     session['game_active'] = False
     session_utils.save_table(table)
     session_utils.save_outcome(outcome)
@@ -52,6 +56,9 @@ def deal():
     table = Table(player=Player())
     table = actions.deal_initial_cards(table)
 
+    _wager = session.get('current_wager', 0)
+    table.player.hands[table.player.active_hand_index].wager += _wager
+    
     outcome = conditions.compare_initial_hands(table)
 
     if outcome.flag != OutcomeFlag.NONE:
@@ -60,6 +67,7 @@ def deal():
 
     session['game_active'] = True
     session_utils.save_table(table)
+    session['current_wager'] = 0
     session_utils.save_outcome(outcome)
     return redirect(url_for('home'))
 
@@ -90,6 +98,16 @@ def stand():
     outcome = conditions.compare_hands(curr_hand, table.dealer)
 
     return _end_round_sequence(table, outcome)
+
+@app.route('/bet/<float:amount>', methods=['POST'])
+@app.route('/bet/<int:amount>', methods=['POST'])
+def place_bet(amount):
+    if 'current_wager' not in session:
+        session['current_wager'] = 0
+    
+    session['current_wager'] += amount
+    
+    return redirect(url_for('home'))
     
 # ===================
 # FOR DEBUGGING ONLY

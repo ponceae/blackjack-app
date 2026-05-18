@@ -1,22 +1,14 @@
-/* .background {
-  width: 100vw;
-  height: 100vh;
-  object-fit: cover;
-  display: block;
-  margin: 0;
-}
-*/
-
 .game-contianer {
   display: flex;
   flex-direction: column;
 }
 
-.title {
+.hand {
   display: flex;
   flex-direction: row;
-
   justify-content: center;
+
+  gap: 20px;
 }
 
 .dealer {
@@ -26,27 +18,18 @@
   justify-content: center;
 }
 
+.title {
+  display: flex;
+  flex-direction: row;
+
+  justify-content: center;
+}
+
 .player {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-}
-
-.buttons {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-
-  gap: 20px;
-}
-
-.hand {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-
-  gap: 20px;
 }
 
 .dealer h3, .player h3 {
@@ -68,4 +51,64 @@
 .card-img {  
   height: auto;
   width: 100px;
+}
+
+.gamebar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  position: relative;
+  width: 100%;
+  padding: 15px 30px;
+  box-sizing: border-box;
+
+  gap: 25px;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+
+  gap: 5px;
+}
+
+.chips {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.chip-btn {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.chips-list {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 8px;
+}
+
+.chip-btn img {
+  width: 75px;
+  height: 75px;
+  display: block;
+  object-fit: contain;
+}
+
+.chip-btn:hover {
+  transform: scale(1.1);
+}
+
+.chip-btn:active {
+  transform: scale(0.5);
+}
+
+.outcome {
+  gap: 5px;
 }

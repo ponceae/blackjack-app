@@ -117,10 +117,10 @@ class Outcome:
             OutcomeFlag.NONE: '',
             OutcomeFlag.PLAYER_WIN: 'You Win!',
             OutcomeFlag.PLAYER_BLACKJACK: 'Blackjack!',
-            OutcomeFlag.DEALER_WIN: 'Dealer Wins',
-            OutcomeFlag.DEALER_BLACKJACK: 'Dealer Blackjack',
-            OutcomeFlag.PUSH: 'Push',
-            OutcomeFlag.LOSE: 'You Lost'
+            OutcomeFlag.DEALER_WIN: 'Dealer Wins.',
+            OutcomeFlag.DEALER_BLACKJACK: 'Dealer Blackjack.',
+            OutcomeFlag.PUSH: 'Push.',
+            OutcomeFlag.LOSE: 'You Lost.'
         }
         return mapping.get(self.flag, '')
     

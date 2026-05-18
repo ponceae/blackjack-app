@@ -7,7 +7,8 @@ and dealer's current hand.
 
 __author__ = 'Adrien P.'
 
-from entities import Card, Deck, Hand, PlayerHand, Table
+from engine import conditions, payouts
+from entities import Deck, Hand, Outcome, OutcomeFlag, PlayerHand, Table
 
 def deal_initial_cards(table: Table) -> Table:
     """
@@ -86,7 +87,24 @@ def handle_stand(table: Table) -> bool:
     
     table = dealer_turn(table)
     return False
+
+def _generate_payout_map(player_hand) -> dict[OutcomeFlag, float]:
+    return {
+        OutcomeFlag.NONE: 0.0,
+        OutcomeFlag.PLAYER_WIN: payouts.standard_payout(player_hand),
+        OutcomeFlag.PLAYER_BLACKJACK: payouts.blackjack_payout(player_hand),
+        OutcomeFlag.DEALER_WIN: 0.0,
+        OutcomeFlag.DEALER_BLACKJACK: 0.0,
+        OutcomeFlag.PUSH: payouts.push_payout(player_hand),
+        OutcomeFlag.LOSE: 0.0,
+    }
+
+def handle_payout(player_hand: PlayerHand, outcome: Outcome) -> float:
+    payout_dict = _generate_payout_map(player_hand)
     
+    payout = payout_dict[outcome.flag]
+    
+    return payout
 
 def dealer_turn(table: Table) -> Table:
     """

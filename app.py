@@ -4,7 +4,7 @@ from flask import Flask, redirect, render_template, session, url_for
 import json
 
 from engine import actions, conditions
-from entities import Outcome, OutcomeFlag, Player, PlayerHand, Table
+from entities import Card, OutcomeFlag, Player, PlayerHand, Table
 from utils import session_utils
 
 __author__ = 'Adrien P.'
@@ -23,23 +23,27 @@ def _game_active_required(func):
     return _game_active_bouncer
 
 def _force_stand_sequence(table: Table, curr_hand: PlayerHand):
-    actions.handle_stand(table)
+    has_hands_left = actions.handle_stand(table)
     
-    outcome = conditions.compare_hands(curr_hand, table.dealer)
-    
-    return _end_round_sequence(table, outcome)
+    if has_hands_left:
+        session_utils.save_table(table)
+        return redirect(url_for('home'))
+    else:    
+        return _end_round_sequence(table)
 
-def _end_round_sequence(table: Table, outcome: Outcome):
-    curr_hand = table.player.hands[table.player.active_hand_index]
+def _end_round_sequence(table: Table):    
+    winnings = 0
     
-    winnings = actions.handle_payout(curr_hand, outcome)
+    for hand in table.player.hands:
+        outcome = conditions.compare_hands(hand, table.dealer)
+        hand.outcome_flag = outcome.flag.value
+        winnings += actions.handle_payout(table.player.current_hand, outcome)
     
     session['winnings'] = winnings
     
     table.player.bank.balance += winnings
     
     session_utils.save_table(table)
-    session_utils.save_outcome(outcome)
     
     return redirect(url_for('home'))
 
@@ -49,7 +53,7 @@ def home():
     # FOR DEBUGGING ONLY
     # ===================
     create_debug_section(session)
-    
+        
     return render_template(
         'index.html', 
         game_active=session.get('game_active', False), 
@@ -71,14 +75,25 @@ def deal():
     table = Table(player=Player())
     table = actions.deal_initial_cards(table)
 
+    # FOR DEBUGGING ONLY REMOVE LATER
+    if table.player.hands:
+        table.player.current_hand.cards = [
+            Card('Spades', 4),
+            Card('Hearts', 4),
+        ]
+        table.dealer.cards = [
+            Card('Diamonds', 4),
+            Card('Clubs', 3),
+        ]
+
     _wager = session['current_wager']
-    table.player.hands[table.player.active_hand_index].wager += _wager
+    table.player.current_hand.wager += _wager
     
     outcome = conditions.compare_initial_hands(table)
 
     if outcome.flag != OutcomeFlag.NONE:
         actions.dealer_turn(table)
-        return _end_round_sequence(table, outcome)
+        return _end_round_sequence(table)
 
     session['current_wager'] = 0
     session['game_active'] = True
@@ -92,29 +107,51 @@ def deal():
 @_game_active_required
 def hit():
     table = session_utils.get_table()
-    curr_hand = table.player.hands[table.player.active_hand_index]
     
-    if curr_hand.value >= 21:
-        return _force_stand_sequence(table, curr_hand)
+    if table.player.current_hand.value >= 21:
+        return _force_stand_sequence(table, table.player.current_hand)
     
     actions.hit_hand(table, table.player.current_hand)
 
-    if curr_hand.value >= 21:
-        return _force_stand_sequence(table, curr_hand)
+    if table.player.current_hand.value >= 21:
+        return _force_stand_sequence(table, table.player.current_hand)
         
     session_utils.save_table(table)
     return redirect(url_for('home'))
+
+@app.route('/double', methods=['POST'])
+@_game_active_required
+def double_down():
+    table = session_utils.get_table()
     
+    actions.hit_hand(table, table.player.current_hand)
+    table.player.current_hand.wager *= 2
+    
+    return _force_stand_sequence(table, table.player.current_hand)
+
+@app.route('/split', methods=['POST'])
+@_game_active_required
+def split():
+    table = session_utils.get_table()
+    
+    actions.split_hand(table)
+    table.player.hands[table.player.active_hand_index + 1].wager = table.player.current_hand.wager
+    
+    session_utils.save_table(table)
+    return redirect(url_for('home'))
+
 @app.route('/stand', methods=['POST'])
 @_game_active_required
 def stand():
     table = session_utils.get_table()
-    curr_hand = table.player.hands[table.player.active_hand_index]
     
-    actions.handle_stand(table)
-    outcome = conditions.compare_hands(curr_hand, table.dealer)
-
-    return _end_round_sequence(table, outcome)
+    has_hands_left = actions.handle_stand(table)
+    
+    if has_hands_left:
+        session_utils.save_table(table)
+        return redirect(url_for('home'))
+    else:
+        return _end_round_sequence(table)
 
 @app.route('/bet/<float:amount>', methods=['POST'])
 @app.route('/bet/<int:amount>', methods=['POST'])

@@ -56,9 +56,13 @@ class Player:
         raw_hands = data['hands']
         validation.validate_type('hands', raw_hands, list)
         
+        raw_index = data['active_hand_index']
+        validation.validate_type('active_hand_index', raw_index, int)
+        
         return cls(
             bank=Bank.from_dict(data['bank']), 
             hands=[PlayerHand.from_dict(hand_data) for hand_data in raw_hands],
+            active_hand_index=raw_index
         )
 
     def to_dict(self) -> dict[str, Any]:
@@ -71,6 +75,7 @@ class Player:
         return {
             'bank': self.bank.to_dict(), 
             'hands': [_hands.to_dict() for _hands in self.hands],
+            'active_hand_index': self.active_hand_index
         }
 
     @property

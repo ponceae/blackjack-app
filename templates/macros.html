@@ -1,0 +1,15 @@
+{% macro render_chip(value) %}
+<form action="/bet/{{ value }}" method="POST">
+  <button type="submit" class="chip-btn chip-{{ value }}">
+    <img src="static/images/{{ value }}_chip.png" alt="${{ value }} Chip">
+  </button>
+</form>
+{% endmacro %}
+
+{% macro remove_chip(value) %}
+<form action="/remove/{{ value }}" method="POST">
+  <button type="submit" class="chip-btn chip-{{ value }}">
+    Remove ${{ value }}
+  </button>
+</form>
+{% endmacro %}

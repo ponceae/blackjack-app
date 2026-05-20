@@ -99,11 +99,11 @@
             <form action="/deal" method="POST">
               <button type="submit">Deal</button>
             </form>
-          {% elif game_active and outcome.flag > 0 %}
+          {% elif (game_active and table.player.hands[-1].outcome_flag > 0) and table.player.active_hand_index == table.player.count() - 1%}
           <form action="/new_game" method="POST">
             <button type="submit">OK</button>
           </form>
-          {% elif game_active and outcome.flag == 0 %}
+          {% elif (game_active and table.player.current_hand.outcome_flag == 0) and not table.player.current_hand.is_split_aces %}
             <form action="/hit" method="POST">
               <button type="submit">Hit</button>
             </form>
@@ -111,56 +111,32 @@
             <form action="/stand" method="POST">
               <button type="submit">Stand</button>
             </form>
+
+            <form action="/double" method="POST">
+              <button type="submit">Double</button>
+            </form>
+
+            {% if table.player.current_hand.can_split %}
+              <form action="/split" method="POST">
+                <button type="submit">Split</button>
+              </form>
+            {% endif %}
           {% endif %}
         </div>        
       </div>
+
+      {% import 'macros.html' as chips %}
 
       <div class="chips">
           
           {% if not game_active %}
             <ul class="chips-list">
-              <li>
-                <form action="/bet/1" method="POST">
-                  <button type="submit" class="chip-btn chip-1">
-                    <img src="/static/images/1_chip.png" alt="$1 Chip">
-                  </button>
-                </form>
-              </li>
-              <li>
-                <form action="/bet/2.5" method="POST">
-                  <button type="submit" class="chip-btn chip-2.5">
-                    <img src="/static/images/2.5_chip.png" alt="$2.5 Chip">
-                  </button>
-                </form>
-              </li>
-              <li>
-                <form action="/bet/5" method="POST">
-                  <button type="submit" class="chip-btn chip-5">
-                    <img src="/static/images/5_chip.png" alt="$5 Chip">
-                  </button>
-                </form>
-              </li>
-              <li>
-                <form action="/bet/25" method="POST">
-                  <button type="submit" class="chip-btn chip-25">
-                    <img src="/static/images/25_chip.png" alt="$25 Chip">
-                  </button>
-                </form>
-              </li>
-              <li>
-                <form action="/bet/100" method="POST">
-                  <button type="submit" class="chip-btn chip-100">
-                    <img src="/static/images/100_chip.png" alt="$100 Chip">
-                  </button>
-                </form>
-              </li>
-              <li>
-                <form action="/bet/500" method="POST">
-                  <button type="submit" class="chip-btn chip-500">
-                    <img src="/static/images/500_chip.png" alt="$500 Chip">
-                  </button>
-                </form>
-              </li>
+              <li>{{ chips.render_chip(1) }}</li>
+              <li>{{ chips.render_chip(2.5) }}</li>
+              <li>{{ chips.render_chip(5) }}</li>
+              <li>{{ chips.render_chip(25) }}</li>
+              <li>{{ chips.render_chip(100) }}</li>
+              <li>{{ chips.render_chip(500) }}</li>
             </ul>
 				  {% endif %}
         </div>
@@ -177,63 +153,51 @@
           
           {% if not game_active and session.get('current_wager', 0) > 0 %}
             <ul class="chips-list">
-              <li>
-                <form action="/remove/1" method="POST">
-                  <button type="submit" class="chip-btn chip-1">
-                    Remove $1
-                  </button>
-                </form>
-              </li>
-              <li>
-                <form action="/remove/2.5" method="POST">
-                  <button type="submit" class="chip-btn chip-2.5">
-                    Remove $2.5
-                  </button>
-                </form>
-              </li>
-              <li>
-                <form action="/remove/5" method="POST">
-                  <button type="submit" class="chip-btn chip-5">
-                    Remove $5
-                  </button>
-                </form>
-              </li>
-              <li>
-                <form action="/remove/25" method="POST">
-                  <button type="submit" class="chip-btn chip-25">
-                    Remove $25
-                  </button>
-                </form>
-              </li>
-              <li>
-                <form action="/remove/100" method="POST">
-                  <button type="submit" class="chip-btn chip-100">
-                    Remove $100
-                  </button>
-                </form>
-              </li>
-              <li>
-                <form action="/remove/500" method="POST">
-                  <button type="submit" class="chip-btn chip-500">
-                    Remove $500
-                  </button>
-                </form>
-              </li>
+              <li>{{ chips.remove_chip(1) }}</li>
+              <li>{{ chips.remove_chip(2.5) }}</li>
+              <li>{{ chips.remove_chip(5) }}</li>
+              <li>{{ chips.remove_chip(25) }}</li>
+              <li>{{ chips.remove_chip(100) }}</li>
+              <li>{{ chips.remove_chip(500) }}</li>
             </ul>
 				  {% endif %}
         </div>
 
       <div class="outcome">
         {% if ('current_wager' in session or session.get('current_wager', 0) > 0) and game_active %}
-          {% if game_active and outcome.flag > 0 %}
-            <h4>{{ outcome.message }}</h4>
-          {% if winnings > 0 or outcome.flag == 5 %}
-            <h4>You Won ${{ winnings }}</h4>
-          {% endif %}
-          {% endif %}
+          
+          {% for hand in table.player.hands %}
+
+            {% if hand.outcome_flag > 0 %}
+            <h4></h4>
+
+          {% endfor %}
+        
         {% endif %}
       </div>
 
     </div>
   </body>
 </html>
+
+
+<!-- <div class="outcome">
+  {% if ('current_wager' in session or session.get('current_wager', 0) > 0) and game_active %}
+    
+    {% for hand in table.player.hands %}
+      
+      {% if hand.outcome_flag > 0 %}
+          
+          <h4>{% if table.player.count() > 1 %}Hand {{ loop.index }}: {% endif %}{{ hand.outcome.message }}</h4>
+          
+          {% if loop.last and (winnings and winnings > 0) %}
+            <h4>Total Won: ${{ "{:,.2f}".format(winnings) }}</h4>
+          {% endif %}
+
+        </div>
+      {% endif %}
+
+    {% endfor %}
+    
+  {% endif %}
+</div> -->

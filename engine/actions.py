@@ -51,23 +51,18 @@ def hit_hand(table: Table, hand: Hand) -> None:
     card = table.deck.draw_card()
     hand.add_card(card)
     
-def split_hand(table: Table) -> Table:
+def split_hand(table: Table) -> None:
     """
     Create a new `PlayerHand` by removing a card from the first initial hand and
     drawing and adding a card to both hands.
 
     Args:
         table (Table): The table containing the player's hand and the game deck.
-
-    Returns:
-        Table: The updated game table.
     """
     table.player.add_hand(PlayerHand(cards=[table.player.hands[0].remove_card()]))
 
     for hand in table.player.hands:
         hand.add_card(table.deck.draw_card())
-
-    return table
 
 def handle_stand(table: Table) -> bool:
     """

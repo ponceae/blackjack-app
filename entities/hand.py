@@ -16,6 +16,7 @@ from typing import Any, Self
 from . import Card
 from constants import ACE, ACE_ALT_VALUE, DEFAULT_ACE_VALUE
 from dataclasses import dataclass, field
+from .models import Outcome, OutcomeFlag
 from utils import validation
 
 # ============================================
@@ -213,6 +214,7 @@ class PlayerHand(Hand):
     wager: float = 0.0
     insurance_wager: float = 0.0
     is_current: bool = False
+    outcome_flag: int = 0
     
     @property
     def can_split(self) -> bool:
@@ -237,6 +239,10 @@ class PlayerHand(Hand):
             bool: `True` if the hand has split Aces, `False` otherwise.
         """
         return self.cards[0].rank == ACE and self.cards[1].rank == ACE
+
+    @property
+    def outcome(self) -> Outcome:
+        return Outcome(flag=OutcomeFlag(self.outcome_flag))
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> Self:
@@ -272,6 +278,16 @@ class PlayerHand(Hand):
         current = data['is_current']
         validation.validate_type('is_current', current, bool)
 
+        _flag = data.get('flag', 0)
+        validation.validate_type('flag', _flag, int)
+        
+        try:
+            OutcomeFlag(_flag)
+        except ValueError:
+            raise ValueError()
+        
+        instance.outcome_flag = _flag
+        
         instance.wager = float(raw_wager)
         instance.insurance_wager = float(raw_insurance_wager)
         instance.is_current = current    
@@ -288,5 +304,6 @@ class PlayerHand(Hand):
         data['wager'] = self.wager
         data['insurance_wager'] = self.insurance_wager
         data['is_current'] = self.is_current
+        data['outcome_flag'] = self.outcome_flag
         
         return data

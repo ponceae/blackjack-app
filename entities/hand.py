@@ -278,8 +278,8 @@ class PlayerHand(Hand):
         current = data['is_current']
         validation.validate_type('is_current', current, bool)
 
-        _flag = data.get('flag', 0)
-        validation.validate_type('flag', _flag, int)
+        _flag = data.get('outcome_flag', 0)
+        validation.validate_type('outcome_flag', _flag, int)
         
         try:
             OutcomeFlag(_flag)

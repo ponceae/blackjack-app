@@ -75,17 +75,6 @@ def deal():
     table = Table(player=Player())
     table = actions.deal_initial_cards(table)
 
-    # FOR DEBUGGING ONLY REMOVE LATER
-    if table.player.hands:
-        table.player.current_hand.cards = [
-            Card('Spades', 4),
-            Card('Hearts', 4),
-        ]
-        table.dealer.cards = [
-            Card('Diamonds', 4),
-            Card('Clubs', 3),
-        ]
-
     _wager = session['current_wager']
     table.player.current_hand.wager += _wager
     
@@ -133,6 +122,9 @@ def double_down():
 @_game_active_required
 def split():
     table = session_utils.get_table()
+    
+    if table.player.count() >= 4 or not table.player.current_hand.can_split:
+        return redirect(url_for('home'))
     
     actions.split_hand(table)
     table.player.hands[table.player.active_hand_index + 1].wager = table.player.current_hand.wager

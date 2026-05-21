@@ -64,7 +64,7 @@
       <div class="player">
         {% if ('current_wager' in session or session.get('current_wager', 0) > 0) and game_active %}
           {% for hand in table.player.hands %}
-          <div class="hand">
+          <div class="hand {% if loop.index0 == table.player.active_hand_index and game_active %}active-hand{% endif %}">
           
             {% for card in hand.cards %}  
               <img src="{{ url_for('static', filename='cards/' ~ card.rank|lower ~ '_of_' ~ card.suit|lower ~ '.png') }}"
@@ -73,7 +73,13 @@
           {% endfor %} 
           </div> 
           
-          <h3>Hand [Wager: {{ hand.wager }}]</h3>
+          <h3>
+            Hand 
+            {% if table.player.count() > 1 %}
+              {{ loop.index }}
+            {% endif %}
+            [Wager: {{ hand.wager }}]
+          </h3>
 
               <div class="score-display">
                 {% if hand.is_soft %}
@@ -99,29 +105,33 @@
             <form action="/deal" method="POST">
               <button type="submit">Deal</button>
             </form>
-          {% elif (game_active and table.player.hands[-1].outcome_flag > 0) and table.player.active_hand_index == table.player.count() - 1%}
+          {% elif game_active and (table.player.hands|last).outcome_flag > 0 %}
           <form action="/new_game" method="POST">
             <button type="submit">OK</button>
           </form>
-          {% elif (game_active and table.player.current_hand.outcome_flag == 0) and not table.player.current_hand.is_split_aces %}
-            <form action="/hit" method="POST">
-              <button type="submit">Hit</button>
-            </form>
+          {% elif game_active and table.player.current_hand.outcome_flag == 0 %}
+            
+            {% if not table.player.current_hand.is_split_aces %}
+              <form action="/hit" method="POST">
+                <button type="submit">Hit</button>
+              </form>
 
-            <form action="/stand" method="POST">
-              <button type="submit">Stand</button>
-            </form>
+              <form action="/stand" method="POST">
+                <button type="submit">Stand</button>
+              </form>
 
-            <form action="/double" method="POST">
-              <button type="submit">Double</button>
-            </form>
+              <form action="/double" method="POST">
+                <button type="submit">Double</button>
+              </form>
 
-            {% if table.player.current_hand.can_split %}
+            {% if table.player.current_hand.can_split and table.player.count() < 4 %}
               <form action="/split" method="POST">
                 <button type="submit">Split</button>
               </form>
             {% endif %}
           {% endif %}
+
+        {% endif %}
         </div>        
       </div>
 
@@ -169,8 +179,16 @@
           {% for hand in table.player.hands %}
 
             {% if hand.outcome_flag > 0 %}
-            <h4></h4>
-
+            <h4>
+              {% if table.player.count() > 1 %}
+                Hand {{ loop.index }}: 
+              {% endif %}
+              {{ hand.outcome.message }}
+            </h4>
+            {% if loop.last and (winnings and winnings > 0) %}
+              <h4>Total Won: ${{ "{:,.2f}".format(winnings) }}</h4>
+            {% endif %}
+            {% endif %}
           {% endfor %}
         
         {% endif %}
@@ -178,26 +196,4 @@
 
     </div>
   </body>
-</html>
-
-
-<!-- <div class="outcome">
-  {% if ('current_wager' in session or session.get('current_wager', 0) > 0) and game_active %}
-    
-    {% for hand in table.player.hands %}
-      
-      {% if hand.outcome_flag > 0 %}
-          
-          <h4>{% if table.player.count() > 1 %}Hand {{ loop.index }}: {% endif %}{{ hand.outcome.message }}</h4>
-          
-          {% if loop.last and (winnings and winnings > 0) %}
-            <h4>Total Won: ${{ "{:,.2f}".format(winnings) }}</h4>
-          {% endif %}
-
-        </div>
-      {% endif %}
-
-    {% endfor %}
-    
-  {% endif %}
-</div> -->
+</html>          

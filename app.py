@@ -4,7 +4,7 @@ from flask import Flask, redirect, render_template, session, url_for
 import json
 
 from engine import actions, conditions
-from entities import Card, OutcomeFlag, Player, PlayerHand, Table
+from entities import OutcomeFlag, Player, PlayerHand, Table
 from utils import session_utils
 
 __author__ = 'Adrien P.'

@@ -120,9 +120,11 @@
                 <button type="submit">Stand</button>
               </form>
 
-              <form action="/double" method="POST">
-                <button type="submit">Double</button>
-              </form>
+              {% if table.player.current_hand.cards|length == 2 %}
+                <form action="/double" method="POST">
+                  <button type="submit">Double</button>
+                </form>
+              {% endif %}
 
             {% if table.player.current_hand.can_split and table.player.count() < 4 %}
               <form action="/split" method="POST">

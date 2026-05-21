@@ -1,3 +1,9 @@
+body {
+  background-color: #28775B;
+  background-image: url('/static/images/noise-texture.png');
+  background-repeat: repeat;
+}
+
 .game-contianer {
   display: flex;
   flex-direction: column;
@@ -7,7 +13,7 @@
   display: flex;
   flex-direction: row;
   justify-content: center;
-
+  
   gap: 20px;
 }
 
@@ -16,12 +22,13 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  color: #FFFFFF;
 }
 
 .title {
   display: flex;
   flex-direction: row;
-
+  color: #FFFFFF;
   justify-content: center;
 }
 
@@ -30,6 +37,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  color: #FFFFFF;
 }
 
 .player .hand:not(.active-hand) .card-img {
@@ -57,6 +65,7 @@
   flex-direction: column;
   justify-content: center;
 
+  color: #FFFFFF;
   gap: 8px;
   margin-top: 20px;
 
@@ -136,6 +145,10 @@
   object-fit: contain;
 }
 
+.chip-btn {
+  color: #FFFFFF;
+}
+
 .chip-btn:hover {
   transform: scale(1.1);
 }
@@ -162,4 +175,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.current-wager {
+  color: #FFFFFF;
 }

@@ -13,8 +13,14 @@ body {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  
-  gap: 20px;
+}
+
+.hand .card-img {
+  flex-shrink: 0;
+}
+
+.hand .card-img:not(:first-child) {
+  margin-left: -60px;
 }
 
 .dealer {

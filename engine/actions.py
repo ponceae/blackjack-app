@@ -63,6 +63,7 @@ def split_hand(table: Table) -> None:
 
     for hand in table.player.hands:
         hand.add_card(table.deck.draw_card())
+        hand.has_splitted = True
 
 def handle_stand(table: Table) -> bool:
     """

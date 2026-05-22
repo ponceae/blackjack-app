@@ -3,8 +3,8 @@ from functools import wraps
 from flask import Flask, redirect, render_template, session, url_for
 import json
 
-from engine import actions, conditions
-from entities import OutcomeFlag, Player, PlayerHand, Table
+from engine import actions, conditions, payouts
+from entities import Card, OutcomeFlag, Player, Table
 from utils import session_utils
 
 __author__ = 'Adrien P.'
@@ -22,7 +22,7 @@ def _game_active_required(func):
     
     return _game_active_bouncer
 
-def _force_stand_sequence(table: Table, curr_hand: PlayerHand):
+def _force_stand_sequence(table: Table):
     has_hands_left = actions.handle_stand(table)
     
     if has_hands_left:
@@ -75,6 +75,8 @@ def deal():
     table = Table(player=Player())
     table = actions.deal_initial_cards(table)
 
+    table.dealer.cards[1] = Card('Spades', 'Ace')
+
     _wager = session['current_wager']
     table.player.current_hand.wager += _wager
     
@@ -98,12 +100,12 @@ def hit():
     table = session_utils.get_table()
     
     if table.player.current_hand.value >= 21:
-        return _force_stand_sequence(table, table.player.current_hand)
+        return _force_stand_sequence(table)
     
     actions.hit_hand(table, table.player.current_hand)
 
     if table.player.current_hand.value >= 21:
-        return _force_stand_sequence(table, table.player.current_hand)
+        return _force_stand_sequence(table)
         
     session_utils.save_table(table)
     return redirect(url_for('home'))
@@ -116,7 +118,19 @@ def double_down():
     actions.hit_hand(table, table.player.current_hand)
     table.player.current_hand.wager *= 2
     
-    return _force_stand_sequence(table, table.player.current_hand)
+    return _force_stand_sequence(table)
+
+@app.route('/insurance', methods=['POST'])
+@_game_active_required
+def insurance():
+    table = session_utils.get_table()
+    
+    if conditions.can_take_insurance(table):
+        table.player.current_hand.insurance_wager = payouts.get_insurance_cost(
+            table.player.current_hand
+        )
+    
+    return redirect(url_for('home'))
 
 @app.route('/split', methods=['POST'])
 @_game_active_required

@@ -97,7 +97,7 @@ def is_valid_wager(player: Player, amount: float) -> bool:
     """
     return _validate_wager(player, amount)
 
-def can_take_insurance(table: Table, amount: float):
+def can_take_insurance(table: Table):
     """ 
     Return `True` if the dealer is showing an Ace and the player can afford insurance.
     
@@ -110,7 +110,7 @@ def can_take_insurance(table: Table, amount: float):
         bool: `True` if the player can afford to purchase insurance, `False`
             otherwise.
     """
-    if table.dealer.cards[0].rank != ACE:
+    if table.dealer.cards[1].rank != ACE:
         return False
     
-    return is_valid_wager(table.player, amount)
+    return True

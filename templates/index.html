@@ -111,6 +111,12 @@
           </form>
           {% elif game_active and table.player.current_hand.outcome_flag == 0 %}
             
+            {% if table.player.current_hand.insurance_wager == 0 and (not table.player.current_hand.has_splitted and table.player.current_hand.is_initial_hand) %}
+              <form action="/insurance" method="POST">
+                <button type="submit">Insurance</button>
+              </form>
+            {% endif %}
+
             {% if not table.player.current_hand.is_split_aces %}
               <form action="/hit" method="POST">
                 <button type="submit">Hit</button>

@@ -215,6 +215,7 @@ class PlayerHand(Hand):
     insurance_wager: float = 0.0
     is_current: bool = False
     outcome_flag: int = 0
+    has_splitted: bool = False
     
     @property
     def can_split(self) -> bool:
@@ -278,6 +279,9 @@ class PlayerHand(Hand):
         current = data['is_current']
         validation.validate_type('is_current', current, bool)
 
+        splitted = data['has_splitted']
+        validation.validate_type('has_splitted', splitted, bool)
+
         _flag = data.get('outcome_flag', 0)
         validation.validate_type('outcome_flag', _flag, int)
         
@@ -291,6 +295,7 @@ class PlayerHand(Hand):
         instance.wager = float(raw_wager)
         instance.insurance_wager = float(raw_insurance_wager)
         instance.is_current = current    
+        instance.has_splitted = splitted
         
         return instance
 
@@ -305,5 +310,6 @@ class PlayerHand(Hand):
         data['insurance_wager'] = self.insurance_wager
         data['is_current'] = self.is_current
         data['outcome_flag'] = self.outcome_flag
+        data['has_splitted'] = self.has_splitted
         
         return data

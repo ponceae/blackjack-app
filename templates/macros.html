@@ -9,7 +9,7 @@
 {% macro remove_chip(value) %}
 <form action="/remove/{{ value }}" method="POST">
   <button type="submit" class="chip-btn chip-{{ value }}">
-    Remove ${{ value }}
+    <p>Remove ${{ value }}</p>
   </button>
 </form>
 {% endmacro %}

@@ -61,7 +61,7 @@
       ========================================
       -->
       
-      <div class="player">
+      <div class="player {% if game_active and table.player.current_hand.outcome_flag == 0 %}game-active{% endif %}">
         {% if ('current_wager' in session or session.get('current_wager', 0) > 0) and game_active %}
           {% for hand in table.player.hands %}
           <div class="hand {% if loop.index0 == table.player.active_hand_index and game_active %}active-hand{% endif %}">
@@ -201,7 +201,9 @@
               {{ hand.outcome.message }}
             </h4>
             {% if loop.last and (winnings and winnings > 0) %}
-              <h4>Total Won: ${{ "{:,.2f}".format(winnings) }}</h4>
+              <h4 class="total-won">
+                Total Won: ${{ "{:,.2f}".format(winnings) }}
+              </h4>
             {% endif %}
             
             {% endif %}

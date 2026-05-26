@@ -125,11 +125,6 @@ def double_down():
 def insurance():
     table = session_utils.get_table()
     
-    if conditions.can_take_insurance(table):
-        table.player.current_hand.insurance_wager = payouts.get_insurance_cost(
-            table.player.current_hand
-        )
-    
     session_utils.save_table(table)
     return redirect(url_for('home'))
 

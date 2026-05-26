@@ -7,8 +7,8 @@ and dealer's current hand.
 
 __author__ = 'Adrien P.'
 
-from engine import conditions, payouts
-from entities import Deck, Hand, Outcome, OutcomeFlag, PlayerHand, Table
+from engine import payouts
+from entities import Deck, Hand, Insurance, Outcome, OutcomeFlag, PlayerHand, Table
 
 def deal_initial_cards(table: Table) -> Table:
     """
@@ -120,3 +120,8 @@ def dealer_turn(table: Table) -> Table:
         table.dealer.add_card(card)
         
     return table
+
+def update_insurance(player_hand: PlayerHand, insurance: Insurance):
+    insurance.active = True
+    insurance.cost = payouts.get_insurance_cost(player_hand)
+    insurance.payout = payouts.insurance_payout(insurance.cost)

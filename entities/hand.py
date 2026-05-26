@@ -16,7 +16,7 @@ from typing import Any, Self
 from . import Card
 from constants import ACE, ACE_ALT_VALUE, DEFAULT_ACE_VALUE
 from dataclasses import dataclass, field
-from .models import Outcome, OutcomeFlag
+from .models import Insurance, Outcome, OutcomeFlag
 from utils import validation
 
 # ============================================
@@ -212,7 +212,7 @@ class PlayerHand(Hand):
             played with respect to split hands. Defaults to `False`.
     """
     wager: float = 0.0
-    insurance_wager: float = 0.0
+    insurance: Insurance = Insurance()
     is_current: bool = False
     outcome_flag: int = 0
     has_splitted: bool = False
@@ -273,8 +273,10 @@ class PlayerHand(Hand):
         raw_wager = data['wager']
         validation.validate_type('wager', raw_wager, (int, float))
          
-        raw_insurance_wager = data['insurance_wager']
-        validation.validate_type('insurance_wager', raw_insurance_wager, (int, float))
+        raw_insurance = data.get('insurance', {})
+        validation.validate_type('raw_insurance', raw_insurance, dict)
+        built_insurance = Insurance.from_dict(raw_insurance)
+        validation.validate_type('built_insurance', built_insurance, Insurance)
                     
         current = data['is_current']
         validation.validate_type('is_current', current, bool)
@@ -293,7 +295,7 @@ class PlayerHand(Hand):
         instance.outcome_flag = _flag
         
         instance.wager = float(raw_wager)
-        instance.insurance_wager = float(raw_insurance_wager)
+        instance.insurance = built_insurance
         instance.is_current = current    
         instance.has_splitted = splitted
         
@@ -307,7 +309,7 @@ class PlayerHand(Hand):
         data = super().to_dict()
         
         data['wager'] = self.wager
-        data['insurance_wager'] = self.insurance_wager
+        data['insurance_wager'] = self.insurance.to_dict()
         data['is_current'] = self.is_current
         data['outcome_flag'] = self.outcome_flag
         data['has_splitted'] = self.has_splitted

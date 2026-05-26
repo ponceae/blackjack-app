@@ -130,6 +130,7 @@ def insurance():
             table.player.current_hand
         )
     
+    session_utils.save_table(table)
     return redirect(url_for('home'))
 
 @app.route('/split', methods=['POST'])

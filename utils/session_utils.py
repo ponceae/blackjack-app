@@ -3,7 +3,7 @@
 """
 
 from flask import session
-from entities import Outcome, Player, Table
+from entities import Insurance, Outcome, Player, Table
 
 __author__ = 'Adrien P.'
 
@@ -39,3 +39,16 @@ def get_outcome() -> Outcome:
 def save_outcome(outcome: Outcome) -> None:
     session['outcome'] = outcome.to_dict()
     session.modified = True
+
+def get_insurance() -> Insurance:
+    insurance_dict = session.get('insurance')
+    
+    if insurance_dict:
+        return Insurance.from_dict(insurance_dict)
+    
+    return Insurance()
+    
+def save_insurance(insurance: Insurance) -> None:
+    session['insurance'] = insurance.to_dict()
+    session.modified = True
+    

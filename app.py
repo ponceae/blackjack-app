@@ -3,14 +3,14 @@ from functools import wraps
 from flask import Flask, redirect, render_template, session, url_for
 import json
 
-from engine import actions, conditions, payouts
-from entities import Card, OutcomeFlag, Player, Table
+from engine import actions, conditions
+from entities import Card, Insurance, OutcomeFlag, Player, PlayerHand, Table
 from utils import session_utils
 
 __author__ = 'Adrien P.'
 
 app = Flask(__name__)
-app.secret_key = 'some_top_secret_key'
+app.secret_key = 'gobbledigook'
 
 def _game_active_required(func):
     @wraps(func)
@@ -61,6 +61,7 @@ def home():
         table=session_utils.get_table(),
         current_wager=session.get('current_wager', 0),
         winnings=session.get('winnings', 0),
+        insurance=session_utils.get_insurance(),
     )
 
 @app.route('/new_game', methods=['POST'])
@@ -75,7 +76,8 @@ def deal():
     table = Table(player=Player())
     table = actions.deal_initial_cards(table)
 
-    table.dealer.cards[1] = Card('Spades', 'Ace')
+    table.dealer.cards[0] = Card('Spades', 10)
+    table.dealer.cards[1] = Card('Clubs', 'Ace')
 
     _wager = session['current_wager']
     table.player.current_hand.wager += _wager
@@ -120,14 +122,6 @@ def double_down():
     
     return _force_stand_sequence(table)
 
-@app.route('/insurance', methods=['POST'])
-@_game_active_required
-def insurance():
-    table = session_utils.get_table()
-    
-    session_utils.save_table(table)
-    return redirect(url_for('home'))
-
 @app.route('/split', methods=['POST'])
 @_game_active_required
 def split():
@@ -154,6 +148,18 @@ def stand():
         return redirect(url_for('home'))
     else:
         return _end_round_sequence(table)
+
+@app.route('/insurance', methods=['POST'])
+@_game_active_required
+def insurance():
+    table = session_utils.get_table()
+    insurance = session_utils.get_insurance()
+    
+    if conditions.can_take_insurance(table):
+        actions.update_insurance(table.player.current_hand, insurance)
+    
+    session_utils.save_table(table)
+    return redirect(url_for('home'))
 
 @app.route('/bet/<float:amount>', methods=['POST'])
 @app.route('/bet/<int:amount>', methods=['POST'])

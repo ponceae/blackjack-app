@@ -33,22 +33,37 @@ def _force_stand_sequence(table: Table):
 
 def _end_round_sequence(table: Table):    
     winnings = 0
-    
+    side_winnnigs = 0
+    insurance = session_utils.get_insurance()
+        
+    if insurance.active and table.dealer.is_twenty_one:
+        insurance.win = True
+        side_winnnigs += insurance.payout
+        
     for hand in table.player.hands:
-        outcome = conditions.compare_hands(hand, table.dealer)
+        outcome = conditions.compare_initial_hands(table)
+        
+        if outcome.flag == OutcomeFlag.NONE:
+            outcome = conditions.compare_hands(hand, table.dealer)
+            
         hand.outcome_flag = outcome.flag.value
-        winnings += actions.handle_payout(table.player.current_hand, outcome)
+        
+        winnings += actions.handle_payout(hand, outcome)
     
     session['winnings'] = winnings
+    session['side_winnings'] = side_winnnigs
     
     table.player.bank.balance += winnings
+    table.player.bank.balance += side_winnnigs
     
     session_utils.save_table(table)
+    session_utils.save_insurance(insurance)
     
     return redirect(url_for('home'))
 
 @app.route('/')
 def home():
+    
     # ===================
     # FOR DEBUGGING ONLY
     # ===================
@@ -62,6 +77,7 @@ def home():
         current_wager=session.get('current_wager', 0),
         winnings=session.get('winnings', 0),
         insurance=session_utils.get_insurance(),
+        insurance_phase=session.get('insurance_phase', False),
     )
 
 @app.route('/new_game', methods=['POST'])
@@ -84,12 +100,24 @@ def deal():
     
     outcome = conditions.compare_initial_hands(table)
 
-    if outcome.flag != OutcomeFlag.NONE:
-        actions.dealer_turn(table)
-        return _end_round_sequence(table)
-
     session['current_wager'] = 0
     session['game_active'] = True
+    session['insurance_phase'] = False
+    
+    if conditions.can_take_insurance(table):
+        session['insurance_phase'] = True
+        
+        session_utils.save_table(table)
+        session_utils.save_outcome(outcome)
+        return redirect(url_for('home'))
+
+    if outcome.flag != OutcomeFlag.NONE:
+        actions.dealer_turn(table)
+        
+        session_utils.save_table(table)
+        session_utils.save_outcome(outcome)
+        
+        return _end_round_sequence(table)
     
     session_utils.save_table(table)
     session_utils.save_outcome(outcome)
@@ -157,6 +185,31 @@ def insurance():
     
     if conditions.can_take_insurance(table):
         actions.update_insurance(table.player.current_hand, insurance)
+    
+    session['insurance_phase'] = False
+    session_utils.save_insurance(insurance)
+    
+    if table.dealer.is_twenty_one:
+        actions.dealer_turn(table)
+        
+        session_utils.save_table(table)
+        return _end_round_sequence(table)
+    
+    session_utils.save_table(table)
+    return redirect(url_for('home'))
+
+@app.route('/decline_insurance', methods=['POST'])
+@_game_active_required
+def decline_insurance():
+    table = session_utils.get_table()
+    
+    session['insurance_phase'] = True
+    
+    if table.dealer.is_twenty_one:
+        actions.dealer_turn(table)
+        
+        session_utils.save_table(table)
+        return _end_round_sequence(table)
     
     session_utils.save_table(table)
     return redirect(url_for('home'))

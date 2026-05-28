@@ -92,8 +92,11 @@ def deal():
     table = Table(player=Player())
     table = actions.deal_initial_cards(table)
 
-    table.dealer.cards[0] = Card('Spades', 10)
-    table.dealer.cards[1] = Card('Clubs', 'Ace')
+    # table.dealer.cards[0] = Card('Spades', 10)
+    # table.dealer.cards[1] = Card('Clubs', 'Ace')
+    
+    # table.player.current_hand.cards[0] = Card('Diamonds', 'Ace')
+    # table.player.current_hand.cards[1] = Card('Hearts', 'King')
 
     _wager = session['current_wager']
     table.player.current_hand.wager += _wager
@@ -195,6 +198,12 @@ def insurance():
         session_utils.save_table(table)
         return _end_round_sequence(table)
     
+    outcome = conditions.compare_initial_hands(table)
+    if outcome.flag != OutcomeFlag.NONE:
+        actions.dealer_turn(table)
+        session_utils.save_table(table)
+        return _end_round_sequence(table)
+    
     session_utils.save_table(table)
     return redirect(url_for('home'))
 
@@ -203,9 +212,16 @@ def insurance():
 def decline_insurance():
     table = session_utils.get_table()
     
-    session['insurance_phase'] = True
+    session['insurance_phase'] = False
     
     if table.dealer.is_twenty_one:
+        actions.dealer_turn(table)
+        
+        session_utils.save_table(table)
+        return _end_round_sequence(table)
+    
+    outcome = conditions.compare_initial_hands(table)
+    if outcome.flag != OutcomeFlag.NONE:
         actions.dealer_turn(table)
         
         session_utils.save_table(table)

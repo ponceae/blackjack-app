@@ -192,6 +192,17 @@
       <div class="outcome">
         {% if ('current_wager' in session or session.get('current_wager', 0) > 0) and game_active %}
           
+          {% if insurance and insurance.active and table.player.hands[0].outcome_flag > 0 %}
+          <h4>
+            Insurance:
+            {% if insurance.win %}
+              Won ${{ "{:,.2f}".format(insurance.payout) }}
+            {% else %}
+              Lost
+            {% endif %}
+          </h4>
+          {% endif %}
+
           {% for hand in table.player.hands %}
 
             {% if hand.outcome_flag > 0 %}

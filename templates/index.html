@@ -9,12 +9,8 @@
   <body>
     
     <div class="game-container">
-      {% if ('current_wager' in session or session.get('current_wager', 0) > 0) and game_active %}
-        <!-- 
-        ======================================== 
-                      Dealer Section 
-        ========================================
-        -->
+      {% if ('current_wager' in session or session.get('current_wager', 0) > 0) and game_active %}  
+        {# --- Display Dealer Cards --- #}
 
         {% if table.dealer.cards|length > 0 %}
           <div class="dealer"> 
@@ -24,10 +20,11 @@
               {% if table.dealer.is_face_up %}
 
                 {% if table.dealer.is_soft %}
-                  <p>{{ table.dealer.hard_value }} / {{table.dealer.value}}</p>
+                  <p>{{ table.dealer.hard_value }} / {{table.dealer.value }}</p>
                 {% else %}
                   <p>{{ table.dealer.value }}</p>
                 {% endif %}
+                
               {% endif %}
             </div>
 
@@ -41,66 +38,58 @@
                 {% else %}
                   <img src="{{ url_for('static', filename='cards/' ~ card.rank|lower ~ '_of_' ~ card.suit|lower ~ '.png') }}"
                       class="card-img" 
-                      alt="{{ card.rank }} of {{card.suit}}">      
+                      alt="{{ card.rank }} of {{card.suit}}">     
                 {% endif %}
-
               {% endfor %} 
             </div> 
           </div> 
-        {% endif %} 
-
+        {% endif %}
       {% endif %}
 
       <div class="title">
         <h1>Blackjack</h1>
       </div>
 
-      <!-- 
-      ======================================== 
-                    Player Section 
-      ========================================
-      -->
-      
-      <div class="player {% if game_active and table.player.current_hand.outcome_flag == 0 %}game-active{% endif %}">
+      {# --- Display Player Cards --- #}
+      {% set is_hand_active = game_active and table.player.current_hand.outcome_flag == 0 %}
+      <div class="player {% if is_hand_active %}game-active{% endif %}">
+
         {% if ('current_wager' in session or session.get('current_wager', 0) > 0) and game_active %}
           {% for hand in table.player.hands %}
-          <div class="hand {% if loop.index0 == table.player.active_hand_index and game_active %}active-hand{% endif %}">
+
+          {% set is_active_hand = loop.index0 == table.player.active_hand_index and game_active %}
+          <div class="hand {% if is_hand_active %}active-hand{% endif %}">
           
             {% for card in hand.cards %}  
               <img src="{{ url_for('static', filename='cards/' ~ card.rank|lower ~ '_of_' ~ card.suit|lower ~ '.png') }}"
                   class="card-img" 
                   alt="{{ card.rank }} of {{card.suit}}">
-          {% endfor %} 
+                  
+            {% endfor %} 
           </div> 
           
-          <h3>
-            Hand 
-            {% if table.player.count() > 1 %}
-              {{ loop.index }}
+          {# Display Hand Wagers #}
+          {% set hand_index = " " ~ loop.index if table.player.count() > 1 else "" %}
+          <h3>Hand {{ hand_index }} [Wager: ${{ "{:,.2f}".format(hand.wager) }}]</h3>
+
+          <div class="score-display">
+
+            {% if hand.is_soft %}
+              <p>{{ hand.hard_value }} / {{hand.value}}</p>
+            {% else %}
+              <p>{{ hand.value }}</p>
             {% endif %}
-            [Wager: {{ hand.wager }}]
-          </h3>
 
-              <div class="score-display">
-                {% if hand.is_soft %}
-                  <p>{{ hand.hard_value }} / {{hand.value}}</p>
-                {% else %}
-                  <p>{{ hand.value }}</p>
-                {% endif %}
-              </div>
-
+          </div>
           {% endfor %} 
         {% endif %}
       </div>
 
-      <!-- 
-      ======================================== 
-          Gamebar Section (Buttons & Chips) 
-      ========================================
-      -->
+      {# Gamebar Section w/ Buttons #}
 
       <div class="gamebar">
         <div class="buttons">
+
           {% if session.get('current_wager', 0) > 0 and not game_active %}
             <form action="/deal" method="POST">
               <button type="submit">Deal</button>
@@ -135,15 +124,14 @@
                   </form>
                 {% endif %}
 
-              {% if table.player.current_hand.can_split and table.player.count() < 4 %}
-                <form action="/split" method="POST">
-                  <button type="submit">Split</button>
-                </form>
+                {% if table.player.current_hand.can_split and table.player.count() < 4 %}
+                  <form action="/split" method="POST">
+                    <button type="submit">Split</button>
+                  </form>
+                {% endif %}
               {% endif %}
             {% endif %}
           {% endif %}
-
-        {% endif %}
         </div>        
       </div>
 

@@ -26,24 +26,27 @@ body {
 .dealer {
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
+
+  align-items: center;
   color: #FFFFFF;
 }
 
 .title {
   display: flex;
   flex-direction: row;
-  color: #FFFFFF;
   justify-content: center;
+
+  color: #FFFFFF;
   font-size: 35px;
 }
 
 .player {
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
+
+  align-items: center;
   color: #FFFFFF;
 }
 
@@ -53,7 +56,6 @@ body {
 
 .player .hand.active-hand .card-img {
   opacity: 1;
-
   filter: drop-shadow(0 0 2px #FFD700) drop-shadow(0 0 6px #FFD700);
 
   transform: translateY(-5px);
@@ -72,11 +74,11 @@ body {
   flex-direction: column;
   justify-content: center;
 
+  align-items: center;
   color: #FFFFFF;
+  
   gap: 8px;
   margin-top: 20px;
-
-  align-items: center;
 }
 
 .outcome h4:last-child {
@@ -115,6 +117,13 @@ body {
   gap: 5px;
 }
 
+.buttons button {
+  font-size: 20px;
+  padding: 10px 20px;
+  
+  cursor: pointer;
+}
+
 .chips {
   display: flex;
   flex-direction: row;
@@ -130,6 +139,7 @@ body {
 .remove-chips-list {
   display: flex;
   list-style: none;
+  
   margin: 0;
   padding: 0;
   gap: 8px;
@@ -144,6 +154,7 @@ body {
 .chips-list {
   display: flex;
   list-style: none;
+  
   margin: 0;
   padding: 0;
   gap: 8px;
@@ -154,10 +165,13 @@ body {
   height: 100px;
   display: block;
   object-fit: contain;
+
+  cursor: pointer;
 }
 
 .chip-btn p {
   font-size: 25px;
+  cursor: pointer;
 }
 
 .chip-btn p li {

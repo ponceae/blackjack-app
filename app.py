@@ -4,7 +4,7 @@ from flask import Flask, redirect, render_template, session, url_for
 import json
 
 from engine import actions, conditions
-from entities import Card, Insurance, OutcomeFlag, Player, PlayerHand, Table
+from entities import OutcomeFlag, Player, Table
 from utils import session_utils
 
 __author__ = 'Adrien P.'
@@ -83,7 +83,12 @@ def home():
 @app.route('/new_game', methods=['POST'])
 def new_game():
     session['winnings'] = 0
+    session['side_winnings'] = 0
     session['game_active'] = False
+    
+    insurance = session_utils.get_insurance()
+    insurance.reset()
+    session_utils.save_insurance(insurance)
     
     return redirect(url_for('home'))
 
@@ -91,12 +96,6 @@ def new_game():
 def deal():    
     table = Table(player=Player())
     table = actions.deal_initial_cards(table)
-
-    # table.dealer.cards[0] = Card('Spades', 10)
-    # table.dealer.cards[1] = Card('Clubs', 'Ace')
-    
-    # table.player.current_hand.cards[0] = Card('Diamonds', 'Ace')
-    # table.player.current_hand.cards[1] = Card('Hearts', 'King')
 
     _wager = session['current_wager']
     table.player.current_hand.wager += _wager
@@ -106,6 +105,10 @@ def deal():
     session['current_wager'] = 0
     session['game_active'] = True
     session['insurance_phase'] = False
+    
+    insurance = session_utils.get_insurance()
+    insurance.reset()
+    session_utils.save_insurance(insurance)
     
     if conditions.can_take_insurance(table):
         session['insurance_phase'] = True

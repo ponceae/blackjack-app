@@ -13,3 +13,50 @@
   </button>
 </form>
 {% endmacro %}
+
+{% macro render_gamebar_buttons(session, table, game_active) %}
+{% if session.get('current_wager', 0) > 0 and not game_active %}
+  <form action="/deal" method="POST">
+    <button type="submit">Deal</button>
+  </form>
+{% elif game_active and (table.player.hands|last).outcome_flag > 0 %}
+<form action="/new_game" method="POST">
+  <button type="submit">OK</button>
+</form>
+{% elif game_active and table.player.current_hand.outcome_flag == 0 %}
+  
+  {% if session.get('insurance_phase') %}
+    <form action="/insurance" method="POST">
+      <button type="submit">Insurance</button>
+    </form>
+    <form action="/decline_insurance" method="POST">
+      <button type="submit">Decline Insurance</button>
+    </form>
+  {% else %}
+
+    {% if not table.player.current_hand.is_split_aces %}
+      <form action="/hit" method="POST">
+        <button type="submit">Hit</button>
+      </form>
+
+      <form action="/stand" method="POST">
+        <button type="submit">Stand</button>
+      </form>
+
+      {% if table.player.current_hand.cards|length == 2 %}
+        <form action="/double" method="POST">
+          <button type="submit">Double</button>
+        </form>
+      {% endif %}
+
+      {% if table.player.current_hand.can_split and table.player.count() < 4 %}
+        <form action="/split" method="POST">
+          <button type="submit">Split</button>
+        </form>
+      {% endif %} 
+
+    {% endif %} {# End is_split_aces #}
+  {% endif %} {# End insurance_phase #}
+{% endif %} 
+
+{% endmacro %}

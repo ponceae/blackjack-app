@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <body>
+    {% import 'macros.html' as components %}
     
     <div class="game-container">
       {% if ('current_wager' in session or session.get('current_wager', 0) > 0) and game_active %}  
@@ -23,9 +24,9 @@
                   <p>{{ table.dealer.hard_value }} / {{table.dealer.value }}</p>
                 {% else %}
                   <p>{{ table.dealer.value }}</p>
-                {% endif %}
+                {% endif %} {# End soft logic #}
                 
-              {% endif %}
+              {% endif %} {# End hole card score logic #}
             </div>
 
             <div class="hand">
@@ -39,11 +40,11 @@
                   <img src="{{ url_for('static', filename='cards/' ~ card.rank|lower ~ '_of_' ~ card.suit|lower ~ '.png') }}"
                       class="card-img" 
                       alt="{{ card.rank }} of {{card.suit}}">     
-                {% endif %}
-              {% endfor %} 
+                {% endif %} {# End hole card logic #}
+              {% endfor %} {# End looping thru dealer cards #}
             </div> 
           </div> 
-        {% endif %}
+        {% endif %} {# Out of dealer cards #}
       {% endif %}
 
       <div class="title">
@@ -69,8 +70,8 @@
           </div> 
           
           {# Display Hand Wagers #}
-          {% set hand_index = " " ~ loop.index if table.player.count() > 1 else "" %}
-          <h3>Hand {{ hand_index }} [Wager: ${{ "{:,.2f}".format(hand.wager) }}]</h3>
+          {% set hand_index = ' ' ~ loop.index if table.player.count() > 1 else '' %}
+          <h3>Hand {{ hand_index }} [Wager: ${{ '{:,.2f}'.format(hand.wager) }}]</h3>
 
           <div class="score-display">
 
@@ -87,51 +88,11 @@
 
       {# Gamebar Section w/ Buttons #}
 
+      {% import 'macros.html' as ui %}
+
       <div class="gamebar">
         <div class="buttons">
-
-          {% if session.get('current_wager', 0) > 0 and not game_active %}
-            <form action="/deal" method="POST">
-              <button type="submit">Deal</button>
-            </form>
-          {% elif game_active and (table.player.hands|last).outcome_flag > 0 %}
-          <form action="/new_game" method="POST">
-            <button type="submit">OK</button>
-          </form>
-          {% elif game_active and table.player.current_hand.outcome_flag == 0 %}
-            
-            {% if session.get('insurance_phase') %}
-              <form action="/insurance" method="POST">
-                <button type="submit">Insurance</button>
-              </form>
-              <form action="/decline_insurance" method="POST">
-                <button type="submit">Decline Insurance</button>
-              </form>
-            {% else %}
-
-              {% if not table.player.current_hand.is_split_aces %}
-                <form action="/hit" method="POST">
-                  <button type="submit">Hit</button>
-                </form>
-
-                <form action="/stand" method="POST">
-                  <button type="submit">Stand</button>
-                </form>
-
-                {% if table.player.current_hand.cards|length == 2 %}
-                  <form action="/double" method="POST">
-                    <button type="submit">Double</button>
-                  </form>
-                {% endif %}
-
-                {% if table.player.current_hand.can_split and table.player.count() < 4 %}
-                  <form action="/split" method="POST">
-                    <button type="submit">Split</button>
-                  </form>
-                {% endif %}
-              {% endif %}
-            {% endif %}
-          {% endif %}
+          {{ components.render_gamebar_buttons(session, table, game_active) }}
         </div>        
       </div>
 
@@ -141,14 +102,14 @@
           
           {% if not game_active %}
             <ul class="chips-list">
-              <li>{{ chips.render_chip(1) }}</li>
-              <li>{{ chips.render_chip(2.5) }}</li>
-              <li>{{ chips.render_chip(5) }}</li>
-              <li>{{ chips.render_chip(25) }}</li>
-              <li>{{ chips.render_chip(100) }}</li>
-              <li>{{ chips.render_chip(500) }}</li>
-              <li>{{ chips.render_chip(1000) }}</li>
-              <li>{{ chips.render_chip(5000) }}</li>
+              <li>{{ components.render_chip(1) }}</li>
+              <li>{{ components.render_chip(2.5) }}</li>
+              <li>{{ components.render_chip(5) }}</li>
+              <li>{{ components.render_chip(25) }}</li>
+              <li>{{ components.render_chip(100) }}</li>
+              <li>{{ components.render_chip(500) }}</li>
+              <li>{{ components.render_chip(1000) }}</li>
+              <li>{{ components.render_chip(5000) }}</li>
             </ul>
 				  {% endif %}
         </div>
@@ -165,14 +126,14 @@
           
           {% if not game_active and session.get('current_wager', 0) > 0 %}
             <ul class="chips-list">
-              <li>{{ chips.remove_chip(1) }}</li>
-              <li>{{ chips.remove_chip(2.5) }}</li>
-              <li>{{ chips.remove_chip(5) }}</li>
-              <li>{{ chips.remove_chip(25) }}</li>
-              <li>{{ chips.remove_chip(100) }}</li>
-              <li>{{ chips.remove_chip(500) }}</li>
-              <li>{{ chips.remove_chip(1000) }}</li>
-              <li>{{ chips.remove_chip(5000) }}</li>
+              <li>{{ components.remove_chip(1) }}</li>
+              <li>{{ components.remove_chip(2.5) }}</li>
+              <li>{{ components.remove_chip(5) }}</li>
+              <li>{{ components.remove_chip(25) }}</li>
+              <li>{{ components.remove_chip(100) }}</li>
+              <li>{{ components.remove_chip(500) }}</li>
+              <li>{{ components.remove_chip(1000) }}</li>
+              <li>{{ components.remove_chip(5000) }}</li>
             </ul>
 				  {% endif %}
         </div>
@@ -181,39 +142,25 @@
         {% if ('current_wager' in session or session.get('current_wager', 0) > 0) and game_active %}
           
           {% if insurance and insurance.active and table.player.hands[0].outcome_flag > 0 %}
-          <h4>
-            Insurance:
-            {% if insurance.win %}
-              Won ${{ "{:,.2f}".format(insurance.payout) }}
-            {% else %}
-              Lost
-            {% endif %}
-          </h4>
+            {% set side_win = 'Insurance Won: $' ~ '{:,.2f}'.format(insurance.payout) if insurance.win else 'Insurance Lost' %}
+            <h4>{{ side_win }}</h4>
           {% endif %}
 
           {% for hand in table.player.hands %}
 
             {% if hand.outcome_flag > 0 %}
-            <h4>
-              {% if table.player.count() > 1 %}
-                Hand {{ loop.index }}: 
-              {% endif %}
-              {% if hand.is_bust %}
-                Bust.
-              {% endif %}
-              {{ hand.outcome.message }}
-            </h4>
-            {% if loop.last and (winnings and winnings > 0) %}
-              <h4 class="total-won">
-                Total Won: ${{ "{:,.2f}".format(winnings) }}
-              </h4>
-            {% endif %}
+              {% set prefix = 'Hand ' ~ loop.index ~ ': ' if table.player.count() > 1 else '' %}
+              {% set bust_msg = 'Bust. ' if hand.is_bust else '' %}
+              {% set outcome_msg = prefix ~ bust_msg ~ hand.outcome.message%}
+              <h4>{{ outcome_msg }}</h4>
             
-            {% endif %}
-          
-          {% endfor %}
-        
-        {% endif %}
+              {% if loop.last and (winnings and winnings > 0) %}
+                <h4 class="total-won">Total Won: ${{ "{:,.2f}".format(winnings) }}</h4>
+              {% endif %}
+            
+            {% endif %} {# End of outcome check #}
+          {% endfor %} {# End looping thru player hands #}
+        {% endif %} {# End checking player outcomes #}
       </div>
 
     </div>

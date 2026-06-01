@@ -99,16 +99,14 @@ def is_valid_wager(player: Player, amount: float) -> bool:
 
 def can_take_insurance(table: Table):
     """ 
-    Return `True` if the dealer is showing an Ace and the player can afford insurance.
+    Return `True` if the dealer is showing an Ace.
     
     Args:
         table (Table): The current game table containing the player's and dealer's 
             hand.
-        amount (float): The cost for purchasing insurance.
-        
+            
     Returns:
-        bool: `True` if the player can afford to purchase insurance, `False`
-            otherwise.
+        bool: `True` if the player can take insurance, `False` otherwise.
     """
     if table.dealer.cards[1].rank != ACE:
         return False

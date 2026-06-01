@@ -84,19 +84,19 @@ def generate_dealerhands_and_balances() -> list[tuple[DealerHand, bool, float, s
     with a given cost."""
     return [
         (
-            DealerHand(cards=[Card('Clubs', 'Ace'), Card('Clubs', 2)]), 
+            DealerHand(cards=[Card('Clubs', 8), Card('Clubs', 'Ace')]), 
             True, 
             400,
             'can_get_insurance_a',
         ),
         (
-            DealerHand(cards=[Card('Clubs', 2), Card('Clubs', 'Ace')]), 
+            DealerHand(cards=[Card('Clubs', 10), Card('Clubs', 8)]), 
             False, 
             250,
             'cannot_get_insurance_a_invalid_cond',
         ),
         (
-            DealerHand(cards=[Card('Clubs', 'Ace'), Card('Clubs', 2)]), 
+            DealerHand(cards=[Card('Clubs', 4), Card('Clubs', 'Ace')]), 
             True, 
             100,
             'can_get_insurance_b',

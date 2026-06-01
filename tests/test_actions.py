@@ -45,7 +45,7 @@ def test_hit_hand_adds_card_to_deck_and_returns_expected_card(table):
 def test_split_hand_creates_new_playerhand(table):
     test_table = actions.deal_initial_cards(table)
         
-    test_table = actions.split_hand(test_table)
+    actions.split_hand(test_table)
     
     assert len(test_table.deck.cards) == 46
     

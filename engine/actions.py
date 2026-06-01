@@ -37,6 +37,10 @@ def deal_initial_cards(table: Table) -> Table:
             
     return table
 
+# ============================
+# Direct Hand(s) Modification.
+# ============================
+
 def hit_hand(table: Table, hand: Hand) -> None:
     """
     Draw a card from the table's deck and add it to the provided hand.
@@ -65,42 +69,9 @@ def split_hand(table: Table) -> None:
         hand.add_card(table.deck.draw_card())
         hand.has_splitted = True
 
-def handle_stand(table: Table) -> bool:
-    """
-    Return `True` if the player has hands left to play and increment
-    the `active_hand_index`. If the player has no hands left, execute
-    the dealer's turn.
-    
-    Args:
-        table (Table): The current game table containing the player's hands.
-    
-    Returns:
-        (bool): `True` if the player has hands left to play, `False` otherwise.
-    """
-    if table.player.active_hand_index < table.player.count() - 1:
-        table.player.active_hand_index += 1
-        return True
-    
-    table = dealer_turn(table)
-    return False
-
-def _generate_payout_map(player_hand) -> dict[OutcomeFlag, float]:
-    return {
-        OutcomeFlag.NONE: 0.0,
-        OutcomeFlag.PLAYER_WIN: payouts.standard_payout(player_hand),
-        OutcomeFlag.PLAYER_BLACKJACK: payouts.blackjack_payout(player_hand),
-        OutcomeFlag.DEALER_WIN: 0.0,
-        OutcomeFlag.DEALER_BLACKJACK: 0.0,
-        OutcomeFlag.PUSH: payouts.push_payout(player_hand),
-        OutcomeFlag.LOSE: 0.0,
-    }
-
-def handle_payout(player_hand: PlayerHand, outcome: Outcome) -> float:
-    payout_dict = _generate_payout_map(player_hand)
-    
-    payout = payout_dict[outcome.flag]
-    
-    return payout
+# =====================
+# Game Logic Execution. 
+# =====================
 
 def dealer_turn(table: Table) -> Table:
     """
@@ -121,7 +92,74 @@ def dealer_turn(table: Table) -> Table:
         
     return table
 
-def update_insurance(player_hand: PlayerHand, insurance: Insurance):
+def handle_stand(table: Table) -> bool:
+    """
+    Return `True` if the player has hands left to play and increment
+    the `active_hand_index`. If the player has no hands left, execute
+    the dealer's turn.
+    
+    Args:
+        table (Table): The current game table containing the player's hands.
+    
+    Returns:
+        (bool): `True` if the player has hands left to play, `False` otherwise.
+    """
+    if table.player.active_hand_index < table.player.count() - 1:
+        table.player.active_hand_index += 1
+        return True
+    
+    table = dealer_turn(table)
+    return False
+
+# ==================================
+# Payouts and Instance Modification.
+# ==================================
+
+def _generate_payout_map(player_hand: PlayerHand) -> dict[OutcomeFlag, float]:
+    """
+    Provide a mapping for an `OutcomeFlag` to its expected type of payout.
+    
+    Args:
+        player_hand (PlayerHand): The player's hand containing the current wager.
+    
+    Returns:
+        (dict): A map corresponding the flag to its payout.
+    """
+    return {
+        OutcomeFlag.NONE: 0.0,
+        OutcomeFlag.PLAYER_WIN: payouts.standard_payout(player_hand),
+        OutcomeFlag.PLAYER_BLACKJACK: payouts.blackjack_payout(player_hand),
+        OutcomeFlag.DEALER_WIN: 0.0,
+        OutcomeFlag.DEALER_BLACKJACK: 0.0,
+        OutcomeFlag.PUSH: payouts.push_payout(player_hand),
+        OutcomeFlag.LOSE: 0.0,
+    }
+
+def handle_payout(player_hand: PlayerHand, outcome: Outcome) -> float:
+    """
+    Return the payout that maps to the corresponding outcome.
+    
+    Args:
+        player_hand (PlayerHand): The player's hand containing the current wager.
+        outcome (Outcome): The current state of the Blackjack round outcome.
+        
+    Returns:
+        (float): The payout that corresponds to the player's outcome.
+    """
+    payout_dict = _generate_payout_map(player_hand)
+    
+    payout = payout_dict[outcome.flag]
+    
+    return payout
+
+def update_insurance(player_hand: PlayerHand, insurance: Insurance) -> None:
+    """
+    Update the insurance dataclass fields when insurance has been purchased.
+    
+    Args:
+        player_hand (PlayerHand): The player's hand containing the current wager.
+        insurance (Insurance): The current state of the insurance wager and payout.
+    """
     insurance.active = True
     insurance.cost = payouts.get_insurance_cost(player_hand)
     insurance.payout = payouts.insurance_payout(insurance.cost)

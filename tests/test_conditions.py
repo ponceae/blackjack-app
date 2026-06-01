@@ -61,4 +61,4 @@ def test_validate_wager_and_is_valid_wager(player, wager_amount, expected_bool):
 def test_player_can_take_insurance(player, dealer_hand, expected_bool, wager_amount):
     table = Table(player=player, dealer=dealer_hand)
     
-    assert conditions.can_take_insurance(table, wager_amount) == expected_bool
+    assert conditions.can_take_insurance(table) == expected_bool

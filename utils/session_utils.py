@@ -71,4 +71,12 @@ def save_insurance(insurance: Insurance) -> None:
     """Save the current state of the `Insurance` instance to the Flask session."""
     session['insurance'] = insurance.to_dict()
     session.modified = True
-    
+
+def reset_insurance() -> None:
+    """
+    Retrieve the current Insurance instance from the Flask session and reset its
+    data fields.
+    """
+    insurance = get_insurance()
+    insurance.reset()
+    save_insurance(insurance)

@@ -26,7 +26,8 @@ class Deck:
     Represents a standard deck of playing cards used in Blackjack.
 
     Attributes:
-        cards (list[Card]): The current deck of cards at the table.
+        cards (list[Card], optional): The current deck of cards at the table. Defaults
+            to a standard 52 card deck.
     """
     cards: list[Card] = field(default_factory=create_deck)    
     

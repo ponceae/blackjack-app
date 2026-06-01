@@ -16,7 +16,7 @@ from typing import Any, Self
 from . import Card
 from constants import ACE, ACE_ALT_VALUE, DEFAULT_ACE_VALUE
 from dataclasses import dataclass, field
-from .models import Insurance, Outcome, OutcomeFlag
+from .models import Outcome, OutcomeFlag
 from utils import validation
 
 # ============================================
@@ -210,6 +210,10 @@ class PlayerHand(Hand):
             Defaults to `0.0`.
         is_current (bool, optional): Whether this specific hand is currently being 
             played with respect to split hands. Defaults to `False`.
+        outcome_flag (int, optional): A flag that represents the current outcome on a 
+            given hand. Defaults to `0`.
+        has_splitted (bool, optional): Whether this specific hand has split or not. 
+            Defaults to `False`.
     """
     wager: float = 0.0
     insurance_wager: float = 0.0
@@ -260,13 +264,16 @@ class PlayerHand(Hand):
                 - insurance_wager (float): The current insurance wager on the hand.
                 - is_current (bool): Whether this specific hand is currently being
                     played.
+                - outcome_flag (int): A flag that represents the current outcome on a
+                    given hand.
+                - has_splitted (bool): Whether specific hand has split or not. 
         
         Returns:
             Self: A new PlayerHand instance.
             
         Raises:
-            TypeError: If `wager` or `insurance_wager` is not a number, or if 
-                `is_current` is not a bool.
+            TypeError: If `wager`, `insurance_wager`, or `outcome_flag` is not a 
+            number, or if `is_current` or `has_splitted` is not a bool.
         """
         instance = super().from_dict(data)
 
@@ -302,7 +309,8 @@ class PlayerHand(Hand):
     def to_dict(self) -> dict[str, Any]:
         """
         Serialize the `PlayerHand` into a dictionary, extending base `Hand` fields with 
-        the `wager`, `insurance_wager`, and `is_current` values and state.
+        the `wager`, `insurance_wager`, `outcome_flag`, `is_current`, and
+        `has_splitted` values and state.
         """
         data = super().to_dict()
         

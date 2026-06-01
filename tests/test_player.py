@@ -25,6 +25,7 @@ def player() -> Player:
 def test_player_default_factory_creates_moderate_bank_and_empty_list(player):
     assert player.bank.balance == 500.0
     assert len(player.hands) == 0
+    assert player.active_hand_index == 0
 
 # ===========================================
 # Player Serialization/Deserialization Tests.

@@ -22,8 +22,10 @@ class Table:
 
     Attributes:
         player (Player): The sitting player.
-        dealer (Dealer): The standing dealer.
-        deck (Deck): The current game deck.
+        dealer (Dealer, optional): The standing dealer. Defaults to an initial
+            `DealerHand` instance.
+        deck (Deck, optional): The current game deck. Defaults to an initial 
+            `Deck` instance.
     """
     player: Player
     dealer: DealerHand = field(default_factory=DealerHand)

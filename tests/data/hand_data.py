@@ -9,6 +9,7 @@ Provides:
 
 __author__ = 'Adrien P.'
 
+import random
 from typing import Any
 
 from entities import Card, DealerHand, Hand, PlayerHand
@@ -124,11 +125,23 @@ def _generate_dealer_or_player_test_data(hand_type: str) -> list[tuple[Any, ...]
         
         test_float = (10 * i) / 2
         
+        test_int = random.randint(0, 6)
+        
         if hand_type == 'dealer':
             test_data.append((cards, tid, test_bool))
         
         elif hand_type == 'player':
-            test_data.append((cards, tid, test_float, test_float, test_bool))
+            test_data.append(
+                (
+                    cards, 
+                    tid, 
+                    test_float, 
+                    test_float, 
+                    test_bool, 
+                    test_int, 
+                    test_bool
+                )
+            )
     
     return test_data
 
@@ -153,7 +166,8 @@ PlayerHandData = list[tuple[PlayerHand, list[Card], float, float, bool]]
 
 def playerhand_mapping_pairs() -> PlayerHandData:
     """
-    Generate pairs of `PlayerHand` {'wager', 'insurance_wager', 'is_current'} dicts.
+    Generate pairs of `PlayerHand` 
+    {'wager', 'insurance_wager', 'is_current', 'outcome_flag', 'has_splitted'} dicts.
     """
     playerhand_mappings = []
     
@@ -162,14 +176,18 @@ def playerhand_mapping_pairs() -> PlayerHandData:
         tid, 
         _wager, 
         _insurance_wager, 
-        current
+        current,
+        o_flag,
+        split,
     ) in _generate_dealer_or_player_test_data('player'):
         
         hand = PlayerHand(
             cards=_cards, 
             wager=_wager, 
             insurance_wager=_insurance_wager, 
-            is_current=current
+            is_current=current,
+            outcome_flag=o_flag,
+            has_splitted=split
         )
         
         data = {
@@ -177,6 +195,8 @@ def playerhand_mapping_pairs() -> PlayerHandData:
             'wager': _wager,
             'insurance_wager': _insurance_wager,
             'is_current': current,
+            'outcome_flag': o_flag,
+            'has_splitted': split,
         }
 
         playerhand_mappings.append((hand, data, tid))

@@ -20,11 +20,12 @@ class Insurance:
     The state manager for round insurance status.
     
     Attributes:
-        active (bool): Whether insurance has been purchased and if the condition is yet
-            to be checked.
-        win (bool): If insurance has been won on the current round.
-        payout (float): The insurance payout to the player.
-        cost (float): The cost for purchasing insurance.
+        active (bool, optional): Whether insurance has been purchased and if the condition is yet
+            to be checked. Defaults to `False`.
+        win (bool, optional): If insurance has been won on the current round. Defaults
+            to `False`.
+        payout (float, optional): The insurance payout to the player. Defaults to `0.0`.
+        cost (float, optional): The cost for purchasing insurance. Defaults to `0.0`.
     """
     active: bool = False
     win: bool = False
@@ -97,7 +98,7 @@ class OutcomeFlag(IntEnum):
     DEALER_WIN = 3
     DEALER_BLACKJACK = 4
     PUSH= 5
-    LOSE=6
+    LOSE = 6
 
 @dataclass
 class Outcome:
@@ -105,14 +106,23 @@ class Outcome:
     The state manager for Blackjack round outcomes and payouts.
     
     Attributes:
-        flag (OutcomeFlag): The current outcome of the Blackjack round.
-        payout (float): The monetary amount to payout to the player.
+        flag (OutcomeFlag, optional): The current outcome of the Blackjack round. 
+            Defaults to `OutcomeFlag.NONE`.
+        payout (float, optional): The monetary amount to payout to the player.
+            Defaults to `0.0`.
     """
     flag: OutcomeFlag = OutcomeFlag.NONE
     payout: float = 0.0
     
     @property
     def message(self) -> str:
+        """ 
+        Provide a mapping in order to determine the outcome message based off of the
+        current `OutcomeFlag` value.
+        
+        Returns:
+            (str): The message for the `OutcomeFlag` value.
+        """
         mapping = {
             OutcomeFlag.NONE: '',
             OutcomeFlag.PLAYER_WIN: 'You Win!',
@@ -148,7 +158,7 @@ class Outcome:
         try:
             OutcomeFlag(_flag)
         except ValueError:
-            raise ValueError()
+            raise ValueError('Invalid value, `flag` must be an int.')
                 
         raw_payout = data['payout']
         validation.validate_type('payout', raw_payout, (int, float))

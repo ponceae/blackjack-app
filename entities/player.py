@@ -24,8 +24,12 @@ class Player:
     Represents a player at the table, including their bank balance and hands.
 
     Attributes:
-        bank (Bank): The current player's bank containing their overall balance.
-        hands (list[PlayerHand]): The current player's game hands at the table.
+        bank (Bank, optional): The current player's bank containing their overall 
+            balance. Defaults to `500.0`.
+        hands (list[PlayerHand], optional): The current player's game hands at the 
+            table. Defaults to an empty list of player hands.
+        active_hand_index (int, optional): Stores the current index of the active 
+            playing hand. Defaults to `0`.
     """
     bank: Bank = field(default_factory=lambda: Bank(500))
     hands: list[PlayerHand] = field(default_factory=list)
@@ -43,13 +47,17 @@ class Player:
             data (dict[str, Any]): A dictionary containing:
                 - bank (Bank): The player's finances.
                 - hands (list[PlayerHand]): The player's game hands.
+                - active_hand_index (int): The pointer to the player's current active 
+                    hand.
 
         Returns: 
             Self: A new Player instance.
 
         Raises:
-            KeyError: If `bank` or `hands` is missing from the data.
-            TypeError: if `bank` is not a Bank or `hands` is not a list.
+            KeyError: If `bank`, `hands`, or `active_hand_index` is missing from 
+                the data.
+            TypeError: if `bank` is not a Bank, `hands` is not a list, or 
+                `active_hand_index` is not an int.
         """
         validation.validate_type('bank', Bank.from_dict(data['bank']), Bank)
 

@@ -16,9 +16,14 @@ from constants import CARD_RANKS, CARD_SUITS
 from dataclasses import dataclass, field
 from utils import validation
 
-def create_deck() -> list[Card]:
+def create_deck(num_decks: int = 4) -> list[Card]:
     """Create and return a list containing 52 `Card` objects."""
-    return [Card(suit, rank) for suit in CARD_SUITS for rank in CARD_RANKS]
+    return [
+        Card(suit, rank) 
+        for _ in range(num_decks)
+        for suit in CARD_SUITS 
+        for rank in CARD_RANKS
+    ]
 
 @dataclass
 class Deck:

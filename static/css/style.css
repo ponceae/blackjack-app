@@ -2,6 +2,15 @@ body {
   background-color: #28775B;
   background-image: url('/static/images/noise-texture.png');
   background-repeat: repeat;
+
+  margin: 0;
+
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .game-contianer {
@@ -67,6 +76,7 @@ body {
 
 .score-display {
   margin-top: 2px;
+  font-size: 20px;
 }
 
 .outcome {
@@ -91,7 +101,10 @@ body {
 
 .card-img {  
   height: auto;
-  width: 100px;
+  width: 15vw;
+
+  min-width: 50px;
+  max-width: 100px;
 
   transition: all 0.3s ease;
 }
@@ -156,7 +169,14 @@ body {
   list-style: none;
   
   margin: 0;
-  padding: 0;
+  padding: 0 15px;
+}
+
+.chips-list, .buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  flex-wrap: wrap;
   gap: 8px;
 }
 
@@ -166,12 +186,19 @@ body {
   display: block;
   object-fit: contain;
 
+  justify-content: center;
+  flex-wrap: wrap;
+
   cursor: pointer;
 }
 
-.chip-btn p {
-  font-size: 25px;
-  cursor: pointer;
+.ghost-chip img { 
+  filter: grayscale(100%) opacity(50%);
+  transition: all 0.2s ease;
+}
+
+.ghost-chip:hover img {
+  filter: grayscale(100%) opacity(80%);
 }
 
 .chip-btn p li {
@@ -214,4 +241,41 @@ body {
 
 .current-wager {
   color: #FFFFFF;
+}
+
+@media(max-width: 768px) {
+  .current-wager {
+    font-size: 30px;
+  }
+
+  .title {
+    font-size: 24px;
+  }
+
+  .hand .card-img:not(:first-child) {
+    margin-left: -30px;
+  }
+
+  .chip-btn img {
+    width: 60px;
+    height: 60px;
+  }
+
+  .buttons button {
+    font-size: 10px;
+    padding: 5px 10px;
+  }
+
+  .outcome h4 {
+    white-space: normal;
+    text-align: center;
+  }
+
+  .dealer h3, .player h3 {
+    font-size: 18px;
+  }
+
+  .score-display {
+    font-size: 15px;
+  }
 }

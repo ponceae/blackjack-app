@@ -59,7 +59,7 @@
           {% for hand in table.player.hands %}
 
           {% set is_active_hand = loop.index0 == table.player.active_hand_index and game_active %}
-          <div class="hand {% if is_hand_active %}active-hand{% endif %}">
+          <div class="hand {% if is_active_hand %}active-hand{% endif %}">
           
             {% for card in hand.cards %}  
               <img src="{{ url_for('static', filename='cards/' ~ card.rank|lower ~ '_of_' ~ card.suit|lower ~ '.png') }}"

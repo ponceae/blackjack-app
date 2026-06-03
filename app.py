@@ -1,4 +1,5 @@
 from functools import wraps
+import os
 
 from flask import Flask, redirect, render_template, session, url_for
 
@@ -9,7 +10,7 @@ from utils import session_utils
 __author__ = 'Adrien P.'
 
 app = Flask(__name__)
-app.secret_key = 'gobbledigook'
+app.secret_key = os.environ.get('gobbledigook')
 
 def _game_active_required(func):
     @wraps(func)

@@ -10,7 +10,7 @@ from utils import session_utils
 __author__ = 'Adrien P.'
 
 app = Flask(__name__)
-app.secret_key = os.environ.get('gobbledigook')
+app.secret_key = os.environ.get('SECRET_KEY')
 
 def _game_active_required(func):
     @wraps(func)

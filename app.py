@@ -1,7 +1,6 @@
 from functools import wraps
 
 from flask import Flask, redirect, render_template, session, url_for
-import json
 
 from engine import actions, conditions
 from entities import OutcomeFlag, Player, Table
@@ -229,10 +228,10 @@ def remove_bet(amount):
 # # ===================
 # # FOR DEBUGGING ONLY
 # # ===================
-@app.route('/reset')
-def reset():
-    session.clear()
-    return redirect('/')
+# @app.route('/reset')
+# def reset():
+#     session.clear()
+#     return redirect('/')
 
 # def create_debug_section(session):
 #     debug_session = dict(session)

@@ -61,9 +61,9 @@ body {
   font-size: 20px;
 }
 
-/* ============================
-    -- CARDS & HAND DISPLAY --
-   ============================ */
+/* ==========================
+    ---- CARDS & HANDS ----
+   ========================== */
 
 .hand {
   display: flex;
@@ -209,6 +209,10 @@ body {
 .total-won {
   font-size: 1.2em;
 }
+
+/* ================
+    --- MOBILE ---
+   ================ */
 
 @media(max-width: 768px) {
   .current-wager {

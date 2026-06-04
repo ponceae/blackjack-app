@@ -14,7 +14,7 @@ body {
     -- MAIN CONTAINERS --
    ======================= */
 
-.game-contianer {
+.game-container {
   display: flex;
   flex-direction: column;
 }
@@ -194,6 +194,7 @@ body {
   width: 100%;
   gap: 8px;
   margin-top: 20px;
+  padding-bottom: 20%;
   color: #FFFFFF;
 }
 
